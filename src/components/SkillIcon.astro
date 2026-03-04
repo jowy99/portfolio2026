@@ -1,0 +1,77 @@
+---
+interface Props {
+  stack: string;
+  className?: string;
+}
+
+const { stack, className = "h-4 w-4" } = Astro.props;
+const key = stack.trim().toLowerCase();
+
+type IconSource = {
+  primary: string;
+  fallback: string;
+};
+
+const icons: Record<string, IconSource> = {
+  laravel: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg",
+    fallback: "https://cdn.simpleicons.org/laravel/FF2D20",
+  },
+  astrojs: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg",
+    fallback: "https://cdn.simpleicons.org/astro/FF5D01",
+  },
+  tailwindcss: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
+    fallback: "https://cdn.simpleicons.org/tailwindcss/06B6D4",
+  },
+  html5: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+    fallback: "https://cdn.simpleicons.org/html5/E34F26",
+  },
+  css3: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+    fallback: "https://cdn.simpleicons.org/css3/1572B6",
+  },
+  javascript: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    fallback: "https://cdn.simpleicons.org/javascript/F7DF1E",
+  },
+  java: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+    fallback: "https://cdn.simpleicons.org/openjdk/EA2D2E",
+  },
+  python: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    fallback: "https://cdn.simpleicons.org/python/3776AB",
+  },
+  git: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+    fallback: "https://cdn.simpleicons.org/git/F05032",
+  },
+  mysql: {
+    primary: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+    fallback: "https://cdn.simpleicons.org/mysql/4479A1",
+  },
+};
+
+const icon = icons[key];
+---
+
+{
+  icon ? (
+    <img
+      src={icon.primary}
+      data-fallback={icon.fallback}
+      alt=""
+      aria-hidden="true"
+      class={className}
+      loading="lazy"
+      decoding="async"
+      referrerpolicy="no-referrer"
+      onerror="const fb=this.getAttribute('data-fallback');if(fb&&this.src!==fb){this.src=fb;}"
+    />
+  ) : (
+    <span class="font-mono text-[0.68rem] leading-none text-zinc-600 dark:text-zinc-300">{`{}`}</span>
+  )
+}

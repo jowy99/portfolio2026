@@ -3,6 +3,7 @@ import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../components/ProjectCard.astro";
 import Section from "../../components/Section.astro";
+import SkillIcon from "../../components/SkillIcon.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { locales, type Locale } from "../../i18n/locales";
 import { t, tList, tValue } from "../../i18n/t";
@@ -94,17 +95,21 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                   alt={t(lang, "heroPhotoAlt")}
                   class="hero-mobile-thumb"
                   formats={["avif", "webp", "jpeg"]}
-                  widths={[224, 320]}
+                  widths={[224, 320, 448]}
                   width={320}
-                  height={320}
+                  height={400}
                   sizes="112px"
                   loading="eager"
                   fetchpriority="high"
                   decoding="async"
                 />
               </div>
-              <div class="min-w-0">
-                <p class="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-zinc-600 dark:text-zinc-300">{t(lang, "heroPhotoNote")}</p>
+              <div class="hero-mobile-meta">
+                <p class="hero-mobile-note">{t(lang, "heroPhotoNote")}</p>
+                <p class="hero-mobile-status">
+                  <span class="hero-status-dot" aria-hidden="true"></span>
+                  <span>{t(lang, "hero.cardStatus")}</span>
+                </p>
               </div>
             </div>
 
@@ -128,7 +133,7 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
             </ul>
 
             <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <a href={projectsHref} class="btn btn-primary w-full sm:w-auto">{t(lang, "hero.ctaProjects")}</a>
+              <a href={projectsHref} class="btn btn-primary hero-cta-pulse w-full sm:w-auto">{t(lang, "hero.ctaProjects")}</a>
               <a href={contactHref} class="btn btn-secondary w-full sm:w-auto">{t(lang, "hero.ctaTalk")}</a>
               <a href="/cv-joel-arnaud.pdf" class="ui-underline w-fit text-sm font-medium text-zinc-700 dark:text-zinc-200" download>
                 {t(lang, "hero.ctaCV")}
@@ -160,7 +165,6 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                 <span class="hero-status-dot" aria-hidden="true"></span>
                 <span>{t(lang, "hero.cardStatus")}</span>
               </p>
-              <p class="hero-float-role">{t(lang, "hero.cardRole")}</p>
             </div>
           </div>
         </div>
@@ -354,7 +358,7 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                         class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-300/80 bg-white/80 font-mono text-[0.68rem] text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800/70 dark:text-zinc-300"
                         aria-hidden="true"
                       >
-                        {`{}`}
+                        <SkillIcon stack={item} className="h-4 w-4" />
                       </span>
                       <span>{item}</span>
                     </p>
