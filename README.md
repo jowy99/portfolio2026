@@ -1,4 +1,4 @@
-# Joel Arnaud Portfolio
+# Joël Arnaud Portfolio
 
 Portfolio construido con Astro + Tailwind v4, i18n por rutas y enfoque Astro-first (sin SPA ni React).
 

@@ -11,7 +11,7 @@ type TranslationValue = string | string[] | EducationEntry[];
 
 export const strings = {
   es: {
-    siteName: "Joel Arnaud",
+    siteName: "Joël Arnaud",
     navProjects: "Proyectos",
     navAbout: "Perfil",
     navContact: "Contacto",
@@ -42,7 +42,7 @@ export const strings = {
     heroTitle: "Fullstack para equipos de producto",
     heroSubtitle: "Desarrollo interfaces claras, rapidas y mantenibles para productos en crecimiento.",
     heroLocation: "Remoto (Espana / Europa)",
-    heroPhotoAlt: "Retrato de Joel Arnaud",
+    heroPhotoAlt: "Retrato de Joël Arnaud",
     heroPhotoNote: "Joël Arnaud Carreras",
     heroProjects: "Ver proyectos",
     heroContact: "Contactar",
@@ -227,7 +227,7 @@ export const strings = {
     footerBuilt: "Sitio construido con Astro + Tailwind.",
   },
   en: {
-    siteName: "Joel Arnaud",
+    siteName: "Joël Arnaud",
     navProjects: "Projects",
     navAbout: "Profile",
     navContact: "Contact",
@@ -257,7 +257,7 @@ export const strings = {
     heroTitle: "Fullstack for product teams",
     heroSubtitle: "I build clear, fast, maintainable interfaces for growing products.",
     heroLocation: "Remote (Spain / Europe)",
-    heroPhotoAlt: "Portrait of Joel Arnaud",
+    heroPhotoAlt: "Portrait of Joël Arnaud",
     heroPhotoNote: "Joël Arnaud Carreras",
     heroProjects: "View projects",
     heroContact: "Contact",
@@ -429,7 +429,7 @@ export const strings = {
     footerBuilt: "Site built with Astro + Tailwind.",
   },
   ca: {
-    siteName: "Joel Arnaud",
+    siteName: "Joël Arnaud",
     navProjects: "Projectes",
     navAbout: "Perfil",
     navContact: "Contacte",
@@ -459,7 +459,7 @@ export const strings = {
     heroTitle: "Fullstack per a equips de producte",
     heroSubtitle: "Desenvolupo interfícies clares, rapides i mantenibles per a productes en creixement.",
     heroLocation: "Remot (Espanya / Europa)",
-    heroPhotoAlt: "Retrat de Joel Arnaud",
+    heroPhotoAlt: "Retrat de Joël Arnaud",
     heroPhotoNote: "Joël Arnaud Carreras",
     heroProjects: "Veure projectes",
     heroContact: "Contactar",
@@ -631,7 +631,7 @@ export const strings = {
     footerBuilt: "Lloc creat amb Astro + Tailwind.",
   },
   fr: {
-    siteName: "Joel Arnaud",
+    siteName: "Joël Arnaud",
     navProjects: "Projets",
     navAbout: "Profil",
     navContact: "Contact",
@@ -661,7 +661,7 @@ export const strings = {
     heroTitle: "Fullstack pour equipes produit",
     heroSubtitle: "Je construis des interfaces claires, rapides et maintenables pour des produits en croissance.",
     heroLocation: "Remote (Espagne / Europe)",
-    heroPhotoAlt: "Portrait de Joel Arnaud",
+    heroPhotoAlt: "Portrait de Joël Arnaud",
     heroPhotoNote: "Joël Arnaud Carreras",
     heroProjects: "Voir les projets",
     heroContact: "Contacter",
