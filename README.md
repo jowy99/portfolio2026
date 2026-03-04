@@ -1,6 +1,6 @@
-# Joel Arnaud Portfolio Beta
+# Joel Arnaud Portfolio
 
-Portfolio beta construido con Astro + Tailwind v4, i18n por rutas y enfoque Astro-first (sin SPA ni React).
+Portfolio construido con Astro + Tailwind v4, i18n por rutas y enfoque Astro-first (sin SPA ni React).
 
 ## Stack
 - Astro 5 + TypeScript
@@ -58,7 +58,7 @@ npm run preview:perf
 
 Ese comando construye `dist`, genera `.br/.gz` y sirve con `Content-Encoding`.
 
-## Notas de rendimiento (beta)
+## Notas de rendimiento
 - Hero migrado a `astro:assets` con `<Picture>` responsivo (`avif/webp/jpeg`) y tamaños adaptados.
 - Covers de proyectos integradas en content collection con `image()` + `<Image>` para definir dimensiones y evitar CLS.
 - Eliminado `@import` remoto de Google Fonts para reducir recursos bloqueantes.

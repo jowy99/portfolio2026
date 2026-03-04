@@ -1,4 +1,4 @@
-# Checklist Release Beta
+# Checklist Release
 
 ## 1) Build y rutas
 - [x] `pnpm build` sin errores
