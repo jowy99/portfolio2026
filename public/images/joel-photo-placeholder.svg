@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Joel Arnaud portrait placeholder</title>
+  <desc id="desc">Minimal photo placeholder with monogram.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="45%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+    <radialGradient id="glowA" cx="24%" cy="14%" r="70%">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowB" cx="78%" cy="86%" r="65%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a5b4fc" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#67e8f9" stop-opacity="0.55" />
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#bg)" />
+  <rect width="800" height="1000" fill="url(#glowA)" />
+  <rect width="800" height="1000" fill="url(#glowB)" />
+
+  <g opacity="0.28" stroke="#e2e8f0" stroke-width="1">
+    <path d="M80 160h640" />
+    <path d="M80 840h640" />
+    <path d="M150 90v820" />
+    <path d="M650 90v820" />
+  </g>
+
+  <rect x="70" y="70" width="660" height="860" rx="34" fill="none" stroke="url(#frame)" stroke-width="4" />
+
+  <circle cx="400" cy="420" r="145" fill="#f8fafc" fill-opacity="0.08" />
+  <path d="M185 820c36-158 123-250 215-250 92 0 180 92 216 250" fill="#f8fafc" fill-opacity="0.08" />
+
+  <text x="50%" y="49%" text-anchor="middle" fill="#e2e8f0" font-size="120" font-family="Inter, Arial, sans-serif" font-weight="700" letter-spacing="5">JA</text>
+  <text x="50%" y="92%" text-anchor="middle" fill="#e2e8f0" font-size="30" font-family="Inter, Arial, sans-serif" letter-spacing="1.6">PHOTO PLACEHOLDER</text>
+</svg>

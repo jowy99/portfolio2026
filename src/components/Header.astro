@@ -1,0 +1,214 @@
+---
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import type { Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+
+interface Props {
+  lang: Locale;
+  currentPath?: string;
+  search?: string;
+  hash?: string;
+}
+
+const { lang, currentPath = "/", search = "", hash = "" } = Astro.props;
+
+const homeHref = `/${lang}`;
+const projectsHref = `/${lang}/projects`;
+const aboutHref = `/${lang}/#about`;
+const normalizedPath = currentPath.length > 1 && currentPath.endsWith("/") ? currentPath.slice(0, -1) : currentPath;
+const isHomePath = normalizedPath === `/${lang}`;
+const contactHref = isHomePath ? "#contact" : `/${lang}/#contact`;
+const isProjectsPath = normalizedPath === projectsHref || normalizedPath.startsWith(`${projectsHref}/`);
+const desktopNavItems = [
+  { href: projectsHref, label: t(lang, "navProjects"), isActive: isProjectsPath },
+  { href: aboutHref, label: t(lang, "navAbout"), isActive: false },
+  { href: contactHref, label: t(lang, "navContact"), isActive: false },
+];
+const mobileNavItems = [
+  { href: projectsHref, label: t(lang, "navProjects"), isActive: isProjectsPath, icon: "projects" },
+  { href: aboutHref, label: t(lang, "navAbout"), isActive: false, icon: "profile" },
+  { href: contactHref, label: t(lang, "nav.ctaTalk"), isActive: false, icon: "talk" },
+];
+const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
+---
+
+<header class="site-header sticky top-0 z-40">
+  <div class="mx-auto w-full max-w-7xl px-3 pt-3 sm:px-5 lg:px-8">
+    <div class="site-header-shell flex h-14 items-center gap-2 rounded-2xl border border-zinc-200/70 bg-zinc-50/90 px-3 backdrop-blur-lg sm:gap-3 sm:px-4 dark:border-zinc-800/70 dark:bg-zinc-950/86">
+      <a href={homeHref} class="site-brand text-sm font-semibold tracking-[0.01em] text-zinc-900 dark:text-zinc-100">{t(lang, "siteName")}</a>
+
+      <nav class="ml-4 hidden items-center gap-1 rounded-full border border-zinc-200/80 bg-white/82 p-1 text-sm dark:border-zinc-700/80 dark:bg-zinc-900/85 lg:flex">
+        {
+          desktopNavItems.map((item) => (
+            <a href={item.href} class:list={["site-nav-link", item.isActive && "is-active"]}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="ml-auto hdr-controls hidden md:flex">
+        <LanguageSwitcher
+          id="lang-select-desktop"
+          lang={lang}
+          currentPath={currentPath}
+          search={search}
+          hash={hash}
+        />
+        <ThemeToggle id="theme-select-desktop" lang={lang} />
+        <a href={contactHref} class="hdr-cta">
+          <svg class="hdr-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7.5h16v9a2 2 0 01-2 2H6a2 2 0 01-2-2v-9z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+            <path d="M4.8 8.2L12 13l7.2-4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <span>{t(lang, "nav.ctaTalk")}</span>
+        </a>
+      </div>
+
+      <div class="mobile-menu relative ml-auto md:hidden" data-mobile-menu>
+        <button
+          type="button"
+          class="menu-summary btn btn-secondary ui-press px-3"
+          aria-label={t(lang, "navMenu")}
+          aria-expanded="false"
+          aria-controls={mobileMenuPanelId}
+          data-mobile-menu-toggle
+        >
+          {t(lang, "navMenu")}
+        </button>
+        <div
+          id={mobileMenuPanelId}
+          class="mobile-menu-panel absolute right-0 top-full mt-2 z-50 w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-900"
+          data-mobile-menu-panel
+        >
+          <nav class="space-y-1">
+            {
+              mobileNavItems.map((item) => (
+                <a
+                  class:list={[
+                    "ease-ui flex min-h-11 items-center gap-2 rounded-lg px-3 py-3 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800",
+                    item.isActive && "bg-zinc-100 dark:bg-zinc-800",
+                  ]}
+                  href={item.href}
+                >
+                  {item.icon === "projects" && (
+                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M4 4.5h6.5V11H4V4.5Zm9.5 0H20V11h-6.5V4.5ZM4 13h6.5v6.5H4V13Zm9.5 0H20v6.5h-6.5V13Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+                    </svg>
+                  )}
+                  {item.icon === "profile" && (
+                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"></circle>
+                      <path d="M5 19c0-3.2 2.9-5.3 7-5.3s7 2.1 7 5.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+                    </svg>
+                  )}
+                  {item.icon === "talk" && (
+                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M4 7.5h16v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+                      <path d="m4.8 8.2 7.2 4.8 7.2-4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                  )}
+                  <span class="leading-none">{item.label}</span>
+                </a>
+              ))
+            }
+          </nav>
+
+          <div class="mt-2 grid gap-2 border-t border-zinc-200 pt-2 dark:border-zinc-700">
+            <LanguageSwitcher
+              id="lang-select-mobile"
+              lang={lang}
+              currentPath={currentPath}
+              search={search}
+              hash={hash}
+            />
+            <ThemeToggle id="theme-select-mobile" lang={lang} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const initMobileMenus = () => {
+      const menus = Array.from(document.querySelectorAll("[data-mobile-menu]"));
+      for (const menu of menus) {
+        if (!(menu instanceof HTMLElement) || menu.dataset.mobileMenuReady === "true") continue;
+        menu.dataset.mobileMenuReady = "true";
+
+        const toggle = menu.querySelector("[data-mobile-menu-toggle]");
+        const panel = menu.querySelector("[data-mobile-menu-panel]");
+        if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) continue;
+
+        const setOpen = (open) => {
+          menu.classList.toggle("is-open", open);
+          toggle.setAttribute("aria-expanded", String(open));
+        };
+
+        setOpen(false);
+
+        toggle.addEventListener("click", (event) => {
+          event.preventDefault();
+          setOpen(!menu.classList.contains("is-open"));
+        });
+
+        document.addEventListener("pointerdown", (event) => {
+          if (!menu.classList.contains("is-open")) return;
+          if (!(event.target instanceof Node)) return;
+          if (menu.contains(event.target)) return;
+          const activeElement = document.activeElement;
+          if (activeElement instanceof HTMLSelectElement && menu.contains(activeElement)) return;
+          setOpen(false);
+        }, { passive: true });
+
+        menu.addEventListener("keydown", (event) => {
+          if (event.key !== "Escape") return;
+          setOpen(false);
+          toggle.focus();
+        });
+
+        const links = panel.querySelectorAll("a[href]");
+        for (const link of links) {
+          link.addEventListener("click", () => {
+            setOpen(false);
+          });
+        }
+
+        const desktopQuery = window.matchMedia("(min-width: 768px)");
+        const handleDesktopQuery = () => {
+          if (desktopQuery.matches) setOpen(false);
+        };
+
+        if (typeof desktopQuery.addEventListener === "function") {
+          desktopQuery.addEventListener("change", handleDesktopQuery);
+        } else if (typeof desktopQuery.addListener === "function") {
+          desktopQuery.addListener(handleDesktopQuery);
+        }
+      }
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initMobileMenus, { once: true });
+    } else {
+      initMobileMenus();
+    }
+  })();
+</script>
+
+<noscript>
+  <style>
+    .mobile-menu > [data-mobile-menu-toggle] { display: none; }
+    .mobile-menu > [data-mobile-menu-panel] {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      visibility: visible;
+      position: static;
+      margin-top: .5rem;
+      width: min(18rem, calc(100vw - 2rem));
+    }
+  </style>
+</noscript>

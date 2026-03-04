@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="t d">
+  <title id="t">Monopoly cover</title>
+  <desc id="d">Cover image for Monopoly terminal project.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f2f3a"/>
+      <stop offset="100%" stop-color="#425a6b"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+
+  <rect x="160" y="140" width="1280" height="620" rx="26" fill="url(#panel)" stroke="#8ba2b4" stroke-opacity="0.35"/>
+  <rect x="190" y="178" width="1220" height="24" rx="8" fill="#7aa2b8" fill-opacity="0.18"/>
+
+  <g fill="#d4e0e8" font-family="Menlo, Consolas, monospace" font-size="34">
+    <text x="220" y="270">&gt; iniciar_partida</text>
+    <text x="220" y="330">Jugador 1 tira los dados: 7</text>
+    <text x="220" y="390">Jugador 1 avanza a Calle Mayor</text>
+    <text x="220" y="450">Compra realizada: 220</text>
+    <text x="220" y="510">Saldo actual: 1280</text>
+    <text x="220" y="570">&gt; siguiente_turno</text>
+  </g>
+
+  <rect x="1040" y="250" width="310" height="240" rx="16" fill="#5e7a8f" fill-opacity="0.15" stroke="#b8cad6" stroke-opacity="0.35"/>
+  <text x="1070" y="305" fill="#e6eef4" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="600">Estado partida</text>
+  <text x="1070" y="345" fill="#cfdde7" font-family="Inter, Arial, sans-serif" font-size="20">Jugadores: 2</text>
+  <text x="1070" y="377" fill="#cfdde7" font-family="Inter, Arial, sans-serif" font-size="20">Turno: 2</text>
+  <text x="1070" y="409" fill="#cfdde7" font-family="Inter, Arial, sans-serif" font-size="20">Modo: Terminal</text>
+  <text x="1070" y="441" fill="#cfdde7" font-family="Inter, Arial, sans-serif" font-size="20">Lenguaje: Java</text>
+
+  <text x="160" y="820" fill="#f3f8fb" font-family="Inter, Arial, sans-serif" font-size="90" font-weight="700">Monopoly</text>
+  <text x="164" y="870" fill="#d7e3ec" font-family="Inter, Arial, sans-serif" font-size="34" letter-spacing="1.2">Terminal game implementation</text>
+</svg>

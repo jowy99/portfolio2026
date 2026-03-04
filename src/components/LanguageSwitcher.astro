@@ -1,0 +1,51 @@
+---
+import { locales, type Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+import { getPathSegmentsWithoutLocale } from "../utils/i18n";
+
+interface Props {
+  lang: Locale;
+  currentPath?: string;
+  search?: string;
+  hash?: string;
+  id?: string;
+}
+
+const { lang, currentPath = "/", search = "", hash = "", id = "lang-select" } = Astro.props;
+const rest = getPathSegmentsWithoutLocale(currentPath);
+
+const buildLocalePath = (targetLocale: Locale): string => {
+  const base = `/${targetLocale}${rest.length ? `/${rest.join("/")}` : ""}`;
+  return `${base}${search}${hash}`;
+};
+---
+
+<div class="hdr-control hdr-select-wrap min-w-[5.15rem]">
+  <span class="hdr-icon hdr-select-leading" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 3a9 9 0 100 18 9 9 0 000-18z" stroke="currentColor" stroke-width="1.7"></path>
+      <path d="M3.5 12h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+      <path d="M12 3c2.5 2.4 3.9 5.6 3.9 9s-1.4 6.6-3.9 9c-2.5-2.4-3.9-5.6-3.9-9s1.4-6.6 3.9-9z" stroke="currentColor" stroke-width="1.7"></path>
+    </svg>
+  </span>
+  <label class="sr-only" for={id}>{t(lang, "langLabel")}</label>
+  <select
+    id={id}
+    class="hdr-select hdr-select-native text-xs tracking-[0.04em] uppercase"
+    aria-label={t(lang, "langLabel")}
+    onchange="if (this.value) window.location.assign(this.value)"
+  >
+    {
+      locales.map((locale) => (
+        <option value={buildLocalePath(locale)} selected={locale === lang} lang={locale}>
+          {locale.toUpperCase()}
+        </option>
+      ))
+    }
+  </select>
+  <span class="hdr-chevron" aria-hidden="true">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </span>
+</div>

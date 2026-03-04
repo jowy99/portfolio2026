@@ -1,0 +1,21 @@
+---
+import type { Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-zinc-200 dark:border-zinc-800">
+  <div class="site-container flex flex-col gap-3 py-8 text-sm md:flex-row md:items-center md:justify-between">
+    <p>
+      <span class="font-medium">© {year} {t(lang, "siteName")}.</span>
+      <span class="muted"> {t(lang, "footerCopy")}</span>
+    </p>
+    <p class="muted">{t(lang, "footerBuilt")}</p>
+  </div>
+</footer>

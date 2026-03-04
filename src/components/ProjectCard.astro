@@ -1,0 +1,110 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+
+interface ProjectLinks {
+  live?: string;
+  github?: string;
+}
+
+interface Props {
+  lang: Locale;
+  slug: string;
+  title: string;
+  description: string;
+  cover: ImageMetadata | string;
+  stack: string[];
+  links?: ProjectLinks;
+  reveal?: boolean;
+  maxStack?: number;
+}
+
+const { lang, slug, title, description, cover, stack, links = {}, reveal = true, maxStack } = Astro.props;
+const caseHref = `/${lang}/projects/${slug}`;
+const stackLimit = Math.min(typeof maxStack === "number" ? maxStack : 3, 3);
+const visibleStack = stack.slice(0, stackLimit);
+const extraStackCount = Math.max(0, stack.length - stackLimit);
+const hasExternalLinks = Boolean(links.live || links.github);
+const projectCoverClass =
+  "project-cover-image aspect-[16/9] w-full object-cover transition-transform duration-300 group-hover/project-cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none";
+const externalIconButtonClass =
+  "ease-ui ui-press inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-300 bg-white/90 text-zinc-700 transition-transform duration-150 hover:scale-[1.03] hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800";
+---
+
+<article class="card ui-hover-lift flex h-full min-w-0 flex-col p-4 sm:p-5" data-reveal={reveal ? "" : undefined}>
+  <a href={caseHref} class="project-cover group/project-cover mb-3 block overflow-hidden rounded-xl">
+    {
+      typeof cover === "string" ? (
+        <img
+          src={cover}
+          alt={title}
+          class={projectCoverClass}
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <Image
+          src={cover}
+          alt={title}
+          class={projectCoverClass}
+          loading="lazy"
+          decoding="async"
+        />
+      )
+    }
+  </a>
+
+  <div class="flex min-w-0 flex-1 flex-col space-y-3">
+    <h3 class="min-w-0 text-lg font-semibold leading-snug sm:text-xl">
+      <a href={caseHref} class="ui-underline block clamp-2">{title}</a>
+    </h3>
+
+    <p class="project-description muted clamp-2 text-sm">{description}</p>
+
+    <ul class="project-stack flex flex-wrap gap-2" aria-label={t(lang, "projectStackAria")}>
+      {
+        visibleStack.map((item) => (
+          <li class="chip">{item}</li>
+        ))
+      }
+      {extraStackCount > 0 && <li class="chip">+{extraStackCount}</li>}
+    </ul>
+
+    <div class="project-actions mt-auto flex flex-wrap items-center justify-between gap-2">
+      <a href={caseHref} class="btn btn-primary px-3 py-2">{t(lang, "projectCase")}</a>
+
+      {hasExternalLinks && (
+        <div class="flex items-center gap-1.5">
+          {links.live && (
+            <a
+              href={links.live}
+              class={externalIconButtonClass}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t(lang, "projectLive")}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <use href="#icon-globe"></use>
+              </svg>
+            </a>
+          )}
+          {links.github && (
+            <a
+              href={links.github}
+              class={externalIconButtonClass}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t(lang, "projectGithub")}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <use href="#icon-github"></use>
+              </svg>
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+</article>

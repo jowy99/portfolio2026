@@ -1,0 +1,129 @@
+---
+import type { ImageMetadata } from "astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { defaultLocale, locales, type Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+import { themeInitScript } from "../scripts/theme-init";
+import themeRuntimeScript from "../scripts/theme-runtime.js?raw";
+import { getPathSegmentsWithoutLocale } from "../utils/i18n";
+import revealScriptUrl from "../scripts/reveal.ts?url";
+import "../styles/global.css";
+
+interface Props {
+  lang: Locale;
+  title?: string;
+  description?: string;
+  image?: string | ImageMetadata;
+  type?: "website" | "article";
+  noindex?: boolean;
+  publishedTime?: string;
+  updatedTime?: string;
+}
+
+const {
+  lang,
+  title: titleProp,
+  description: descriptionProp,
+  image = "/images/IMG_0116.jpeg",
+  type = "website",
+  noindex = false,
+  publishedTime,
+  updatedTime,
+} = Astro.props;
+
+const title = titleProp ?? `${t(lang, "siteName")} | ${t(lang, "meta.defaultTitleSuffix")}`;
+const description = descriptionProp ?? t(lang, "meta.defaultDescription");
+
+const path = Astro.url.pathname;
+const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+const rest = getPathSegmentsWithoutLocale(normalizedPath);
+
+const buildLocalePath = (targetLocale: Locale): string => {
+  return `/${targetLocale}${rest.length ? `/${rest.join("/")}` : ""}`;
+};
+
+const canonicalPath = buildLocalePath(lang);
+const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).toString() : undefined;
+const imageSrc = typeof image === "string" ? image : image.src;
+const imageUrl = Astro.site ? new URL(imageSrc, Astro.site).toString() : imageSrc;
+const robots = noindex ? "noindex,nofollow" : "index,follow";
+const xDefaultPath = buildLocalePath(defaultLocale);
+const xDefaultUrl = Astro.site ? new URL(xDefaultPath, Astro.site).toString() : xDefaultPath;
+
+const ogLocaleMap: Record<Locale, string> = {
+  es: "es_ES",
+  en: "en_US",
+  ca: "ca_ES",
+  fr: "fr_FR",
+};
+
+const localeAlternates = locales
+  .filter((locale) => locale !== lang)
+  .map((locale) => ogLocaleMap[locale]);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <meta name="theme-color" content="#f3f6f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#243434" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={t(lang, "siteName")} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={ogLocaleMap[lang]} />
+    {localeAlternates.map((locale) => <meta property="og:locale:alternate" content={locale} />)}
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    {imageUrl && <meta property="og:image" content={imageUrl} />}
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {updatedTime && <meta property="article:modified_time" content={updatedTime} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {imageUrl && <meta name="twitter:image" content={imageUrl} />}
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {
+      locales.map((locale) => {
+        const localePath = buildLocalePath(locale);
+        const localeUrl = Astro.site ? new URL(localePath, Astro.site).toString() : localePath;
+        return <link rel="alternate" hreflang={locale} href={localeUrl} />;
+      })
+    }
+    <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+    <title>{title}</title>
+    <script is:inline set:html={themeInitScript}></script>
+  </head>
+  <body class="relative isolate min-h-screen overflow-x-clip">
+    <div aria-hidden="true" class="bg-ambient"></div>
+    <div class="relative z-10">
+      <svg aria-hidden="true" focusable="false" class="absolute h-0 w-0 overflow-hidden">
+        <symbol id="icon-external-link" viewBox="0 0 24 24" fill="none">
+          <path d="M8 16l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M10 8h6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        </symbol>
+        <symbol id="icon-globe" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.8"></circle>
+          <path d="M12 3.75c2.16 2.16 3.38 5.08 3.38 8.25s-1.22 6.09-3.38 8.25c-2.16-2.16-3.38-5.08-3.38-8.25s1.22-6.09 3.38-8.25z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M3.75 12h16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+        </symbol>
+        <symbol id="icon-github" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2a10 10 0 00-3.16 19.49c.5.09.68-.22.68-.48v-1.69c-2.78.6-3.37-1.19-3.37-1.19-.46-1.17-1.11-1.48-1.11-1.48-.9-.62.07-.61.07-.61 1 .07 1.53 1.04 1.53 1.04.88 1.52 2.32 1.08 2.88.83.09-.64.35-1.08.64-1.33-2.22-.26-4.56-1.12-4.56-4.97 0-1.1.39-2 1.03-2.71-.1-.26-.45-1.3.1-2.71 0 0 .85-.27 2.78 1.03A9.6 9.6 0 0112 6.8c.85 0 1.7.11 2.5.33 1.93-1.3 2.78-1.03 2.78-1.03.55 1.41.2 2.45.1 2.71.64.71 1.03 1.61 1.03 2.71 0 3.86-2.34 4.71-4.57 4.97.36.31.68.91.68 1.84v2.73c0 .27.18.58.69.48A10 10 0 0012 2z"></path>
+        </symbol>
+      </svg>
+      <a href="#main-content" class="skip-link">{t(lang, "skipToContent")}</a>
+      <Header lang={lang} currentPath={Astro.url.pathname} search={Astro.url.search} hash={Astro.url.hash} />
+      <main id="main-content" class="pb-12 sm:pb-16">
+        <slot />
+      </main>
+      <Footer lang={lang} />
+    </div>
+
+    <script type="module" src={revealScriptUrl}></script>
+    <script is:inline set:html={themeRuntimeScript}></script>
+  </body>
+</html>

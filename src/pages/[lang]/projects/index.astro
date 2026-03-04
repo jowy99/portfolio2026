@@ -1,0 +1,168 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "../../../components/ProjectCard.astro";
+import ProjectsToolbar from "../../../components/ProjectsToolbar.astro";
+import Section from "../../../components/Section.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { locales, type Locale } from "../../../i18n/locales";
+import { t } from "../../../i18n/t";
+import projectsPageScriptUrl from "../../../scripts/projects-page.ts?url";
+import { assertLocale } from "../../../utils/i18n";
+import { filterProjectsByLocale, getProjectSlug } from "../../../utils/projects";
+import {
+  buildHrefWithParams,
+  buildProjectsParams,
+  normalizeToken,
+  parseNormalizedStackValues,
+  parsePositivePage,
+  parseProjectsSort,
+  readTrimmedParam,
+  type ProjectsSort,
+} from "../../../utils/url";
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const lang: Locale = assertLocale(Astro.params.lang);
+const basePath = `/${lang}/projects`;
+
+const sp = Astro.url.searchParams;
+const q = readTrimmedParam(sp, "q");
+const qNorm = normalizeToken(q);
+
+const sort: ProjectsSort = parseProjectsSort(sp.get("sort"));
+
+const requestedPage = parsePositivePage(sp.get("page"), 1);
+const pageSize = 12;
+
+const allProjects = filterProjectsByLocale(await getCollection("projects"), lang);
+const selectedStacksNorm = parseNormalizedStackValues(sp);
+
+const stackOrder = [
+  "Laravel",
+  "JavaScript",
+  "React",
+  "Vite",
+  "TailwindCSS",
+  "MySQL",
+  "Python",
+  "SQL",
+  "Java",
+  "HTML",
+  "CLI",
+  "OOP",
+  "API",
+];
+const presentStacks = new Set(allProjects.flatMap((project) => project.data.stack));
+const allStacks = stackOrder.filter((stack) => presentStacks.has(stack));
+const stackCanonicalByNorm = new Map(allStacks.map((stack) => [normalizeToken(stack), stack]));
+const selectedStacks = selectedStacksNorm.map((stack) => stackCanonicalByNorm.get(stack) ?? stack);
+const activeCount = (qNorm ? 1 : 0) + selectedStacksNorm.length + (sort === "relevance" ? 0 : 1);
+
+let filtered = allProjects.filter((project) => {
+  const haystack = normalizeToken(`${project.data.title} ${project.data.description} ${project.data.stack.join(" ")}`);
+  const projectStacksNorm = new Set(project.data.stack.map((stack) => normalizeToken(stack)));
+
+  const matchesQ = !qNorm || haystack.includes(qNorm);
+
+  // OR semantics by default: a project matches if it contains at least one selected stack.
+  const matchesStack =
+    selectedStacksNorm.length === 0 || selectedStacksNorm.some((stack) => projectStacksNorm.has(stack));
+
+  return matchesQ && matchesStack;
+});
+
+const sortFeaturedThenDateDesc = (a: (typeof filtered)[number], b: (typeof filtered)[number]): number => {
+  if (a.data.featured !== b.data.featured) {
+    return a.data.featured ? -1 : 1;
+  }
+  return b.data.date.getTime() - a.data.date.getTime();
+};
+
+filtered = filtered.sort((a, b) => {
+  if (sort === "recent") {
+    return b.data.date.getTime() - a.data.date.getTime();
+  }
+  return sortFeaturedThenDateDesc(a, b);
+});
+
+const totalResults = filtered.length;
+const totalPages = Math.max(1, Math.ceil(totalResults / pageSize));
+const page = Math.min(requestedPage, totalPages);
+const visibleProjects = filtered.slice(0, page * pageSize);
+const hasMore = page < totalPages;
+
+const resultWordOne = t(lang, "projects.results.one");
+const resultWordMany = t(lang, "projects.results.many");
+const resultsSummary = `${totalResults} ${totalResults === 1 ? resultWordOne : resultWordMany}`;
+
+const buildPageHref = (nextPage: number): string => {
+  const params = buildProjectsParams({
+    q,
+    sort,
+    page: nextPage,
+    stacks: selectedStacks,
+  });
+  return buildHrefWithParams(basePath, params);
+};
+---
+
+<BaseLayout lang={lang} title={`${t(lang, "siteName")} | ${t(lang, "projectsTitle")}`} description={t(lang, "projectsSubtitle")}>
+  <Section title={t(lang, "projectsTitle")} intro={t(lang, "projectsSubtitle")} className="pt-10 pb-10 sm:pt-12 sm:pb-12 md:pt-14">
+    <ProjectsToolbar
+      lang={lang}
+      basePath={basePath}
+      q={q}
+      sort={sort}
+      stacks={allStacks}
+      selectedStacks={selectedStacks}
+      activeCount={activeCount}
+    />
+
+    <p
+      class="muted mt-4 text-sm"
+      aria-live="polite"
+      data-projects-results
+      data-word-one={resultWordOne}
+      data-word-many={resultWordMany}
+    >
+      {resultsSummary}
+    </p>
+
+    <div id="list" class="mt-4 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal>
+      {
+        visibleProjects.map((project) => (
+          <div
+            data-project-item
+            data-title={project.data.title}
+            data-description={project.data.description}
+            data-stacks={project.data.stack.join("|")}
+            data-featured={project.data.featured ? "1" : "0"}
+            data-date={project.data.date.toISOString()}
+          >
+            <ProjectCard
+              lang={lang}
+              slug={getProjectSlug(project)}
+              title={project.data.title}
+              description={project.data.description}
+              cover={project.data.cover}
+              stack={project.data.stack}
+              links={project.data.links}
+              reveal={false}
+            />
+          </div>
+        ))
+      }
+    </div>
+
+    <p class:list={["card mt-6", totalResults > 0 && "hidden"]} data-projects-empty data-reveal>{t(lang, "noResults")}</p>
+
+    {hasMore && (
+      <div class="mt-6" data-reveal>
+        <a href={buildPageHref(page + 1)} class="btn btn-secondary w-full sm:w-auto">{t(lang, "loadMore")}</a>
+      </div>
+    )}
+  </Section>
+  <script type="module" src={projectsPageScriptUrl}></script>
+</BaseLayout>

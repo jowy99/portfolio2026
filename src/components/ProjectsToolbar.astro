@@ -1,0 +1,172 @@
+---
+import type { Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+import { buildHrefWithParams, buildProjectsParams, normalizeToken } from "../utils/url";
+
+interface Props {
+  lang: Locale;
+  basePath: string;
+  q: string;
+  sort: "relevance" | "recent" | "impact";
+  stacks: string[];
+  selectedStacks: string[];
+  activeCount: number;
+}
+
+const { lang, basePath, q, sort, stacks, selectedStacks, activeCount } = Astro.props;
+const selectedStacksNorm = new Set(selectedStacks.map((stack) => normalizeToken(stack)));
+const dialogId = `projects-filters-${lang}`;
+const hasActiveFilters = activeCount > 0;
+
+const buildClearFiltersHref = (): string => {
+  const params = buildProjectsParams({
+    q: "",
+    sort: "relevance",
+    stacks: [],
+  });
+  return buildHrefWithParams(basePath, params);
+};
+---
+
+<div class="projects-toolbar" data-reveal>
+  <form method="get" action={basePath} class="space-y-3" data-projects-toolbar-form>
+    <div class="projects-toolbar-main">
+      <div class="projects-search-shell min-w-0 flex-1">
+        <label class="sr-only" for="projects-search">{t(lang, "searchPlaceholder")}</label>
+        <span class="projects-search-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"></circle>
+            <path d="M16 16l4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <input
+          id="projects-search"
+          type="text"
+          name="q"
+          value={q}
+          placeholder={t(lang, "searchPlaceholder")}
+          class="projects-search-input"
+          autocomplete="off"
+          data-projects-search-input
+        />
+        <button
+          type="button"
+          class:list={["projects-search-clear", q && "is-visible"]}
+          aria-label={t(lang, "clearFilters")}
+          data-projects-search-clear
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="projects-filters-trigger"
+        data-projects-filters-open
+        aria-controls={dialogId}
+        aria-expanded="false"
+        aria-haspopup="dialog"
+      >
+        <svg class="projects-filters-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 4h10M4 12h16M4 20h6M14 20h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="16" cy="4" r="2" stroke="currentColor" stroke-width="1.8"></circle>
+          <circle cx="10" cy="20" r="2" stroke="currentColor" stroke-width="1.8"></circle>
+        </svg>
+        <span>{t(lang, "projects.filters")}</span>
+        <span class:list={["projects-filters-dot", hasActiveFilters && "is-active"]} data-projects-filters-dot aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <dialog id={dialogId} class="projects-filters-dialog" data-projects-filters-dialog>
+      <div class="projects-filters-panel">
+        <div class="projects-filters-head">
+          <h3 class="text-base font-semibold">{t(lang, "projects.filters")}</h3>
+          <button
+            type="button"
+            class="projects-filters-close"
+            data-projects-filters-close
+            aria-label={t(lang, "projects.closeFilters")}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="projects-filters-section">
+          <p class="text-xs font-semibold uppercase tracking-[0.08em] text-zinc-600 dark:text-zinc-300">{t(lang, "projects.stacksLabel")}</p>
+          <div class="projects-stack-options relative mt-3 max-h-60" data-projects-stack-group data-chipwrap>
+            <span class="chip-indicator" aria-hidden="true" data-chip-indicator></span>
+            {
+              stacks.map((stackItem, index) => {
+                const stackId = `projects-stack-${lang}-${index}-${stackItem.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+                const isChecked = selectedStacksNorm.has(normalizeToken(stackItem));
+
+                return (
+                  <label class="projects-stack-chip-wrap inline-flex cursor-pointer items-center" for={stackId} data-chip data-value={stackItem}>
+                    <input
+                      id={stackId}
+                      type="checkbox"
+                      name="stack"
+                      value={stackItem}
+                      checked={isChecked}
+                      class="peer sr-only"
+                      data-projects-stack-checkbox
+                    />
+                    <span class="projects-filter-chip peer-checked:border-zinc-500 peer-checked:bg-zinc-100 peer-checked:font-medium peer-checked:text-zinc-900 dark:peer-checked:border-zinc-500 dark:peer-checked:bg-zinc-800 dark:peer-checked:text-zinc-100">
+                      {stackItem}
+                    </span>
+                  </label>
+                );
+              })
+            }
+          </div>
+        </div>
+
+        <div class="projects-filters-section">
+          <label class="text-xs font-semibold uppercase tracking-[0.08em] text-zinc-600 dark:text-zinc-300" for="projects-sort">
+            {t(lang, "sortLabel")}
+          </label>
+          <div class="relative mt-2">
+            <select
+              id="projects-sort"
+              name="sort"
+              class="projects-sort-select projects-sort-select-modal"
+              data-projects-sort-select
+            >
+              <option value="relevance" selected={sort === "relevance"}>{t(lang, "sortRelevance")}</option>
+              <option value="recent" selected={sort === "recent"}>{t(lang, "sortRecent")}</option>
+              <option value="impact" selected={sort === "impact"}>{t(lang, "sortImpact")}</option>
+            </select>
+            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 dark:text-zinc-400" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </span>
+          </div>
+        </div>
+
+        <div class="projects-filters-actions">
+          <a href={buildClearFiltersHref()} class="btn btn-secondary">{t(lang, "clearFilters")}</a>
+          <button type="submit" class="btn btn-primary">{t(lang, "applyFilters")}</button>
+        </div>
+      </div>
+    </dialog>
+
+    <noscript>
+      <style>
+        .projects-filters-trigger { display: none; }
+        .projects-filters-dialog {
+          display: block;
+          position: static;
+          margin: .75rem 0 0;
+          width: 100%;
+          max-width: none;
+        }
+        .projects-filters-close { display: none; }
+      </style>
+    </noscript>
+  </form>
+</div>

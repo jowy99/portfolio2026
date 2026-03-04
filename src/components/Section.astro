@@ -1,0 +1,21 @@
+---
+interface Props {
+  id?: string;
+  title?: string;
+  intro?: string;
+  className?: string;
+}
+
+const { id, title, intro, className = "" } = Astro.props;
+const hasSectionHeader = Boolean(title || intro);
+---
+
+<section id={id} class:list={["py-12 sm:py-16", className]}>
+  <div class="site-container">
+    {title && <h2 class="text-2xl font-semibold md:text-3xl" data-reveal>{title}</h2>}
+    {intro && <p class="muted mt-3 max-w-2xl" data-reveal>{intro}</p>}
+    <div class:list={[hasSectionHeader && "mt-8"]}>
+      <slot />
+    </div>
+  </div>
+</section>

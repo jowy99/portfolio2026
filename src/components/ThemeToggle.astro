@@ -1,0 +1,44 @@
+---
+import type { Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+
+interface Props {
+  lang: Locale;
+  id?: string;
+}
+
+const { lang, id = "theme-select" } = Astro.props;
+---
+
+<div class="hdr-control hdr-select-wrap min-w-[7.1rem] sm:min-w-[7.8rem]">
+  <span class="hdr-theme-icon hdr-icon hdr-select-leading" aria-hidden="true">
+    <svg data-theme-icon="system" viewBox="0 0 24 24" fill="none">
+      <rect x="4" y="5" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+      <path d="M9 19h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+      <path d="M12 16v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+    </svg>
+    <svg data-theme-icon="light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"></circle>
+      <path d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M17.9 6.1l-1.6 1.6M7.7 16.3l-1.6 1.6M17.9 17.9l-1.6-1.6M7.7 7.7L6.1 6.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+    </svg>
+    <svg data-theme-icon="dark" viewBox="0 0 24 24" fill="none">
+      <path d="M14.9 3.7a8 8 0 106 10.6A7.5 7.5 0 0114.9 3.7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+    </svg>
+  </span>
+  <label class="sr-only" for={id}>{t(lang, "themeLabel")}</label>
+  <select
+    id={id}
+    class="hdr-select hdr-select-native text-sm"
+    data-theme-toggle
+    aria-label={t(lang, "themeLabel")}
+  >
+    <option value="system">{t(lang, "themeSystem")}</option>
+    <option value="light">{t(lang, "themeLight")}</option>
+    <option value="dark">{t(lang, "themeDark")}</option>
+  </select>
+  <span class="hdr-chevron theme-select-icon" aria-hidden="true">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </span>
+</div>
