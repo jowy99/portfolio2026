@@ -993,21 +993,23 @@
 
   .profile-panel {
     @apply min-w-0;
+  }
+
+  .profile-panel-scroll {
     scrollbar-width: thin;
     scrollbar-color: rgba(115, 137, 134, 0.35) transparent;
-    scrollbar-gutter: stable;
     overscroll-behavior: contain;
   }
 
-  .profile-panel::-webkit-scrollbar {
+  .profile-panel-scroll::-webkit-scrollbar {
     width: 8px;
   }
 
-  .profile-panel::-webkit-scrollbar-track {
+  .profile-panel-scroll::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .profile-panel::-webkit-scrollbar-thumb {
+  .profile-panel-scroll::-webkit-scrollbar-thumb {
     background: rgba(115, 137, 134, 0.35);
     border-radius: 999px;
   }
