@@ -34,12 +34,19 @@ const initReveal = (): void => {
       }
     },
     {
-      threshold: 0.16,
-      rootMargin: "0px 0px -8% 0px",
+      // Keep reveals snappy on mobile (especially for tall containers).
+      threshold: 0.01,
+      rootMargin: "0px 0px 8% 0px",
     },
   );
 
   for (const element of elements) {
+    const rect = element.getBoundingClientRect();
+    const isAlreadyVisible = rect.bottom > 0 && rect.top < window.innerHeight;
+    if (isAlreadyVisible) {
+      element.classList.add("ui-visible");
+      continue;
+    }
     observer.observe(element);
   }
 };
