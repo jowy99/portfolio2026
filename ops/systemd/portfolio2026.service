@@ -1,0 +1,19 @@
+[Unit]
+Description=Joël Portfolio Astro server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/portfolio2026
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/portfolio2026.env
+ExecStart=/usr/bin/node /var/www/portfolio2026/dist/server/entry.mjs
+Restart=always
+RestartSec=3
+KillSignal=SIGINT
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

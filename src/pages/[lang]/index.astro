@@ -606,7 +606,19 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
 
       <div class="contact-form-panel">
         <div class="contact-form-shell">
-          <form class="grid gap-4 sm:grid-cols-2" aria-label={t(lang, "contactTitle")}>
+          <form
+            class="grid gap-4 sm:grid-cols-2"
+            method="post"
+            action="/api/contact"
+            aria-label={t(lang, "contactTitle")}
+            data-contact-form
+            data-msg-sending={t(lang, "contact.feedback.sending")}
+            data-msg-success={t(lang, "contact.feedback.success")}
+            data-msg-error={t(lang, "contact.feedback.error")}
+            data-msg-invalid={t(lang, "contact.feedback.invalid")}
+            data-msg-rate-limit={t(lang, "contact.feedback.rateLimit")}
+            data-msg-unavailable={t(lang, "contact.feedback.unavailable")}
+          >
               <label class="contact-field-group" for={`contact-name-${lang}`}>
                 <span class="label">{`${t(lang, "contact.nameLabel")}*`}</span>
                 <input
@@ -648,16 +660,150 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                 ></textarea>
               </label>
 
+            <input
+              id={`contact-company-${lang}`}
+              type="text"
+              name="company"
+              tabindex="-1"
+              autocomplete="off"
+              class="sr-only"
+              aria-label={t(lang, "contact.companyField")}
+              aria-hidden="true"
+            />
+
+            <input type="hidden" name="form_started_at" value="" data-contact-started-at />
+            <input type="hidden" name="lang" value={lang} />
+            <input type="hidden" name="redirect_to" value={`/${lang}/#contact`} />
+
             <button
               type="submit"
               class="btn btn-secondary w-full sm:col-span-2 motion-safe:hover:-translate-y-0.5 transition-transform"
+              data-contact-submit
+              data-label-default={t(lang, "contactSend")}
+              data-label-sending={t(lang, "contact.feedback.sending")}
             >
               {t(lang, "contactSend")}
             </button>
+            <p class="contact-form-status hidden sm:col-span-2" data-contact-status role="status" aria-live="polite"></p>
             <p class="help sm:col-span-2">{t(lang, "contactNote")}</p>
           </form>
         </div>
       </div>
     </div>
   </Section>
+
+  <script is:inline>
+    (() => {
+      const forms = Array.from(document.querySelectorAll("[data-contact-form]"));
+      if (forms.length === 0) return;
+
+      const queryStatus = new URLSearchParams(window.location.search).get("contact");
+      const queryStatusMap = {
+        sent: "success",
+        invalid: "invalid",
+        rate_limit: "rateLimit",
+        service_unavailable: "unavailable",
+        send_error: "error",
+      };
+
+      const getMessage = (form, code) => {
+        const dataset = form.dataset;
+        if (code === "success") return dataset.msgSuccess || "";
+        if (code === "sending") return dataset.msgSending || "";
+        if (code === "invalid") return dataset.msgInvalid || dataset.msgError || "";
+        if (code === "rate_limited") return dataset.msgRateLimit || dataset.msgError || "";
+        if (code === "service_unavailable") return dataset.msgUnavailable || dataset.msgError || "";
+        if (code === "rateLimit") return dataset.msgRateLimit || dataset.msgError || "";
+        if (code === "unavailable") return dataset.msgUnavailable || dataset.msgError || "";
+        return dataset.msgError || "";
+      };
+
+      const setStatus = (statusEl, type, message) => {
+        if (!(statusEl instanceof HTMLElement)) return;
+        statusEl.textContent = message;
+        statusEl.classList.remove("hidden", "is-success", "is-error", "is-info");
+        if (type === "success") statusEl.classList.add("is-success");
+        else if (type === "info") statusEl.classList.add("is-info");
+        else statusEl.classList.add("is-error");
+      };
+
+      for (const node of forms) {
+        if (!(node instanceof HTMLFormElement)) continue;
+        const form = node;
+        const statusEl = form.querySelector("[data-contact-status]");
+        const submitButton = form.querySelector("[data-contact-submit]");
+        const startedAtInput = form.querySelector("[data-contact-started-at]");
+
+        if (startedAtInput instanceof HTMLInputElement && !startedAtInput.value) {
+          startedAtInput.value = String(Date.now());
+        }
+
+        if (queryStatus) {
+          const mappedStatus = queryStatusMap[queryStatus];
+          if (mappedStatus === "success") {
+            setStatus(statusEl, "success", getMessage(form, mappedStatus));
+          } else if (mappedStatus) {
+            setStatus(statusEl, "error", getMessage(form, mappedStatus));
+          }
+        }
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          if (!form.reportValidity()) return;
+
+          if (!(submitButton instanceof HTMLButtonElement)) return;
+          const defaultLabel = submitButton.dataset.labelDefault || submitButton.textContent || "";
+          const sendingLabel = submitButton.dataset.labelSending || defaultLabel;
+
+          submitButton.disabled = true;
+          submitButton.textContent = sendingLabel;
+          form.setAttribute("aria-busy", "true");
+          setStatus(statusEl, "info", getMessage(form, "sending"));
+
+          const formData = new FormData(form);
+          if (startedAtInput instanceof HTMLInputElement && !startedAtInput.value) {
+            startedAtInput.value = String(Date.now());
+            formData.set("form_started_at", startedAtInput.value);
+          }
+
+          try {
+            const response = await fetch(form.action, {
+              method: "POST",
+              body: formData,
+              headers: {
+                accept: "application/json",
+              },
+            });
+
+            const payload = await response.json().catch(() => null);
+            const isSuccess = response.ok && payload && payload.ok === true;
+
+            if (isSuccess) {
+              form.reset();
+              if (startedAtInput instanceof HTMLInputElement) {
+                startedAtInput.value = String(Date.now());
+              }
+              setStatus(statusEl, "success", getMessage(form, "success"));
+              return;
+            }
+
+            const errorCode = payload && typeof payload.error === "string" ? payload.error : "error";
+            setStatus(statusEl, "error", getMessage(form, errorCode));
+          } catch {
+            setStatus(statusEl, "error", getMessage(form, "error"));
+          } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = defaultLabel;
+            form.removeAttribute("aria-busy");
+          }
+        });
+      }
+
+      if (queryStatus) {
+        const nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.delete("contact");
+        history.replaceState(null, "", `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
+      }
+    })();
+  </script>
 </BaseLayout>
