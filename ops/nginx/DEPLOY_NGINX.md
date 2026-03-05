@@ -14,15 +14,15 @@ git pull --ff-only
 npm ci
 ```
 
-## 3) Configurar variables de entorno (Resend + app)
+## 3) Configurar variables de entorno (Gmail SMTP + app)
 Crear `/etc/portfolio2026.env`:
 
 ```bash
 PORT=4321
 HOST=127.0.0.1
-RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
-CONTACT_TO_EMAIL=joelarnaudcarreras@gmail.com
-CONTACT_FROM_EMAIL=Joël Arnaud Portfolio <onboarding@resend.dev>
+GMAIL_USER=tu@gmail.com
+GMAIL_APP_PASSWORD=xxxx xxxx xxxx xxxx
+CONTACT_TO=joelarnaudcarreras@gmail.com
 CONTACT_SUBJECT_PREFIX=[Portfolio]
 CONTACT_RATE_LIMIT_WINDOW_MS=600000
 CONTACT_RATE_LIMIT_MAX=5

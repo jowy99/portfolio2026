@@ -612,9 +612,9 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
             action="/api/contact"
             aria-label={t(lang, "contactTitle")}
             data-contact-form
-            data-msg-sending={t(lang, "contact.feedback.sending")}
-            data-msg-success={t(lang, "contact.feedback.success")}
-            data-msg-error={t(lang, "contact.feedback.error")}
+            data-msg-sending={t(lang, "contact.status.sending")}
+            data-msg-success={t(lang, "contact.status.success")}
+            data-msg-error={t(lang, "contact.status.errorGeneric")}
             data-msg-invalid={t(lang, "contact.feedback.invalid")}
             data-msg-rate-limit={t(lang, "contact.feedback.rateLimit")}
             data-msg-unavailable={t(lang, "contact.feedback.unavailable")}
@@ -680,11 +680,12 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
               class="btn btn-secondary w-full sm:col-span-2 motion-safe:hover:-translate-y-0.5 transition-transform"
               data-contact-submit
               data-label-default={t(lang, "contactSend")}
-              data-label-sending={t(lang, "contact.feedback.sending")}
+              data-label-sending={t(lang, "contact.status.sending")}
             >
               {t(lang, "contactSend")}
             </button>
-            <p class="contact-form-status hidden sm:col-span-2" data-contact-status role="status" aria-live="polite"></p>
+            <p class="contact-form-status notice hidden sm:col-span-2" data-contact-status role="status" aria-live="polite" aria-hidden="true"></p>
+            <p class="contact-form-toast notice hidden" data-contact-toast role="status" aria-live="polite" aria-hidden="true"></p>
             <p class="help sm:col-span-2">{t(lang, "contactNote")}</p>
           </form>
         </div>
@@ -705,34 +706,174 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
         service_unavailable: "unavailable",
         send_error: "error",
       };
+      const STATUS_ANIMATION_MS = 200;
+      const STATUS_SUCCESS_HIDE_MS = 5200;
+      const hideTimers = new WeakMap();
+      const cleanupTimers = new WeakMap();
+      const SVG_NS = "http://www.w3.org/2000/svg";
+      const toastMounted = new WeakSet();
 
       const getMessage = (form, code) => {
         const dataset = form.dataset;
         if (code === "success") return dataset.msgSuccess || "";
         if (code === "sending") return dataset.msgSending || "";
         if (code === "invalid") return dataset.msgInvalid || dataset.msgError || "";
+        if (typeof code === "string" && code.startsWith("invalid_")) return dataset.msgInvalid || dataset.msgError || "";
         if (code === "rate_limited") return dataset.msgRateLimit || dataset.msgError || "";
         if (code === "service_unavailable") return dataset.msgUnavailable || dataset.msgError || "";
         if (code === "rateLimit") return dataset.msgRateLimit || dataset.msgError || "";
         if (code === "unavailable") return dataset.msgUnavailable || dataset.msgError || "";
+        if (typeof code === "string" && code.trim().length > 0 && !code.includes("_")) return code;
         return dataset.msgError || "";
       };
 
-      const setStatus = (statusEl, type, message) => {
+      const createStatusIcon = (type) => {
+        const svg = document.createElementNS(SVG_NS, "svg");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("width", "16");
+        svg.setAttribute("height", "16");
+        svg.setAttribute("fill", "none");
+        svg.setAttribute("stroke", "currentColor");
+        svg.setAttribute("stroke-width", "2");
+        svg.setAttribute("stroke-linecap", "round");
+        svg.setAttribute("stroke-linejoin", "round");
+
+        if (type === "info") {
+          const track = document.createElementNS(SVG_NS, "circle");
+          track.setAttribute("cx", "12");
+          track.setAttribute("cy", "12");
+          track.setAttribute("r", "8");
+          track.setAttribute("opacity", "0.3");
+
+          const arc = document.createElementNS(SVG_NS, "path");
+          arc.setAttribute("d", "M20 12a8 8 0 0 0-8-8");
+          arc.setAttribute("class", "notice-spinner");
+
+          svg.append(track, arc);
+          return svg;
+        }
+
+        if (type === "success") {
+          const circle = document.createElementNS(SVG_NS, "circle");
+          circle.setAttribute("cx", "12");
+          circle.setAttribute("cy", "12");
+          circle.setAttribute("r", "9");
+          circle.setAttribute("opacity", "0.3");
+
+          const check = document.createElementNS(SVG_NS, "path");
+          check.setAttribute("d", "M7 12.5l3.2 3.2L17 9.2");
+
+          svg.append(circle, check);
+          return svg;
+        }
+
+        const triangle = document.createElementNS(SVG_NS, "path");
+        triangle.setAttribute("d", "M12 4.2 20 19H4L12 4.2Z");
+        triangle.setAttribute("opacity", "0.3");
+
+        const line = document.createElementNS(SVG_NS, "path");
+        line.setAttribute("d", "M12 9.4v5");
+
+        const dot = document.createElementNS(SVG_NS, "circle");
+        dot.setAttribute("cx", "12");
+        dot.setAttribute("cy", "16.7");
+        dot.setAttribute("r", "0.7");
+        dot.setAttribute("fill", "currentColor");
+        dot.setAttribute("stroke", "none");
+
+        svg.append(triangle, line, dot);
+        return svg;
+      };
+
+      const renderStatusContent = (statusEl, type, message) => {
         if (!(statusEl instanceof HTMLElement)) return;
-        statusEl.textContent = message;
-        statusEl.classList.remove("hidden", "is-success", "is-error", "is-info");
-        if (type === "success") statusEl.classList.add("is-success");
-        else if (type === "info") statusEl.classList.add("is-info");
-        else statusEl.classList.add("is-error");
+        statusEl.replaceChildren();
+
+        const icon = document.createElement("span");
+        icon.className = "notice-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.append(createStatusIcon(type));
+
+        const text = document.createElement("span");
+        text.className = "notice-text";
+        text.textContent = message;
+
+        statusEl.append(icon, text);
+      };
+
+      const clearStatusTimers = (statusEl) => {
+        const hideTimer = hideTimers.get(statusEl);
+        if (hideTimer) {
+          window.clearTimeout(hideTimer);
+          hideTimers.delete(statusEl);
+        }
+        const cleanupTimer = cleanupTimers.get(statusEl);
+        if (cleanupTimer) {
+          window.clearTimeout(cleanupTimer);
+          cleanupTimers.delete(statusEl);
+        }
+      };
+
+      const hideStatus = (statusEl) => {
+        if (!(statusEl instanceof HTMLElement)) return;
+        clearStatusTimers(statusEl);
+        statusEl.classList.remove("is-visible");
+        statusEl.setAttribute("aria-hidden", "true");
+
+        const cleanupTimer = window.setTimeout(() => {
+          if (statusEl.classList.contains("is-visible")) return;
+          statusEl.classList.add("hidden");
+          statusEl.classList.remove("is-success", "is-error", "is-info");
+          statusEl.replaceChildren();
+        }, STATUS_ANIMATION_MS);
+
+        cleanupTimers.set(statusEl, cleanupTimer);
+      };
+
+      const showStatus = (statusEl, type, message, { autoHideMs = 0 } = {}) => {
+        if (!(statusEl instanceof HTMLElement)) return;
+        if (!message) return;
+        clearStatusTimers(statusEl);
+        statusEl.classList.remove("hidden", "is-success", "is-error", "is-info", "is-visible");
+        statusEl.setAttribute("aria-hidden", "false");
+        renderStatusContent(statusEl, type, message);
+
+        if (type === "success") {
+          statusEl.classList.add("is-success");
+          statusEl.setAttribute("role", "status");
+          statusEl.setAttribute("aria-live", "polite");
+        } else if (type === "info") {
+          statusEl.classList.add("is-info");
+          statusEl.setAttribute("role", "status");
+          statusEl.setAttribute("aria-live", "polite");
+        } else {
+          statusEl.classList.add("is-error");
+          statusEl.setAttribute("role", "alert");
+          statusEl.setAttribute("aria-live", "assertive");
+        }
+
+        window.requestAnimationFrame(() => {
+          statusEl.classList.add("is-visible");
+        });
+
+        if (autoHideMs > 0) {
+          const hideTimer = window.setTimeout(() => hideStatus(statusEl), autoHideMs);
+          hideTimers.set(statusEl, hideTimer);
+        }
       };
 
       for (const node of forms) {
         if (!(node instanceof HTMLFormElement)) continue;
         const form = node;
         const statusEl = form.querySelector("[data-contact-status]");
+        const toastEl = form.querySelector("[data-contact-toast]");
         const submitButton = form.querySelector("[data-contact-submit]");
         const startedAtInput = form.querySelector("[data-contact-started-at]");
+
+        if (toastEl instanceof HTMLElement && !toastMounted.has(toastEl)) {
+          document.body.append(toastEl);
+          toastMounted.add(toastEl);
+        }
 
         if (startedAtInput instanceof HTMLInputElement && !startedAtInput.value) {
           startedAtInput.value = String(Date.now());
@@ -741,9 +882,11 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
         if (queryStatus) {
           const mappedStatus = queryStatusMap[queryStatus];
           if (mappedStatus === "success") {
-            setStatus(statusEl, "success", getMessage(form, mappedStatus));
+            hideStatus(statusEl);
+            showStatus(toastEl, "success", getMessage(form, mappedStatus), { autoHideMs: STATUS_SUCCESS_HIDE_MS });
           } else if (mappedStatus) {
-            setStatus(statusEl, "error", getMessage(form, mappedStatus));
+            hideStatus(statusEl);
+            showStatus(toastEl, "error", getMessage(form, mappedStatus));
           }
         }
 
@@ -758,7 +901,8 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
           submitButton.disabled = true;
           submitButton.textContent = sendingLabel;
           form.setAttribute("aria-busy", "true");
-          setStatus(statusEl, "info", getMessage(form, "sending"));
+          hideStatus(toastEl);
+          showStatus(statusEl, "info", getMessage(form, "sending"));
 
           const formData = new FormData(form);
           if (startedAtInput instanceof HTMLInputElement && !startedAtInput.value) {
@@ -783,14 +927,17 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
               if (startedAtInput instanceof HTMLInputElement) {
                 startedAtInput.value = String(Date.now());
               }
-              setStatus(statusEl, "success", getMessage(form, "success"));
+              hideStatus(statusEl);
+              showStatus(toastEl, "success", getMessage(form, "success"), { autoHideMs: STATUS_SUCCESS_HIDE_MS });
               return;
             }
 
             const errorCode = payload && typeof payload.error === "string" ? payload.error : "error";
-            setStatus(statusEl, "error", getMessage(form, errorCode));
+            hideStatus(statusEl);
+            showStatus(toastEl, "error", getMessage(form, errorCode));
           } catch {
-            setStatus(statusEl, "error", getMessage(form, "error"));
+            hideStatus(statusEl);
+            showStatus(toastEl, "error", getMessage(form, "error"));
           } finally {
             submitButton.disabled = false;
             submitButton.textContent = defaultLabel;
