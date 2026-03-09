@@ -96,26 +96,49 @@ const buildEmailContent = (input: SendContactEmailInput): { subject: string; tex
 
   const html = `
     <!doctype html>
-    <html lang="es">
-      <body style="margin:0;padding:18px;background:#f3f6f5;color:#304545;font-family:Inter,Segoe UI,Arial,sans-serif;">
-        <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #d6dddb;border-radius:14px;overflow:hidden;">
-          <div style="background:#304545;color:#f3f6f5;padding:16px 20px;">
-            <p style="margin:0;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#bec8c6;">Nuevo contacto</p>
-            <h1 style="margin:6px 0 0;font-size:20px;line-height:1.3;">Nueva solicitud desde la web</h1>
-          </div>
-          <div style="padding:18px 20px;">
-            <p><strong>Nombre:</strong> ${escapeHtml(safeName)}</p>
-            <p><strong>Email:</strong> ${escapeHtml(safeEmail)}</p>
-            <p><strong>Idioma:</strong> ${escapeHtml(safeLang)}</p>
-            <p><strong>Fecha ISO:</strong> ${escapeHtml(input.isoDate)}</p>
-            <p><strong>IP:</strong> ${escapeHtml(input.ip)}</p>
-            <p><strong>User-Agent:</strong> ${escapeHtml(safeUserAgent)}</p>
-            <p style="margin:14px 0 8px;"><strong>Mensaje:</strong></p>
-            <div style="padding:12px;border:1px solid #d6dddb;border-radius:10px;background:#f8fbfa;line-height:1.55;white-space:pre-wrap;word-break:break-word;">
-              ${escapeHtml(safeMessage)}
-            </div>
-          </div>
+    <html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>${escapeHtml(subject)}</title>
+      </head>
+      <body style="margin:0;padding:0;background-color:#f3f6f5;">
+        <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;line-height:1px;">
+          Nuevo mensaje desde el formulario del portfolio.
         </div>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f3f6f5" style="background-color:#f3f6f5;margin:0;padding:0;">
+          <tr>
+            <td align="center" style="padding:18px 10px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:640px;background-color:#ffffff;border:1px solid #d6dddb;border-collapse:collapse;">
+                <tr>
+                  <td bgcolor="#304545" style="background-color:#304545;padding:16px 20px;">
+                    <p style="margin:0 0 6px 0;font-family:Arial,'Segoe UI',sans-serif;font-size:11px;line-height:1.4;letter-spacing:1px;text-transform:uppercase;color:#bec8c6;">Nuevo contacto</p>
+                    <p style="margin:0;font-family:Arial,'Segoe UI',sans-serif;font-size:22px;line-height:1.3;font-weight:700;color:#f3f6f5;">Nueva solicitud desde la web</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:18px 20px;font-family:Arial,'Segoe UI',sans-serif;color:#304545;">
+                    <p style="margin:0 0 10px 0;font-size:14px;line-height:1.55;"><strong>Nombre:</strong> ${escapeHtml(safeName)}</p>
+                    <p style="margin:0 0 10px 0;font-size:14px;line-height:1.55;"><strong>Email:</strong> ${escapeHtml(safeEmail)}</p>
+                    <p style="margin:0 0 10px 0;font-size:14px;line-height:1.55;"><strong>Idioma:</strong> ${escapeHtml(safeLang)}</p>
+                    <p style="margin:0 0 10px 0;font-size:14px;line-height:1.55;"><strong>Fecha ISO:</strong> ${escapeHtml(input.isoDate)}</p>
+                    <p style="margin:0 0 10px 0;font-size:14px;line-height:1.55;"><strong>IP:</strong> ${escapeHtml(input.ip)}</p>
+                    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.55;"><strong>User-Agent:</strong> ${escapeHtml(safeUserAgent)}</p>
+                    <p style="margin:0 0 8px 0;font-size:14px;line-height:1.4;"><strong>Mensaje:</strong></p>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f8fbfa" style="background-color:#f8fbfa;border:1px solid #d6dddb;border-collapse:collapse;">
+                      <tr>
+                        <td style="padding:12px;font-family:Arial,'Segoe UI',sans-serif;font-size:14px;line-height:1.55;color:#304545;white-space:pre-wrap;word-break:break-word;">
+                          ${escapeHtml(safeMessage)}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
       </body>
     </html>
   `;
