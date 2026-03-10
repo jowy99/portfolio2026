@@ -1,0 +1,26 @@
+---
+import ErrorView from "../../../components/ErrorView.astro";
+import { getErrorPageConfig, parseErrorCode, type ErrorCode } from "../../../lib/error-pages";
+import { defaultLocale, isLocale, type Locale } from "../../../i18n/locales";
+import { t } from "../../../i18n/t";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+export const prerender = false;
+
+const langParam = Astro.params.lang ?? "";
+const codeParam = Astro.params.code;
+
+const hasValidLocale = isLocale(langParam);
+const lang: Locale = hasValidLocale ? langParam : defaultLocale;
+const parsedCode = parseErrorCode(codeParam);
+const code: ErrorCode = parsedCode ?? 404;
+
+Astro.response.status = hasValidLocale && parsedCode ? parsedCode : 404;
+
+const description = t(lang, getErrorPageConfig(code).descriptionKey);
+const title = `${t(lang, "siteName")} | ${code}`;
+---
+
+<BaseLayout lang={lang} title={title} description={description} noindex>
+  <ErrorView lang={lang} code={code} requestedPath={Astro.url.pathname} />
+</BaseLayout>

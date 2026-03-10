@@ -18,6 +18,7 @@ interface Props {
   noindex?: boolean;
   publishedTime?: string;
   updatedTime?: string;
+  centerMain?: boolean;
 }
 
 const {
@@ -29,6 +30,7 @@ const {
   noindex = false,
   publishedTime,
   updatedTime,
+  centerMain = false,
 } = Astro.props;
 
 const title = titleProp ?? `${t(lang, "siteName")} | ${t(lang, "meta.defaultTitleSuffix")}`;
@@ -99,7 +101,7 @@ const localeAlternates = locales
   </head>
   <body class="relative isolate min-h-screen overflow-x-clip">
     <div aria-hidden="true" class="bg-ambient"></div>
-    <div class="relative z-10">
+    <div class="relative z-10 flex min-h-screen flex-col">
       <svg aria-hidden="true" focusable="false" class="absolute h-0 w-0 overflow-hidden">
         <symbol id="icon-external-link" viewBox="0 0 24 24" fill="none">
           <path d="M8 16l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -116,7 +118,13 @@ const localeAlternates = locales
       </svg>
       <a href="#main-content" class="skip-link">{t(lang, "skipToContent")}</a>
       <Header lang={lang} currentPath={Astro.url.pathname} search={Astro.url.search} hash={Astro.url.hash} />
-      <main id="main-content" class="pb-12 sm:pb-16">
+      <main
+        id="main-content"
+        class:list={[
+          "flex-1",
+          centerMain ? "flex items-center" : "pb-12 sm:pb-16",
+        ]}
+      >
         <slot />
       </main>
       <Footer lang={lang} />

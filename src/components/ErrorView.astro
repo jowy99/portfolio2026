@@ -1,0 +1,122 @@
+---
+import type { Locale } from "../i18n/locales";
+import type { TranslationKey } from "../i18n/strings";
+import { t } from "../i18n/t";
+import { getErrorPageConfig, type ErrorAction, type ErrorCode } from "../lib/error-pages";
+
+interface Props {
+  lang: Locale;
+  code: ErrorCode;
+  requestedPath?: string;
+}
+
+const { lang, code, requestedPath = "" } = Astro.props;
+const config = getErrorPageConfig(code);
+
+const homeHref = `/${lang}`;
+const projectsHref = `/${lang}/projects`;
+const contactHref = `/${lang}/#contact`;
+
+const ACTION_LABEL_KEYS: Record<ErrorAction, TranslationKey> = {
+  home: "error.action.home",
+  retry: "error.action.retry",
+  back: "error.action.back",
+  projects: "error.action.projects",
+  contact: "error.action.contact",
+};
+
+const resolveHref = (action: ErrorAction | undefined): string | null => {
+  if (!action) return null;
+  if (action === "home") return homeHref;
+  if (action === "projects") return projectsHref;
+  if (action === "contact") return contactHref;
+  return null;
+};
+
+const primaryHref = resolveHref(config.primaryAction);
+const secondaryHref = resolveHref(config.secondaryAction);
+const showRequestedPath = code === 404 && requestedPath.trim().length > 1;
+const isNotFound = code === 404;
+const codeSizeClass = isNotFound ? "text-7xl sm:text-8xl lg:text-9xl" : "text-5xl sm:text-6xl";
+
+const title = t(lang, config.titleKey);
+const description = t(lang, config.descriptionKey);
+---
+
+<section class="w-full py-8 sm:py-10">
+  <div class="site-container">
+    <div class="mx-auto max-w-3xl text-center">
+      <article data-reveal>
+        <p class="text-xs font-semibold uppercase tracking-[0.1em] text-zinc-600 dark:text-zinc-400">
+          {t(lang, "error.kicker")}
+        </p>
+        <p class:list={["mt-2 font-semibold leading-none tracking-tight text-zinc-900 dark:text-zinc-100", codeSizeClass]}>
+          {code}
+        </p>
+        <h1 class="mt-4 text-2xl font-semibold leading-tight text-zinc-900 dark:text-zinc-100 sm:text-3xl">{title}</h1>
+        <p class="muted mx-auto mt-4 max-w-2xl text-sm leading-relaxed sm:text-base">{description}</p>
+
+        {showRequestedPath && (
+          <p class="muted mt-5 text-xs leading-relaxed">
+            <span class="font-medium text-zinc-800 dark:text-zinc-100">{t(lang, "error.pathLabel")}:</span>
+            <code class="ml-2 rounded-md border border-zinc-300 px-1.5 py-0.5 text-zinc-900 dark:border-zinc-700 dark:text-zinc-100">
+              {requestedPath}
+            </code>
+          </p>
+        )}
+
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
+          {
+            config.primaryAction === "retry" ? (
+              <button type="button" class="btn btn-primary" data-error-retry>{t(lang, ACTION_LABEL_KEYS.retry)}</button>
+            ) : (
+              <a href={primaryHref ?? homeHref} class="btn btn-primary">{t(lang, ACTION_LABEL_KEYS[config.primaryAction])}</a>
+            )
+          }
+
+          {config.secondaryAction && (
+            config.secondaryAction === "back" ? (
+              <button
+                type="button"
+                class="ui-underline text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                data-error-back
+                data-home-href={homeHref}
+              >
+                {t(lang, ACTION_LABEL_KEYS.back)}
+              </button>
+            ) : (
+              <a href={secondaryHref ?? homeHref} class="ui-underline text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t(lang, ACTION_LABEL_KEYS[config.secondaryAction])}
+              </a>
+            )
+          )}
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const retryButtons = Array.from(document.querySelectorAll("[data-error-retry]"));
+    for (const node of retryButtons) {
+      if (!(node instanceof HTMLButtonElement)) continue;
+      node.addEventListener("click", () => {
+        window.location.reload();
+      });
+    }
+
+    const backButtons = Array.from(document.querySelectorAll("[data-error-back]"));
+    for (const node of backButtons) {
+      if (!(node instanceof HTMLButtonElement)) continue;
+      node.addEventListener("click", () => {
+        if (window.history.length > 1) {
+          window.history.back();
+          return;
+        }
+        const fallbackHref = node.dataset.homeHref || "/";
+        window.location.assign(fallbackHref);
+      });
+    }
+  })();
+</script>

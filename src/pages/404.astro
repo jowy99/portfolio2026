@@ -1,0 +1,18 @@
+---
+import ErrorView from "../components/ErrorView.astro";
+import { getErrorPageConfig } from "../lib/error-pages";
+import { t } from "../i18n/t";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { defaultLocale } from "../i18n/locales";
+import { getLocaleFromPath } from "../utils/i18n";
+
+Astro.response.status = 404;
+
+const lang = getLocaleFromPath(Astro.url.pathname) ?? defaultLocale;
+const description = t(lang, getErrorPageConfig(404).descriptionKey);
+const title = `${t(lang, "siteName")} | 404`;
+---
+
+<BaseLayout lang={lang} title={title} description={description} noindex centerMain>
+  <ErrorView lang={lang} code={404} requestedPath={Astro.url.pathname} />
+</BaseLayout>
