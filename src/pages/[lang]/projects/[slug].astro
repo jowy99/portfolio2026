@@ -6,6 +6,7 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import type { Locale } from "../../../i18n/locales";
 import { t } from "../../../i18n/t";
 import { assertLocale } from "../../../utils/i18n";
+import { getProjectCoverSrc, resolveProjectCover } from "../../../utils/project-covers";
 import { filterProjectsByLocale, getProjectLocale, getProjectSlug } from "../../../utils/projects";
 
 export async function getStaticPaths() {
@@ -45,7 +46,8 @@ const projectsPath = `/${lang}/projects`;
 const projectUrl = siteOrigin ? `${siteOrigin}${projectPath}` : projectPath;
 const projectsUrl = siteOrigin ? `${siteOrigin}${projectsPath}` : projectsPath;
 const homeUrl = siteOrigin ? `${siteOrigin}/${lang}` : `/${lang}`;
-const coverSrc = typeof project.data.cover === "string" ? project.data.cover : project.data.cover.src;
+const resolvedCover = resolveProjectCover(project.data.cover);
+const coverSrc = getProjectCoverSrc(project.data.cover);
 const coverUrl = siteOrigin ? new URL(coverSrc, `${siteOrigin}/`).toString() : coverSrc;
 const sameAsLinks = [project.data.links.live, project.data.links.github].filter((value): value is string => Boolean(value));
 const projectStructuredData = {
@@ -97,7 +99,7 @@ const breadcrumbStructuredData = {
   lang={lang}
   title={`${project.data.title} | ${t(lang, "siteName")}`}
   description={project.data.description}
-  image={project.data.cover}
+  image={resolvedCover}
   type="article"
   publishedTime={project.data.date.toISOString()}
   updatedTime={project.data.date.toISOString()}
@@ -111,21 +113,25 @@ const breadcrumbStructuredData = {
 
       <div class="mt-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white/60 p-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60">
         {
-          typeof project.data.cover === "string" ? (
+          typeof resolvedCover === "string" ? (
             <img
-              src={project.data.cover}
+              src={resolvedCover}
               alt={project.data.title}
               class="aspect-[16/8] w-full rounded-xl object-cover"
-              loading="lazy"
+              loading="eager"
               decoding="async"
+              fetchpriority="high"
             />
           ) : (
             <Image
-              src={project.data.cover}
+              src={resolvedCover}
               alt={project.data.title}
               class="aspect-[16/8] w-full rounded-xl object-cover"
-              loading="lazy"
+              widths={[640, 960, 1280, 1600]}
+              sizes="(min-width: 1280px) 1152px, calc(100vw - 2rem)"
+              loading="eager"
               decoding="async"
+              fetchpriority="high"
             />
           )
         }

@@ -163,7 +163,7 @@ const projectsStructuredData = {
 
     <div id="list" class="mt-4 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal>
       {
-        visibleProjects.map((project) => (
+        visibleProjects.map((project, index) => (
           <div
             data-project-item
             data-title={project.data.title}
@@ -181,6 +181,7 @@ const projectsStructuredData = {
               stack={project.data.stack}
               links={project.data.links}
               reveal={false}
+              priority={index < 3}
             />
           </div>
         ))

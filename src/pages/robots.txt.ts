@@ -1,31 +1,26 @@
 import type { APIRoute } from "astro";
 
-export const prerender = false;
+export const prerender = true;
 
-const INDEXABLE_HOSTS = new Set(["joelarnaud.com", "www.joelarnaud.com"]);
-const CANONICAL_SITEMAP_URL = "https://joelarnaud.com/sitemap.xml";
+const FALLBACK_SITE_URL = "https://joelarnaud.com";
 
-const normalizeHost = (host: string): string => {
-  return host.trim().toLowerCase().replace(/:\d+$/u, "");
+const normalizeSiteOrigin = (site: URL | undefined): string => {
+  const fromContext = site?.toString() ?? FALLBACK_SITE_URL;
+  return fromContext.replace(/\/$/u, "");
 };
 
-export const GET: APIRoute = ({ url }) => {
-  const host = normalizeHost(url.host);
-  const isIndexableHost = INDEXABLE_HOSTS.has(host);
-
-  const body = isIndexableHost
-    ? `User-agent: *
+export const GET: APIRoute = ({ site }) => {
+  const origin = normalizeSiteOrigin(site);
+  const sitemapUrl = `${origin}/sitemap.xml`;
+  const body = `User-agent: *
 Allow: /
-Sitemap: ${CANONICAL_SITEMAP_URL}
-`
-    : `User-agent: *
-Disallow: /
+Sitemap: ${sitemapUrl}
 `;
 
   return new Response(body, {
     headers: {
       "content-type": "text/plain; charset=utf-8",
-      "cache-control": isIndexableHost ? "public, max-age=300" : "public, max-age=60",
+      "cache-control": "public, max-age=3600",
     },
   });
 };
