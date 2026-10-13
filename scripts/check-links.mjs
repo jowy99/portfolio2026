@@ -2,10 +2,31 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const projectsDir = path.join(process.cwd(), "src", "content", "projects");
-const files = (await readdir(projectsDir)).filter((entry) => entry.endsWith(".md"));
 
 const problems = [];
 const placeholders = [];
+
+const toPosix = (value) => value.split(path.sep).join("/");
+
+const collectMarkdownFiles = async (dirPath) => {
+  const entries = await readdir(dirPath, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...(await collectMarkdownFiles(fullPath)));
+      continue;
+    }
+
+    if (entry.isFile() && entry.name.endsWith(".md")) {
+      files.push(fullPath);
+    }
+  }
+
+  return files.sort((a, b) => a.localeCompare(b));
+};
 
 const readFrontmatter = (raw) => {
   const match = raw.match(/^---\n([\s\S]*?)\n---/);
@@ -17,8 +38,15 @@ const parseLink = (frontmatter, key) => {
   return frontmatter.match(regex)?.[1]?.trim() ?? null;
 };
 
-for (const file of files) {
-  const fullPath = path.join(projectsDir, file);
+const files = await collectMarkdownFiles(projectsDir);
+
+if (files.length === 0) {
+  console.error(`Link check failed: no Markdown files found in ${toPosix(path.relative(process.cwd(), projectsDir))}`);
+  process.exit(1);
+}
+
+for (const fullPath of files) {
+  const relativePath = toPosix(path.relative(process.cwd(), fullPath));
   const raw = await readFile(fullPath, "utf8");
   const frontmatter = readFrontmatter(raw);
 
@@ -37,16 +65,16 @@ for (const file of files) {
     try {
       const url = new URL(value);
       if (url.protocol !== "https:") {
-        problems.push(`${file}: ${kind} must use https (${value})`);
+        problems.push(`${relativePath}: ${kind} must use https (${value})`);
       }
       if (url.hostname.endsWith("example.com")) {
-        placeholders.push(`${file}: ${kind} uses placeholder hostname (${value})`);
+        placeholders.push(`${relativePath}: ${kind} uses placeholder hostname (${value})`);
       }
       if (kind === "github" && url.hostname !== "github.com") {
-        problems.push(`${file}: github link must point to github.com (${value})`);
+        problems.push(`${relativePath}: github link must point to github.com (${value})`);
       }
     } catch {
-      problems.push(`${file}: ${kind} is not a valid URL (${value})`);
+      problems.push(`${relativePath}: ${kind} is not a valid URL (${value})`);
     }
   }
 }
@@ -65,5 +93,5 @@ if (placeholders.length) {
     console.warn(`- ${warning}`);
   }
 } else {
-  console.log("Link check passed without placeholders.");
+  console.log(`Link check passed without placeholders. Files checked: ${files.length}`);
 }

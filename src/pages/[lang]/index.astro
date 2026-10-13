@@ -3,13 +3,13 @@ import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../components/ProjectCard.astro";
 import Section from "../../components/Section.astro";
-import SkillIcon from "../../components/SkillIcon.astro";
+import TechBadge from "../../components/TechBadge.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { locales, type Locale } from "../../i18n/locales";
 import { t, tList, tValue } from "../../i18n/t";
 import { assertLocale } from "../../utils/i18n";
 import { filterProjectsByLocale, getProjectSlug } from "../../utils/projects";
-import heroPhoto from "../../assets/hero/IMG_0116.jpeg";
+import heroPhoto from "../../assets/hero/joel.jpeg";
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -31,11 +31,38 @@ const featuredProjects = [...featuredByOrder, ...nonPinned].slice(0, 4);
 const projectsHref = `/${lang}/projects`;
 const contactHref = `/${lang}/#contact`;
 const heroStack = tList(lang, "hero.stack");
+const siteOrigin = Astro.site?.toString().replace(/\/$/, "");
+const localeHomeUrl = siteOrigin ? `${siteOrigin}/${lang}` : undefined;
+const rootSiteUrl = siteOrigin ? `${siteOrigin}/` : undefined;
+const sameAsProfiles = ["https://www.linkedin.com/in/joelarnaudcarreras/", "https://github.com/jowy99"];
+const homeStructuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: t(lang, "siteName"),
+    jobTitle: t(lang, "seo.person.jobTitle"),
+    ...(localeHomeUrl ? { url: localeHomeUrl } : {}),
+    sameAs: sameAsProfiles,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: t(lang, "siteName"),
+    ...(rootSiteUrl ? { url: rootSiteUrl } : {}),
+    inLanguage: lang,
+  },
+];
 
 const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "hero.bullet3")];
 const profileWhyBullets = tList(lang, "profile.why.bullets");
 const profileWhyOptimizeItems = tList(lang, "profile.why.optimizeItems");
 const profileWhyWorkItems = tList(lang, "profile.why.workItems");
+const profileWhySignals = [
+  t(lang, "profile.why.b1"),
+  t(lang, "profile.why.b2"),
+  t(lang, "profile.why.b3"),
+  t(lang, "profile.why.b4"),
+];
 const profileSkillsItems = tList(lang, "profile.skills.items");
 const profileLanguageItems = tList(lang, "profile.lang.items");
 const profileTabs = [
@@ -44,6 +71,36 @@ const profileTabs = [
   { id: "edu", labelKey: "profile.tab.edu", shortLabelKey: "profile.tab.short.edu" },
   { id: "lang", labelKey: "profile.tab.lang", shortLabelKey: "profile.tab.short.lang" },
 ] as const;
+const splitLabelValue = (value: string) => {
+  const [label, ...rest] = value.split(":");
+  return {
+    label: label?.trim() ?? value.trim(),
+    value: rest.join(":").trim(),
+  };
+};
+const isString = (value: string | null): value is string => value !== null;
+const profileLanguages = profileLanguageItems.map(splitLabelValue);
+const profileSkillLookup = new Map(profileSkillsItems.map((item) => [item.toLowerCase(), item]));
+const profileSkillsDisplayOrder = [
+  "AstroJS",
+  "Next.js",
+  "Laravel",
+  "TypeScript",
+  "JavaScript",
+  "TailwindCSS",
+  "HTML5",
+  "CSS3",
+  "Python",
+  "Java",
+  "Git",
+  "MySQL",
+];
+const profileSkillsDisplayItems = [
+  ...profileSkillsDisplayOrder
+    .map((item) => profileSkillLookup.get(item.toLowerCase()) ?? null)
+    .filter(isString),
+  ...profileSkillsItems.filter((item) => !profileSkillsDisplayOrder.some((entry) => entry.toLowerCase() === item.toLowerCase())),
+];
 const contactWhyPoints = [
   t(lang, "contact.whyPoint1"),
   t(lang, "contact.whyPoint2"),
@@ -80,7 +137,12 @@ const profileEducationTimeline = readEducationItems(tValue(lang, "profile.edu.ti
 const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.courses"));
 ---
 
-<BaseLayout lang={lang} title={`${t(lang, "siteName")} | ${t(lang, "navProjects")}`} description={t(lang, "hero.subtitle")}>
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.homeTitle")}
+  description={t(lang, "meta.homeDescription")}
+  structuredData={homeStructuredData}
+>
   <section class="flex min-h-[calc(86svh-4.15rem)] items-center py-10 sm:min-h-[calc(100svh-4.15rem)] sm:py-16" data-reveal>
     <div class="site-container w-full">
       <div class="relative z-10 grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
@@ -113,10 +175,12 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
               </div>
             </div>
 
-            <ul class="mt-4 flex flex-wrap gap-2">
+            <ul class="tech-badge-list tech-badge-list-hero mt-4">
               {
                 heroStack.map((item, index) => (
-                  <li class="chip hero-stack-chip" style={`--chip-index: ${index};`}>{item}</li>
+                  <li style={`--chip-index: ${index};`}>
+                    <TechBadge stack={item} className="hero-stack-chip" />
+                  </li>
                 ))
               }
             </ul>
@@ -135,9 +199,6 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
             <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <a href={projectsHref} class="btn btn-primary hero-cta-pulse w-full sm:w-auto">{t(lang, "hero.ctaProjects")}</a>
               <a href={contactHref} class="btn btn-secondary w-full sm:w-auto">{t(lang, "hero.ctaTalk")}</a>
-              <a href="/cv-joel-arnaud.pdf" class="ui-underline w-fit text-sm font-medium text-zinc-700 dark:text-zinc-200" download>
-                {t(lang, "hero.ctaCV")}
-              </a>
             </div>
 
           </div>
@@ -202,10 +263,10 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
         role="tablist"
         aria-label={t(lang, "profile.title")}
         data-profile-tablist
-        class="profile-tablist-mobile grid min-w-0 max-w-full grid-cols-2 gap-2 pb-2 pt-1 lg:hidden"
+        class="profile-tablist-mobile lg:hidden"
       >
         {
-          profileTabs.map((tab) => (
+          profileTabs.map((tab, index) => (
             <button
               id={`about-tab-mobile-${tab.id}-${lang}`}
               type="button"
@@ -214,59 +275,18 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
               aria-controls={`about-panel-${tab.id}-${lang}`}
               aria-label={t(lang, tab.labelKey)}
               tabindex={tab.id === "why" ? "0" : "-1"}
-              class="profile-tab profile-tab-mobile inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-full border px-3 py-2 text-sm leading-none"
+              class="profile-tab profile-tab-mobile"
               data-profile-tab={tab.id}
             >
-              {tab.id === "why" && (
-                <svg class="h-4 w-4 shrink-0 text-current" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M12 3.5l2.78 5.63 6.22.9-4.5 4.39 1.06 6.2L12 17.7l-5.56 2.92 1.06-6.2-4.5-4.39 6.22-.9L12 3.5z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-              )}
-              {tab.id === "skills" && (
-                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center font-mono text-[0.72rem] leading-none" aria-hidden="true">
-                  {`{}`}
-                </span>
-              )}
-              {tab.id === "edu" && (
-                <svg class="h-4 w-4 shrink-0 text-current" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M3.5 9.3L12 5l8.5 4.3L12 13.6 3.5 9.3z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M7 11.5v3.2c0 1.1 2.2 2 5 2s5-.9 5-2v-3.2"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linecap="round"
-                  ></path>
-                </svg>
-              )}
-              {tab.id === "lang" && (
-                <svg class="h-4 w-4 shrink-0 text-current" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"></circle>
-                  <path d="M3.5 12h17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
-                  <path
-                    d="M12 3.5c2.3 2.3 3.6 5.3 3.6 8.5S14.3 18.2 12 20.5c-2.3-2.3-3.6-5.3-3.6-8.5S9.7 5.8 12 3.5z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                  ></path>
-                </svg>
-              )}
-              <span class="text-center text-sm leading-none">{t(lang, tab.shortLabelKey)}</span>
+              <span class="profile-tab-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <span class="profile-tab-label">{t(lang, tab.shortLabelKey)}</span>
             </button>
           ))
         }
       </div>
 
-      <div class="grid min-w-0 max-w-full gap-6 lg:grid-cols-[280px_1fr] lg:items-start">
-        <aside class="hidden self-start lg:sticky lg:block lg:self-start">
+      <div class="profile-shell">
+        <aside class="profile-sidebar hidden self-start lg:sticky lg:block lg:self-start">
           <div
             role="tablist"
             aria-label={t(lang, "profile.title")}
@@ -274,7 +294,7 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
             class="profile-tablist-desktop space-y-2"
           >
             {
-              profileTabs.map((tab) => (
+              profileTabs.map((tab, index) => (
                 <button
                   id={`about-tab-desktop-${tab.id}-${lang}`}
                   type="button"
@@ -282,168 +302,194 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                   aria-selected={tab.id === "why" ? "true" : "false"}
                   aria-controls={`about-panel-${tab.id}-${lang}`}
                   tabindex={tab.id === "why" ? "0" : "-1"}
-                  class="profile-tab profile-tab-desktop w-full"
+                  class="profile-tab profile-tab-desktop"
                   data-profile-tab={tab.id}
                 >
-                  {t(lang, tab.labelKey)}
+                  <span class="profile-tab-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <span class="profile-tab-label">{t(lang, tab.labelKey)}</span>
                 </button>
               ))
             }
           </div>
         </aside>
 
-        <div class="profile-panels flex min-w-0 max-w-full self-start flex-col gap-4 lg:h-[34rem] lg:self-start">
-        <section
-          id={`about-panel-why-${lang}`}
-          role="tabpanel"
-          aria-labelledby={`about-tab-mobile-why-${lang} about-tab-desktop-why-${lang}`}
-          tabindex="0"
-          data-profile-panel="why"
-          class="profile-panel min-w-0 max-w-full space-y-4 overflow-x-hidden"
-        >
-          <article class="card space-y-4">
-            <h3 class="text-lg font-semibold">{t(lang, "profile.tab.why")}</h3>
-            <ul class="muted list-disc space-y-2 pl-5 text-sm leading-relaxed">
+        <div class="profile-stage" data-profile-stage>
+          <section
+            id={`about-panel-why-${lang}`}
+            role="tabpanel"
+            aria-labelledby={`about-tab-mobile-why-${lang} about-tab-desktop-why-${lang}`}
+            tabindex="0"
+            data-profile-panel="why"
+            class="profile-panel min-w-0 max-w-full overflow-x-hidden"
+          >
+            <header class="profile-panel-header">
+              <h3 class="profile-panel-title">{t(lang, "profile.why.heading")}</h3>
+            </header>
+
+            <ul class="profile-signal-list" aria-label={t(lang, "profile.tab.why")}>
               {
-                profileWhyBullets.map((item) => (
+                profileWhySignals.map((item) => (
                   <li>{item}</li>
                 ))
               }
             </ul>
-          </article>
 
-          <div class="grid min-w-0 gap-4 md:grid-cols-2">
-            <article class="card space-y-3">
-              <h4 class="text-base font-semibold">{t(lang, "profile.why.optimizeTitle")}</h4>
-              <ul class="muted list-disc space-y-1.5 pl-5 text-sm">
-                {
-                  profileWhyOptimizeItems.map((item) => (
-                    <li>{item}</li>
-                  ))
-                }
-              </ul>
-            </article>
+            <div class="profile-editorial-grid">
+              <div class="profile-copy-block">
+                <p class="profile-side-label">{t(lang, "profile.why.valueTitle")}</p>
+                <ul class="profile-bullet-list">
+                  {
+                    profileWhyBullets.map((item) => (
+                      <li>{item}</li>
+                    ))
+                  }
+                </ul>
+              </div>
 
-            <article class="card space-y-3">
-              <h4 class="text-base font-semibold">{t(lang, "profile.why.workTitle")}</h4>
-              <ul class="muted list-disc space-y-1.5 pl-5 text-sm">
-                {
-                  profileWhyWorkItems.map((item) => (
-                    <li>{item}</li>
-                  ))
-                }
-              </ul>
-            </article>
-          </div>
-        </section>
+              <div class="profile-side-stack">
+                <section class="profile-side-block">
+                  <p class="profile-side-label">{t(lang, "profile.why.optimizeTitle")}</p>
+                  <ul class="profile-detail-list">
+                    {
+                      profileWhyOptimizeItems.map((item) => (
+                        <li>{item}</li>
+                      ))
+                    }
+                  </ul>
+                </section>
 
-        <section
-          id={`about-panel-skills-${lang}`}
-          role="tabpanel"
-          aria-labelledby={`about-tab-mobile-skills-${lang} about-tab-desktop-skills-${lang}`}
-          tabindex="0"
-          data-profile-panel="skills"
-          class="profile-panel min-w-0 max-w-full space-y-4 overflow-x-hidden"
-          hidden
-          aria-hidden="true"
-        >
-          <article class="card space-y-4">
-            <h3 class="text-lg font-semibold">{t(lang, "profile.tab.skills")}</h3>
-            <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <section class="profile-side-block">
+                  <p class="profile-side-label">{t(lang, "profile.why.workTitle")}</p>
+                  <ul class="profile-detail-list">
+                    {
+                      profileWhyWorkItems.map((item) => (
+                        <li>{item}</li>
+                      ))
+                    }
+                  </ul>
+                </section>
+              </div>
+            </div>
+          </section>
+
+          <section
+            id={`about-panel-skills-${lang}`}
+            role="tabpanel"
+            aria-labelledby={`about-tab-mobile-skills-${lang} about-tab-desktop-skills-${lang}`}
+            tabindex="0"
+            data-profile-panel="skills"
+            class="profile-panel min-w-0 max-w-full overflow-x-hidden"
+            hidden
+            aria-hidden="true"
+          >
+            <header class="profile-panel-header">
+              <h3 class="profile-panel-title">{t(lang, "profile.tab.skills")}</h3>
+            </header>
+
+            <ul class="profile-skills-grid">
               {
-                profileSkillsItems.map((item) => (
-                  <li class="rounded-xl border border-zinc-200 bg-zinc-50/70 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-900/60">
-                    <p class="flex items-center gap-3 text-sm font-medium text-zinc-800 dark:text-zinc-100">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-300/80 bg-white/80 font-mono text-[0.68rem] text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800/70 dark:text-zinc-300"
-                        aria-hidden="true"
-                      >
-                        <SkillIcon stack={item} className="h-4 w-4" />
-                      </span>
-                      <span>{item}</span>
-                    </p>
-                  </li>
+                profileSkillsDisplayItems.map((item) => (
+                  <li><TechBadge stack={item} /></li>
                 ))
               }
             </ul>
-          </article>
-        </section>
+          </section>
 
-        <section
-          id={`about-panel-edu-${lang}`}
-          role="tabpanel"
-          aria-labelledby={`about-tab-mobile-edu-${lang} about-tab-desktop-edu-${lang}`}
-          tabindex="0"
-          data-profile-panel="edu"
-          class="profile-panel profile-panel-scroll min-w-0 max-w-full space-y-4 overflow-x-hidden lg:h-full lg:overflow-y-auto lg:pr-1"
-          hidden
-          aria-hidden="true"
-        >
-          <div class="min-w-0 flex flex-col gap-4">
-            <article class="card space-y-4">
-              <h3 class="text-lg font-semibold">{t(lang, "profile.edu.sectionTitle")}</h3>
-              <ol class="divide-y divide-zinc-200/60 dark:divide-zinc-800/60">
-                {
-                  profileEducationTimeline.map((entry) => (
-                    <li class="py-5 first:pt-0 last:pb-0 sm:py-6">
-                      <p class="text-xs text-zinc-500 dark:text-zinc-400">{entry.period}</p>
-                      <p class="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">{entry.title}</p>
-                      {entry.summary && <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{entry.summary}</p>}
-                      {entry.highlights.length > 0 && (
-                        <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-300">
-                          {entry.highlights.map((highlight) => <li>{highlight}</li>)}
-                        </ul>
-                      )}
-                    </li>
-                  ))
-                }
-              </ol>
-            </article>
+          <section
+            id={`about-panel-edu-${lang}`}
+            role="tabpanel"
+            aria-labelledby={`about-tab-mobile-edu-${lang} about-tab-desktop-edu-${lang}`}
+            tabindex="0"
+            data-profile-panel="edu"
+            class="profile-panel min-w-0 max-w-full overflow-x-hidden"
+            hidden
+            aria-hidden="true"
+          >
+            <header class="profile-panel-header">
+              <h3 class="profile-panel-title">{t(lang, "profile.tab.edu")}</h3>
+            </header>
 
-            <article class="card space-y-4">
-              <h3 class="text-lg font-semibold">{t(lang, "profile.edu.coursesTitle")}</h3>
-              <ol class="divide-y divide-zinc-200/60 dark:divide-zinc-800/60">
-                {
-                  profileEducationCourses.map((entry) => (
-                    <li class="py-5 first:pt-0 last:pb-0 sm:py-6">
-                      <p class="text-xs text-zinc-500 dark:text-zinc-400">{entry.period}</p>
-                      <p class="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">{entry.title}</p>
-                      {entry.summary && <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{entry.summary}</p>}
-                      {entry.highlights.length > 0 && (
-                        <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-300">
-                          {entry.highlights.map((highlight) => <li>{highlight}</li>)}
-                        </ul>
-                      )}
-                    </li>
-                  ))
-                }
-              </ol>
-            </article>
-          </div>
-        </section>
+            <div class="profile-education-grid">
+              <section class="profile-section-block">
+                <h4 class="profile-subsection-title">{t(lang, "profile.edu.sectionTitle")}</h4>
+                <ol class="profile-timeline">
+                  {
+                    profileEducationTimeline.map((entry) => (
+                      <li class="profile-timeline-item">
+                        <span class="profile-timeline-marker" aria-hidden="true"></span>
+                        <p class="profile-timeline-period">{entry.period}</p>
+                        <p class="profile-timeline-title">{entry.title}</p>
+                        {entry.summary && <p class="profile-timeline-summary">{entry.summary}</p>}
+                        {entry.highlights.length > 0 && (
+                          <ul class="profile-detail-list profile-detail-list-compact">
+                            {entry.highlights.map((highlight) => <li>{highlight}</li>)}
+                          </ul>
+                        )}
+                      </li>
+                    ))
+                  }
+                </ol>
+              </section>
 
-        <section
-          id={`about-panel-lang-${lang}`}
-          role="tabpanel"
-          aria-labelledby={`about-tab-mobile-lang-${lang} about-tab-desktop-lang-${lang}`}
-          tabindex="0"
-          data-profile-panel="lang"
-          class="profile-panel min-w-0 max-w-full space-y-4 overflow-x-hidden"
-          hidden
-          aria-hidden="true"
-        >
-          <article class="card space-y-3">
-            <h3 class="text-lg font-semibold">{t(lang, "profile.tab.lang")}</h3>
-            <ul class="muted list-disc space-y-2 pl-5 text-sm leading-relaxed">
-              {
-                profileLanguageItems.map((item) => (
-                  <li>{item}</li>
-                ))
-              }
-            </ul>
-          </article>
-        </section>
-      </div>
+              <section class="profile-section-block">
+                <h4 class="profile-subsection-title">{t(lang, "profile.edu.coursesTitle")}</h4>
+                <ol class="profile-timeline">
+                  {
+                    profileEducationCourses.map((entry) => (
+                      <li class="profile-timeline-item">
+                        <span class="profile-timeline-marker" aria-hidden="true"></span>
+                        <p class="profile-timeline-period">{entry.period}</p>
+                        <p class="profile-timeline-title">{entry.title}</p>
+                        {entry.summary && <p class="profile-timeline-summary">{entry.summary}</p>}
+                        {entry.highlights.length > 0 && (
+                          <ul class="profile-detail-list profile-detail-list-compact">
+                            {entry.highlights.map((highlight) => <li>{highlight}</li>)}
+                          </ul>
+                        )}
+                      </li>
+                    ))
+                  }
+                </ol>
+              </section>
+            </div>
+          </section>
+
+          <section
+            id={`about-panel-lang-${lang}`}
+            role="tabpanel"
+            aria-labelledby={`about-tab-mobile-lang-${lang} about-tab-desktop-lang-${lang}`}
+            tabindex="0"
+            data-profile-panel="lang"
+            class="profile-panel min-w-0 max-w-full overflow-x-hidden"
+            hidden
+            aria-hidden="true"
+          >
+            <header class="profile-panel-header">
+              <h3 class="profile-panel-title">{t(lang, "profile.tab.lang")}</h3>
+            </header>
+
+            <div class="profile-language-grid">
+              <div class="profile-language-column">
+                <h4 class="profile-subsection-title">{t(lang, "profile.lang.cardTitle")}</h4>
+                <dl class="profile-language-list">
+                  {
+                    profileLanguages.map((item) => (
+                      <div class="profile-language-item">
+                        <dt class="profile-language-label">{item.label}</dt>
+                        {item.value && <dd class="profile-language-value">{item.value}</dd>}
+                      </div>
+                    ))
+                  }
+                </dl>
+              </div>
+
+              <div class="profile-availability">
+                <p class="profile-side-label">{t(lang, "profile.lang.availabilityTitle")}</p>
+                <p class="muted text-sm leading-relaxed">{t(lang, "profile.lang.availabilityBody")}</p>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
 
@@ -452,6 +498,7 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
         const root = document.querySelector("[data-profile-tabs]");
         if (!(root instanceof HTMLElement)) return;
 
+        const stage = root.querySelector("[data-profile-stage]");
         const tablists = Array.from(root.querySelectorAll('[role="tablist"][data-profile-tablist]'));
         const tabs = Array.from(root.querySelectorAll('[role="tab"][data-profile-tab]'));
         const panels = Array.from(root.querySelectorAll('[role="tabpanel"][data-profile-panel]'));
@@ -474,6 +521,53 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
           const nextHash = `#profile=${value}`;
           if (window.location.hash === nextHash) return;
           history.replaceState(null, "", `${window.location.pathname}${window.location.search}${nextHash}`);
+        };
+
+        let measureFrame = 0;
+        const stableHeightQuery = window.matchMedia("(min-width: 768px)");
+
+        const measureStageHeight = () => {
+          if (!(stage instanceof HTMLElement)) return;
+          if (!stableHeightQuery.matches) {
+            stage.style.removeProperty("--profile-stage-min-height");
+            return;
+          }
+
+          let maxHeight = 0;
+
+          for (const panel of panels) {
+            if (!(panel instanceof HTMLElement)) continue;
+
+            const wasHidden = panel.hidden;
+            const wasActive = panel.classList.contains("is-active");
+            const previousAriaHidden = panel.getAttribute("aria-hidden");
+
+            panel.hidden = false;
+            panel.setAttribute("aria-hidden", "false");
+            panel.classList.add("is-measuring");
+            panel.classList.remove("is-active");
+
+            maxHeight = Math.max(maxHeight, Math.ceil(panel.getBoundingClientRect().height));
+
+            panel.classList.remove("is-measuring");
+            panel.classList.toggle("is-active", wasActive);
+            panel.hidden = wasHidden;
+
+            if (previousAriaHidden === null) {
+              panel.removeAttribute("aria-hidden");
+            } else {
+              panel.setAttribute("aria-hidden", previousAriaHidden);
+            }
+          }
+
+          if (maxHeight > 0) {
+            stage.style.setProperty("--profile-stage-min-height", `${maxHeight}px`);
+          }
+        };
+
+        const scheduleStageMeasurement = () => {
+          cancelAnimationFrame(measureFrame);
+          measureFrame = requestAnimationFrame(measureStageHeight);
         };
 
         const activate = (value, { focus = false, updateHash = true, focusWithin = null } = {}) => {
@@ -516,6 +610,7 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
           "why";
 
         activate(initial, { updateHash: false });
+        measureStageHeight();
 
         for (const tab of tabs) {
           if (!(tab instanceof HTMLButtonElement)) continue;
@@ -553,6 +648,14 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
           const value = readHashTab();
           if (value) activate(value, { updateHash: false });
         });
+
+        window.addEventListener("resize", scheduleStageMeasurement);
+        stableHeightQuery.addEventListener?.("change", scheduleStageMeasurement);
+        window.addEventListener("load", scheduleStageMeasurement, { once: true });
+
+        if ("fonts" in document) {
+          document.fonts.ready.then(scheduleStageMeasurement).catch(() => {});
+        }
       })();
     </script>
   </Section>

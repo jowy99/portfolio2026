@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import type { Locale } from "../i18n/locales";
 import { t } from "../i18n/t";
+import TechBadge from "./TechBadge.astro";
 
 interface ProjectLinks {
   live?: string;
@@ -23,6 +24,7 @@ interface Props {
 
 const { lang, slug, title, description, cover, stack, links = {}, reveal = true, maxStack } = Astro.props;
 const caseHref = `/${lang}/projects/${slug}`;
+const caseCtaLabel = `${t(lang, "projectCase")}: ${title}`;
 const stackLimit = Math.min(typeof maxStack === "number" ? maxStack : 3, 3);
 const visibleStack = stack.slice(0, stackLimit);
 const extraStackCount = Math.max(0, stack.length - stackLimit);
@@ -34,7 +36,7 @@ const externalIconButtonClass =
 ---
 
 <article class="card ui-hover-lift flex h-full min-w-0 flex-col p-4 sm:p-5" data-reveal={reveal ? "" : undefined}>
-  <a href={caseHref} class="project-cover group/project-cover mb-3 block overflow-hidden rounded-xl">
+  <a href={caseHref} class="project-cover group/project-cover mb-3 block overflow-hidden rounded-xl" aria-label={caseCtaLabel}>
     {
       typeof cover === "string" ? (
         <img
@@ -58,7 +60,7 @@ const externalIconButtonClass =
 
   <div class="flex min-w-0 flex-1 flex-col space-y-3">
     <h3 class="min-w-0 text-lg font-semibold leading-snug sm:text-xl">
-      <a href={caseHref} class="ui-underline block clamp-2">{title}</a>
+      <a href={caseHref} class="ui-underline block clamp-2" aria-label={caseCtaLabel}>{title}</a>
     </h3>
 
     <p class="project-description muted clamp-2 text-sm">{description}</p>
@@ -66,14 +68,16 @@ const externalIconButtonClass =
     <ul class="project-stack flex flex-wrap gap-2" aria-label={t(lang, "projectStackAria")}>
       {
         visibleStack.map((item) => (
-          <li class="chip">{item}</li>
+          <li>
+            <TechBadge stack={item} size="sm" />
+          </li>
         ))
       }
-      {extraStackCount > 0 && <li class="chip">+{extraStackCount}</li>}
+      {extraStackCount > 0 && <li><span class="tech-badge tech-badge-count tech-badge-sm">+{extraStackCount}</span></li>}
     </ul>
 
     <div class="project-actions mt-auto flex flex-wrap items-center justify-between gap-2">
-      <a href={caseHref} class="btn btn-primary px-3 py-2">{t(lang, "projectCase")}</a>
+      <a href={caseHref} class="btn btn-primary px-3 py-2" aria-label={caseCtaLabel}>{t(lang, "projectCase")}</a>
 
       {hasExternalLinks && (
         <div class="flex items-center gap-1.5">

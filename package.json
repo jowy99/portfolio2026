@@ -8,8 +8,9 @@
     "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview --port 4322",
     "compress:dist": "node scripts/precompress.mjs",
-    "preview:perf": "npm run build && npm run compress:dist && sirv dist --host 127.0.0.1 --port 4322 --gzip --brotli",
+    "preview:perf": "astro build && node scripts/precompress.mjs && sirv dist/client --host 127.0.0.1 --port 4322 --gzip --brotli",
     "check:links": "node scripts/check-links.mjs",
+    "content:check": "node scripts/content-integrity.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "astro": "astro"
   },

@@ -37,7 +37,7 @@ const initProjectsPage = (): void => {
   const filtersDialog = form.querySelector<HTMLDialogElement>("[data-projects-filters-dialog]");
   const filtersOpenButton = form.querySelector<HTMLButtonElement>("[data-projects-filters-open]");
   const filtersCloseButton = form.querySelector<HTMLButtonElement>("[data-projects-filters-close]");
-  const filtersDot = form.querySelector<HTMLElement>("[data-projects-filters-dot]");
+  const filtersCount = form.querySelector<HTMLElement>("[data-projects-filters-count]");
   const chipIndicator = initChipIndicator(form, stackCheckboxes);
 
   if (!(searchInput instanceof HTMLInputElement)) return;
@@ -66,9 +66,11 @@ const initProjectsPage = (): void => {
     return qActive + selectedStacks + sortActive;
   };
 
-  const syncFiltersDot = (): void => {
-    if (!filtersDot) return;
-    filtersDot.classList.toggle("is-active", getActiveFilterCount() > 0);
+  const syncFiltersCount = (): void => {
+    if (!filtersCount) return;
+    const count = getActiveFilterCount();
+    filtersCount.classList.toggle("is-active", count > 0);
+    filtersCount.textContent = count > 0 ? String(count) : "";
   };
 
   const formatResults = (count: number): string => {
@@ -145,7 +147,7 @@ const initProjectsPage = (): void => {
       checkbox.checked = selected.has(normalizeToken(checkbox.value));
     }
     toggleClearButton();
-    syncFiltersDot();
+    syncFiltersCount();
     chipIndicator?.syncFromSelection();
   };
 
@@ -221,7 +223,7 @@ const initProjectsPage = (): void => {
       checkbox.checked = snapshot.selected.has(normalizeToken(checkbox.value));
     }
     chipIndicator?.syncFromSelection();
-    syncFiltersDot();
+    syncFiltersCount();
   };
 
   const openFiltersDialog = (): void => {
@@ -285,7 +287,7 @@ const initProjectsPage = (): void => {
   for (const checkbox of stackCheckboxes) {
     checkbox.addEventListener("change", () => {
       chipIndicator?.onSelectionChange(checkbox);
-      syncFiltersDot();
+      syncFiltersCount();
     });
   }
 
@@ -335,7 +337,7 @@ const initProjectsPage = (): void => {
   });
 
   if (sortSelect) {
-    sortSelect.addEventListener("change", syncFiltersDot);
+    sortSelect.addEventListener("change", syncFiltersCount);
   }
 
   applyFiltersFromUrl();

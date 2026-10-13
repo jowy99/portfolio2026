@@ -1,0 +1,29 @@
+---
+import SkillIcon from "./SkillIcon.astro";
+import { resolveTech } from "../utils/tech";
+
+interface Props {
+  stack: string;
+  className?: string;
+  size?: "sm" | "md";
+}
+
+const { stack, className = "", size = "md" } = Astro.props;
+const tech = resolveTech(stack);
+const iconSizeClass = size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4";
+---
+
+<span
+  class:list={[
+    "tech-badge",
+    size === "sm" ? "tech-badge-sm" : "tech-badge-md",
+    className,
+  ]}
+  data-tech-key={tech.key}
+  style={`--tech-accent-rgb:${tech.accentRgb};`}
+>
+  <span class="tech-badge-icon" aria-hidden="true">
+    <SkillIcon stack={stack} className={iconSizeClass} />
+  </span>
+  <span class="tech-badge-label">{tech.label}</span>
+</span>
