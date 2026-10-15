@@ -1,0 +1,156 @@
+---
+import Section from "./Section.astro";
+import type { Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+import contactFormScript from "../scripts/contact-form.js?raw";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const contactWhyPoints = [
+  t(lang, "contact.whyPoint1"),
+  t(lang, "contact.whyPoint2"),
+  t(lang, "contact.whyPoint3"),
+];
+---
+
+<Section id="contact" className="defer-content pb-16 sm:pb-20 lg:pb-28">
+  <div class="contact-unified" data-reveal>
+    <div class="contact-copy-panel">
+      <h2 class="text-4xl font-semibold leading-[1.05] sm:text-5xl">{t(lang, "contactTitle")}</h2>
+      <p class="muted mt-6 max-w-md text-sm leading-relaxed">{t(lang, "contactSubtitle")}</p>
+      <p class="muted mt-4 max-w-md text-sm leading-relaxed">{t(lang, "contact.whyIntro")}</p>
+
+      <ul class="mt-6 space-y-2.5 text-sm leading-relaxed">
+        {
+          contactWhyPoints.map((point) => (
+            <li class="flex gap-2.5">
+              <span class="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-500 dark:bg-zinc-400" aria-hidden="true"></span>
+              <span class="muted">{point}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-8 border-t border-zinc-200 pt-5 dark:border-zinc-800">
+        <p class="text-xs font-semibold uppercase tracking-[0.08em] text-zinc-600 dark:text-zinc-300">{t(lang, "contact.socialTitle")}</p>
+        <div class="mt-3 flex flex-wrap gap-4">
+          <a
+            href="https://www.linkedin.com/in/joelarnaudcarreras/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="ui-underline inline-flex items-center gap-2 text-sm font-medium"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M6.94 8.56H3.56V20h3.38V8.56Zm.22-3.53A1.96 1.96 0 1 0 3.24 5a1.96 1.96 0 0 0 3.92.03Zm13.28 7.87c0-3.43-1.83-5.03-4.27-5.03-1.97 0-2.85 1.08-3.34 1.84V8.56H9.44V20h3.39v-5.66c0-1.49.28-2.93 2.13-2.93 1.82 0 1.84 1.7 1.84 3.03V20h3.4v-7.1Z"></path>
+            </svg>
+            {t(lang, "contactLinkedIn")}
+          </a>
+          <a
+            href="https://github.com/jowy99"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="ui-underline inline-flex items-center gap-2 text-sm font-medium"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <use href="#icon-github"></use>
+            </svg>
+            {t(lang, "projectGithub")}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-panel">
+      <div class="contact-form-shell">
+        <form
+          class="grid gap-4 sm:grid-cols-2"
+          method="post"
+          action="/api/contact"
+          aria-label={t(lang, "contactTitle")}
+          data-contact-form
+          data-msg-sending={t(lang, "contact.status.sending")}
+          data-msg-success={t(lang, "contact.status.success")}
+          data-msg-error={t(lang, "contact.status.errorGeneric")}
+          data-msg-invalid={t(lang, "contact.feedback.invalid")}
+          data-msg-rate-limit={t(lang, "contact.feedback.rateLimit")}
+          data-msg-unavailable={t(lang, "contact.feedback.unavailable")}
+        >
+            <label class="contact-field-group" for={`contact-name-${lang}`}>
+              <span class="label">{`${t(lang, "contact.nameLabel")}*`}</span>
+              <input
+                id={`contact-name-${lang}`}
+                type="text"
+                name="name"
+                autocomplete="name"
+                required
+                aria-required="true"
+                class="field"
+                placeholder={t(lang, "contact.namePlaceholder")}
+              />
+            </label>
+
+            <label class="contact-field-group" for={`contact-email-${lang}`}>
+              <span class="label">{`${t(lang, "contact.emailLabel")}*`}</span>
+              <input
+                id={`contact-email-${lang}`}
+                type="email"
+                name="email"
+                autocomplete="email"
+                required
+                aria-required="true"
+                class="field"
+                placeholder={t(lang, "contact.emailPlaceholder")}
+              />
+            </label>
+
+            <label class="contact-field-group sm:col-span-2" for={`contact-message-${lang}`}>
+              <span class="label">{`${t(lang, "contact.messageLabel")}*`}</span>
+              <textarea
+                id={`contact-message-${lang}`}
+                rows="5"
+                name="message"
+                required
+                aria-required="true"
+                class="field field-textarea"
+                placeholder={t(lang, "contact.messagePlaceholder")}
+              ></textarea>
+            </label>
+
+          <input
+            id={`contact-company-${lang}`}
+            type="text"
+            name="company"
+            tabindex="-1"
+            autocomplete="off"
+            class="sr-only"
+            aria-label={t(lang, "contact.companyField")}
+            aria-hidden="true"
+          />
+
+          <input type="hidden" name="form_started_at" value="" data-contact-started-at />
+          <input type="hidden" name="lang" value={lang} />
+          <input type="hidden" name="redirect_to" value={`/${lang}/#contact`} />
+
+          <button
+            type="submit"
+            class="btn btn-secondary w-full sm:col-span-2 motion-safe:hover:-translate-y-0.5 transition-transform"
+            data-contact-submit
+            data-label-default={t(lang, "contactSend")}
+            data-label-sending={t(lang, "contact.status.sending")}
+          >
+            {t(lang, "contactSend")}
+          </button>
+          <p class="contact-form-status notice hidden sm:col-span-2" data-contact-status role="status" aria-live="polite" aria-hidden="true"></p>
+          <p class="contact-form-toast notice hidden" data-contact-toast role="status" aria-live="polite" aria-hidden="true"></p>
+          <p class="help sm:col-span-2">{t(lang, "contactNote")}</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<script is:inline set:html={contactFormScript}></script>

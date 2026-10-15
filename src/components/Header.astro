@@ -38,7 +38,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
     <div class="site-header-shell flex h-14 items-center gap-2 rounded-2xl border border-zinc-200/70 bg-zinc-50/90 px-3 backdrop-blur-lg sm:gap-3 sm:px-4 dark:border-zinc-800/70 dark:bg-zinc-950/86">
       <a href={homeHref} class="site-brand text-sm font-semibold tracking-[0.01em] text-zinc-900 dark:text-zinc-100">{t(lang, "siteName")}</a>
 
-      <nav class="ml-4 hidden items-center gap-1 rounded-full border border-zinc-200/80 bg-white/82 p-1 text-sm dark:border-zinc-700/80 dark:bg-zinc-900/85 lg:flex">
+      <nav class="ml-4 hidden h-11 items-center gap-1 rounded-full border border-zinc-200/80 bg-white/82 p-px text-sm dark:border-zinc-700/80 dark:bg-zinc-900/85 lg:flex">
         {
           desktopNavItems.map((item) => (
             <a href={item.href} class:list={["site-nav-link", item.isActive && "is-active"]}>
@@ -48,7 +48,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
         }
       </nav>
 
-      <div class="ml-auto hdr-controls hidden md:flex">
+      <div class="ml-auto hdr-controls hidden lg:flex">
         <LanguageSwitcher
           id="lang-select-desktop"
           lang={lang}
@@ -66,7 +66,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
         </a>
       </div>
 
-      <div class="mobile-menu relative ml-auto md:hidden" data-mobile-menu>
+      <div class="mobile-menu relative ml-auto lg:hidden" data-mobile-menu>
         <button
           type="button"
           class="ui-dropdown-trigger menu-summary mobile-menu-trigger ui-press"
@@ -90,7 +90,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
         </button>
         <div
           id={mobileMenuPanelId}
-          class="ui-panel-surface mobile-menu-panel absolute right-0 top-full mt-2 z-50 w-[min(22rem,calc(100vw-1.25rem))] p-2.5"
+          class="ui-panel-surface mobile-menu-panel absolute right-0 top-full mt-2 z-50 w-[min(22rem,calc(100vw-3.25rem))] p-2.5"
           aria-hidden="true"
           data-mobile-menu-panel
         >
@@ -310,7 +310,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
           });
         }
 
-        const desktopQuery = window.matchMedia("(min-width: 768px)");
+        const desktopQuery = window.matchMedia("(min-width: 1024px)");
         const handleDesktopQuery = () => {
           if (desktopQuery.matches) setOpen(false);
         };
@@ -349,7 +349,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
       visibility: visible;
       position: static;
       margin-top: .5rem;
-      width: min(22rem, calc(100vw - 1.25rem));
+      width: min(22rem, calc(100vw - 3.25rem));
     }
   </style>
 </noscript>
