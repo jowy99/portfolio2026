@@ -105,9 +105,41 @@ const buildPageHref = (nextPage: number): string => {
   });
   return buildHrefWithParams(basePath, params);
 };
+
+const siteOrigin = Astro.site?.toString().replace(/\/$/, "");
+const projectsListUrl = siteOrigin ? `${siteOrigin}${basePath}` : undefined;
+const projectsStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t(lang, "projectsTitle"),
+  description: t(lang, "meta.projectsDescription"),
+  ...(projectsListUrl ? { url: projectsListUrl } : {}),
+  mainEntity: {
+    "@type": "ItemList",
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: filtered.length,
+    itemListElement: filtered.map((project, index) => {
+      const slug = getProjectSlug(project);
+      const projectPath = `/${lang}/projects/${slug}`;
+      const projectUrl = siteOrigin ? `${siteOrigin}${projectPath}` : projectPath;
+      return {
+        "@type": "ListItem",
+        position: index + 1,
+        name: project.data.title,
+        url: projectUrl,
+      };
+    }),
+  },
+};
 ---
 
-<BaseLayout lang={lang} title={`${t(lang, "siteName")} | ${t(lang, "projectsTitle")}`} description={t(lang, "projectsSubtitle")}>
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.projectsTitle")}
+  description={t(lang, "meta.projectsDescription")}
+  bottomBackLink={true}
+  structuredData={projectsStructuredData}
+>
   <Section title={t(lang, "projectsTitle")} intro={t(lang, "projectsSubtitle")} className="pt-10 pb-10 sm:pt-12 sm:pb-12 md:pt-14">
     <ProjectsToolbar
       lang={lang}
@@ -131,7 +163,7 @@ const buildPageHref = (nextPage: number): string => {
 
     <div id="list" class="mt-4 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal>
       {
-        visibleProjects.map((project) => (
+        visibleProjects.map((project, index) => (
           <div
             data-project-item
             data-title={project.data.title}
@@ -149,6 +181,7 @@ const buildPageHref = (nextPage: number): string => {
               stack={project.data.stack}
               links={project.data.links}
               reveal={false}
+              priority={index < 3}
             />
           </div>
         ))

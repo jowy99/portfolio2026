@@ -38,7 +38,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
     <div class="site-header-shell flex h-14 items-center gap-2 rounded-2xl border border-zinc-200/70 bg-zinc-50/90 px-3 backdrop-blur-lg sm:gap-3 sm:px-4 dark:border-zinc-800/70 dark:bg-zinc-950/86">
       <a href={homeHref} class="site-brand text-sm font-semibold tracking-[0.01em] text-zinc-900 dark:text-zinc-100">{t(lang, "siteName")}</a>
 
-      <nav class="ml-4 hidden items-center gap-1 rounded-full border border-zinc-200/80 bg-white/82 p-1 text-sm dark:border-zinc-700/80 dark:bg-zinc-900/85 lg:flex">
+      <nav class="ml-4 hidden h-11 items-center gap-1 rounded-full border border-zinc-200/80 bg-white/82 p-px text-sm dark:border-zinc-700/80 dark:bg-zinc-900/85 lg:flex">
         {
           desktopNavItems.map((item) => (
             <a href={item.href} class:list={["site-nav-link", item.isActive && "is-active"]}>
@@ -48,7 +48,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
         }
       </nav>
 
-      <div class="ml-auto hdr-controls hidden md:flex">
+      <div class="ml-auto hdr-controls hidden lg:flex">
         <LanguageSwitcher
           id="lang-select-desktop"
           lang={lang}
@@ -66,20 +66,32 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
         </a>
       </div>
 
-      <div class="mobile-menu relative ml-auto md:hidden" data-mobile-menu>
+      <div class="mobile-menu relative ml-auto lg:hidden" data-mobile-menu>
         <button
           type="button"
-          class="menu-summary btn btn-secondary ui-press px-3"
+          class="ui-dropdown-trigger menu-summary mobile-menu-trigger ui-press"
           aria-label={t(lang, "navMenu")}
+          aria-haspopup="true"
           aria-expanded="false"
           aria-controls={mobileMenuPanelId}
           data-mobile-menu-toggle
         >
-          {t(lang, "navMenu")}
+          <span class="mobile-menu-trigger-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+          </span>
+          <span class="mobile-menu-trigger-label">{t(lang, "navMenu")}</span>
+          <span class="mobile-menu-trigger-caret" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
         </button>
         <div
           id={mobileMenuPanelId}
-          class="mobile-menu-panel absolute right-0 top-full mt-2 z-50 w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-900"
+          class="ui-panel-surface mobile-menu-panel absolute right-0 top-full mt-2 z-50 w-[min(22rem,calc(100vw-3.25rem))] p-2.5"
+          aria-hidden="true"
           data-mobile-menu-panel
         >
           <nav class="space-y-1">
@@ -87,8 +99,8 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
               mobileNavItems.map((item) => (
                 <a
                   class:list={[
-                    "ease-ui flex min-h-11 items-center gap-2 rounded-lg px-3 py-3 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800",
-                    item.isActive && "bg-zinc-100 dark:bg-zinc-800",
+                    "ui-option-row mobile-menu-link",
+                    item.isActive && "is-active",
                   ]}
                   href={item.href}
                 >
@@ -122,8 +134,9 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
               currentPath={currentPath}
               search={search}
               hash={hash}
+              variant="panel"
             />
-            <ThemeToggle id="theme-select-mobile" lang={lang} />
+            <ThemeToggle id="theme-select-mobile" lang={lang} variant="panel" />
           </div>
         </div>
       </div>
@@ -133,6 +146,123 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
 
 <script is:inline>
   (() => {
+    const initHeaderMenus = () => {
+      const menus = Array.from(document.querySelectorAll("[data-hdr-menu]"));
+      if (menus.length === 0) return;
+
+      const closeAll = (except = null) => {
+        for (const menu of menus) {
+          if (!(menu instanceof HTMLElement) || menu === except) continue;
+          const toggle = menu.querySelector("[data-hdr-menu-toggle]");
+          const panel = menu.querySelector("[data-hdr-menu-panel]");
+          if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) continue;
+          menu.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          panel.setAttribute("aria-hidden", "true");
+          for (const item of panel.querySelectorAll("[data-hdr-menu-item]")) {
+            if (item instanceof HTMLAnchorElement || item instanceof HTMLButtonElement) {
+              item.tabIndex = -1;
+            }
+          }
+        }
+      };
+
+      for (const menu of menus) {
+        if (!(menu instanceof HTMLElement) || menu.dataset.hdrMenuReady === "true") continue;
+        menu.dataset.hdrMenuReady = "true";
+
+        const toggle = menu.querySelector("[data-hdr-menu-toggle]");
+        const panel = menu.querySelector("[data-hdr-menu-panel]");
+        if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) continue;
+
+        const items = Array.from(panel.querySelectorAll("[data-hdr-menu-item]")).filter(
+          (item) => item instanceof HTMLAnchorElement || item instanceof HTMLButtonElement,
+        );
+
+        const setOpen = (open) => {
+          menu.classList.toggle("is-open", open);
+          toggle.setAttribute("aria-expanded", String(open));
+          panel.setAttribute("aria-hidden", String(!open));
+          for (const item of items) {
+            item.tabIndex = open ? 0 : -1;
+          }
+        };
+
+        setOpen(false);
+
+        const focusItemAt = (index) => {
+          const item = items[index];
+          if (item instanceof HTMLAnchorElement || item instanceof HTMLButtonElement) {
+            item.focus();
+          }
+        };
+
+        toggle.addEventListener("click", () => {
+          const nextOpen = !menu.classList.contains("is-open");
+          closeAll(nextOpen ? menu : null);
+          setOpen(nextOpen);
+        });
+
+        toggle.addEventListener("keydown", (event) => {
+          if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+          event.preventDefault();
+          closeAll(menu);
+          setOpen(true);
+          focusItemAt(event.key === "ArrowDown" ? 0 : Math.max(items.length - 1, 0));
+        });
+
+        panel.addEventListener("keydown", (event) => {
+          if (items.length === 0) return;
+
+          const currentIndex = items.findIndex((item) => item === document.activeElement);
+
+          if (event.key === "Escape") {
+            event.preventDefault();
+            setOpen(false);
+            toggle.focus();
+            return;
+          }
+
+          if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+          event.preventDefault();
+
+          if (event.key === "Home") {
+            focusItemAt(0);
+            return;
+          }
+
+          if (event.key === "End") {
+            focusItemAt(items.length - 1);
+            return;
+          }
+
+          const nextIndex =
+            event.key === "ArrowDown"
+              ? (currentIndex + 1 + items.length) % items.length
+              : (currentIndex - 1 + items.length) % items.length;
+
+          focusItemAt(nextIndex);
+        });
+
+        document.addEventListener(
+          "pointerdown",
+          (event) => {
+            if (!menu.classList.contains("is-open")) return;
+            if (!(event.target instanceof Node)) return;
+            if (menu.contains(event.target)) return;
+            setOpen(false);
+          },
+          { passive: true },
+        );
+
+        for (const item of items) {
+          item.addEventListener("click", () => {
+            setOpen(false);
+          });
+        }
+      }
+    };
+
     const initMobileMenus = () => {
       const menus = Array.from(document.querySelectorAll("[data-mobile-menu]"));
       for (const menu of menus) {
@@ -146,6 +276,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
         const setOpen = (open) => {
           menu.classList.toggle("is-open", open);
           toggle.setAttribute("aria-expanded", String(open));
+          panel.setAttribute("aria-hidden", String(!open));
         };
 
         setOpen(false);
@@ -155,14 +286,16 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
           setOpen(!menu.classList.contains("is-open"));
         });
 
-        document.addEventListener("pointerdown", (event) => {
-          if (!menu.classList.contains("is-open")) return;
-          if (!(event.target instanceof Node)) return;
-          if (menu.contains(event.target)) return;
-          const activeElement = document.activeElement;
-          if (activeElement instanceof HTMLSelectElement && menu.contains(activeElement)) return;
-          setOpen(false);
-        }, { passive: true });
+        document.addEventListener(
+          "pointerdown",
+          (event) => {
+            if (!menu.classList.contains("is-open")) return;
+            if (!(event.target instanceof Node)) return;
+            if (menu.contains(event.target)) return;
+            setOpen(false);
+          },
+          { passive: true },
+        );
 
         menu.addEventListener("keydown", (event) => {
           if (event.key !== "Escape") return;
@@ -177,7 +310,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
           });
         }
 
-        const desktopQuery = window.matchMedia("(min-width: 768px)");
+        const desktopQuery = window.matchMedia("(min-width: 1024px)");
         const handleDesktopQuery = () => {
           if (desktopQuery.matches) setOpen(false);
         };
@@ -191,8 +324,16 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
     };
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initMobileMenus, { once: true });
+      document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+          initHeaderMenus();
+          initMobileMenus();
+        },
+        { once: true },
+      );
     } else {
+      initHeaderMenus();
       initMobileMenus();
     }
   })();
@@ -208,7 +349,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
       visibility: visible;
       position: static;
       margin-top: .5rem;
-      width: min(18rem, calc(100vw - 2rem));
+      width: min(22rem, calc(100vw - 3.25rem));
     }
   </style>
 </noscript>

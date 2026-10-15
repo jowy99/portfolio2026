@@ -2,6 +2,7 @@
 import type { Locale } from "../i18n/locales";
 import { t } from "../i18n/t";
 import { buildHrefWithParams, buildProjectsParams, normalizeToken } from "../utils/url";
+import TechBadge from "./TechBadge.astro";
 
 interface Props {
   lang: Locale;
@@ -16,6 +17,7 @@ interface Props {
 const { lang, basePath, q, sort, stacks, selectedStacks, activeCount } = Astro.props;
 const selectedStacksNorm = new Set(selectedStacks.map((stack) => normalizeToken(stack)));
 const dialogId = `projects-filters-${lang}`;
+const dialogTitleId = `projects-filters-title-${lang}`;
 const hasActiveFilters = activeCount > 0;
 
 const buildClearFiltersHref = (): string => {
@@ -63,26 +65,42 @@ const buildClearFiltersHref = (): string => {
 
       <button
         type="button"
-        class="projects-filters-trigger"
+        class="ui-dropdown-trigger projects-filters-trigger"
         data-projects-filters-open
         aria-controls={dialogId}
         aria-expanded="false"
         aria-haspopup="dialog"
       >
-        <svg class="projects-filters-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M4 4h10M4 12h16M4 20h6M14 20h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-          <circle cx="16" cy="4" r="2" stroke="currentColor" stroke-width="1.8"></circle>
-          <circle cx="10" cy="20" r="2" stroke="currentColor" stroke-width="1.8"></circle>
-        </svg>
-        <span>{t(lang, "projects.filters")}</span>
-        <span class:list={["projects-filters-dot", hasActiveFilters && "is-active"]} data-projects-filters-dot aria-hidden="true"></span>
+        <span class="projects-filters-leading">
+          <svg class="projects-filters-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 4h10M4 12h16M4 20h6M14 20h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="16" cy="4" r="2" stroke="currentColor" stroke-width="1.8"></circle>
+            <circle cx="10" cy="20" r="2" stroke="currentColor" stroke-width="1.8"></circle>
+          </svg>
+          <span>{t(lang, "projects.filters")}</span>
+        </span>
+        <span class="projects-filters-trailing" aria-hidden="true">
+          <span class:list={["projects-filters-count", hasActiveFilters && "is-active"]} data-projects-filters-count>
+            {hasActiveFilters ? activeCount : ""}
+          </span>
+          <span class="projects-filters-caret">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </span>
       </button>
     </div>
 
-    <dialog id={dialogId} class="projects-filters-dialog" data-projects-filters-dialog>
-      <div class="projects-filters-panel">
+    <dialog
+      id={dialogId}
+      class="projects-filters-dialog"
+      data-projects-filters-dialog
+      aria-labelledby={dialogTitleId}
+    >
+      <div class="ui-panel-surface projects-filters-panel">
         <div class="projects-filters-head">
-          <h3 class="text-base font-semibold">{t(lang, "projects.filters")}</h3>
+          <h3 id={dialogTitleId} class="text-base font-semibold">{t(lang, "projects.filters")}</h3>
           <button
             type="button"
             class="projects-filters-close"
@@ -115,9 +133,7 @@ const buildClearFiltersHref = (): string => {
                       class="peer sr-only"
                       data-projects-stack-checkbox
                     />
-                    <span class="projects-filter-chip peer-checked:border-zinc-500 peer-checked:bg-zinc-100 peer-checked:font-medium peer-checked:text-zinc-900 dark:peer-checked:border-zinc-500 dark:peer-checked:bg-zinc-800 dark:peer-checked:text-zinc-100">
-                      {stackItem}
-                    </span>
+                    <TechBadge stack={stackItem} size="sm" className="projects-filter-chip tech-badge-interactive" />
                   </label>
                 );
               })
@@ -129,18 +145,18 @@ const buildClearFiltersHref = (): string => {
           <label class="text-xs font-semibold uppercase tracking-[0.08em] text-zinc-600 dark:text-zinc-300" for="projects-sort">
             {t(lang, "sortLabel")}
           </label>
-          <div class="relative mt-2">
+          <div class="ui-select-shell ui-select-shell-panel projects-sort-shell relative mt-2">
             <select
               id="projects-sort"
               name="sort"
-              class="projects-sort-select projects-sort-select-modal"
+              class="ui-select-native projects-sort-select projects-sort-select-modal"
               data-projects-sort-select
             >
               <option value="relevance" selected={sort === "relevance"}>{t(lang, "sortRelevance")}</option>
               <option value="recent" selected={sort === "recent"}>{t(lang, "sortRecent")}</option>
               <option value="impact" selected={sort === "impact"}>{t(lang, "sortImpact")}</option>
             </select>
-            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 dark:text-zinc-400" aria-hidden="true">
+            <span class="ui-select-caret" aria-hidden="true">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>

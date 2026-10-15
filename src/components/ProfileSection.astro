@@ -1,0 +1,330 @@
+---
+import Section from "./Section.astro";
+import TechBadge from "./TechBadge.astro";
+import type { Locale } from "../i18n/locales";
+import { t, tList, tValue } from "../i18n/t";
+import profileTabsScript from "../scripts/profile-tabs.js?raw";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const profileWhyBullets = tList(lang, "profile.why.bullets");
+const profileWhyOptimizeItems = tList(lang, "profile.why.optimizeItems");
+const profileWhyWorkItems = tList(lang, "profile.why.workItems");
+const profileWhySignals = [
+  t(lang, "profile.why.b1"),
+  t(lang, "profile.why.b2"),
+  t(lang, "profile.why.b3"),
+  t(lang, "profile.why.b4"),
+];
+const profileSkillsItems = tList(lang, "profile.skills.items");
+const profileLanguageItems = tList(lang, "profile.lang.items");
+const profileTabs = [
+  { id: "why", labelKey: "profile.tab.why", shortLabelKey: "profile.tab.short.why" },
+  { id: "skills", labelKey: "profile.tab.skills", shortLabelKey: "profile.tab.short.skills" },
+  { id: "edu", labelKey: "profile.tab.edu", shortLabelKey: "profile.tab.short.edu" },
+  { id: "lang", labelKey: "profile.tab.lang", shortLabelKey: "profile.tab.short.lang" },
+] as const;
+const splitLabelValue = (value: string) => {
+  const [label, ...rest] = value.split(":");
+  return {
+    label: label?.trim() ?? value.trim(),
+    value: rest.join(":").trim(),
+  };
+};
+const isString = (value: string | null): value is string => value !== null;
+const profileLanguages = profileLanguageItems.map(splitLabelValue);
+const profileSkillLookup = new Map(profileSkillsItems.map((item) => [item.toLowerCase(), item]));
+const profileSkillsDisplayOrder = [
+  "AstroJS",
+  "Next.js",
+  "Laravel",
+  "TypeScript",
+  "JavaScript",
+  "TailwindCSS",
+  "HTML5",
+  "CSS3",
+  "Python",
+  "Java",
+  "Git",
+  "MySQL",
+];
+const profileSkillsDisplayItems = [
+  ...profileSkillsDisplayOrder
+    .map((item) => profileSkillLookup.get(item.toLowerCase()) ?? null)
+    .filter(isString),
+  ...profileSkillsItems.filter((item) => !profileSkillsDisplayOrder.some((entry) => entry.toLowerCase() === item.toLowerCase())),
+];
+
+type EducationItem = {
+  period: string;
+  title: string;
+  summary: string;
+  highlights: string[];
+};
+
+const readEducationItems = (value: unknown): EducationItem[] => {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const entry = item as Record<string, unknown>;
+      const period = typeof entry.period === "string" ? entry.period.trim() : "";
+      const title = typeof entry.title === "string" ? entry.title.trim() : "";
+      const summary = typeof entry.summary === "string" ? entry.summary.trim() : "";
+      const highlights = Array.isArray(entry.highlights)
+        ? entry.highlights.filter((highlight): highlight is string => typeof highlight === "string" && highlight.trim().length > 0)
+        : [];
+
+      if (!period || !title) return null;
+      return { period, title, summary, highlights };
+    })
+    .filter((entry): entry is EducationItem => Boolean(entry));
+};
+
+const profileEducationTimeline = readEducationItems(tValue(lang, "profile.edu.timeline"));
+const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.courses"));
+---
+
+<Section id="about" title={t(lang, "profile.title")} intro={t(lang, "profile.subtitle")} className="defer-content">
+  <div class="profile-layout min-w-0 max-w-full" data-profile-tabs data-default-tab="why" data-reveal>
+    <div
+      role="tablist"
+      aria-label={t(lang, "profile.title")}
+      data-profile-tablist
+      class="profile-tablist-mobile lg:hidden"
+    >
+      {
+        profileTabs.map((tab, index) => (
+          <button
+            id={`about-tab-mobile-${tab.id}-${lang}`}
+            type="button"
+            role="tab"
+            aria-selected={tab.id === "why" ? "true" : "false"}
+            aria-controls={`about-panel-${tab.id}-${lang}`}
+            aria-label={t(lang, tab.labelKey)}
+            tabindex={tab.id === "why" ? "0" : "-1"}
+            class="profile-tab profile-tab-mobile"
+            data-profile-tab={tab.id}
+          >
+            <span class="profile-tab-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <span class="profile-tab-label">{t(lang, tab.shortLabelKey)}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="profile-shell">
+      <aside class="profile-sidebar hidden self-start lg:sticky lg:block lg:self-start">
+        <div
+          role="tablist"
+          aria-label={t(lang, "profile.title")}
+          aria-orientation="vertical"
+          data-profile-tablist
+          class="profile-tablist-desktop"
+        >
+          {
+            profileTabs.map((tab, index) => (
+              <button
+                id={`about-tab-desktop-${tab.id}-${lang}`}
+                type="button"
+                role="tab"
+                aria-selected={tab.id === "why" ? "true" : "false"}
+                aria-controls={`about-panel-${tab.id}-${lang}`}
+                tabindex={tab.id === "why" ? "0" : "-1"}
+                class="profile-tab profile-tab-desktop"
+                data-profile-tab={tab.id}
+              >
+                <span class="profile-tab-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <span class="profile-tab-label">{t(lang, tab.labelKey)}</span>
+              </button>
+            ))
+          }
+        </div>
+      </aside>
+
+      <div class="profile-stage" data-profile-stage>
+        <section
+          id={`about-panel-why-${lang}`}
+          role="tabpanel"
+          aria-labelledby={`about-tab-mobile-why-${lang} about-tab-desktop-why-${lang}`}
+          tabindex="0"
+          data-profile-panel="why"
+          class="profile-panel min-w-0 max-w-full overflow-x-hidden"
+        >
+          <header class="profile-panel-header">
+            <h3 class="profile-panel-title">{t(lang, "profile.why.heading")}</h3>
+          </header>
+
+          <ul class="profile-signal-list" aria-label={t(lang, "profile.tab.why")}>
+            {
+              profileWhySignals.map((item) => (
+                <li>{item}</li>
+              ))
+            }
+          </ul>
+
+          <div class="profile-editorial-grid">
+            <div class="profile-copy-block">
+              <p class="profile-side-label">{t(lang, "profile.why.valueTitle")}</p>
+              <ul class="profile-bullet-list">
+                {
+                  profileWhyBullets.map((item) => (
+                    <li>{item}</li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <div class="profile-side-stack">
+              <section class="profile-side-block">
+                <p class="profile-side-label">{t(lang, "profile.why.optimizeTitle")}</p>
+                <ul class="profile-detail-list">
+                  {
+                    profileWhyOptimizeItems.map((item) => (
+                      <li>{item}</li>
+                    ))
+                  }
+                </ul>
+              </section>
+
+              <section class="profile-side-block">
+                <p class="profile-side-label">{t(lang, "profile.why.workTitle")}</p>
+                <ul class="profile-detail-list">
+                  {
+                    profileWhyWorkItems.map((item) => (
+                      <li>{item}</li>
+                    ))
+                  }
+                </ul>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id={`about-panel-skills-${lang}`}
+          role="tabpanel"
+          aria-labelledby={`about-tab-mobile-skills-${lang} about-tab-desktop-skills-${lang}`}
+          tabindex="0"
+          data-profile-panel="skills"
+          class="profile-panel min-w-0 max-w-full overflow-x-hidden"
+          hidden
+          aria-hidden="true"
+        >
+          <header class="profile-panel-header">
+            <h3 class="profile-panel-title">{t(lang, "profile.tab.skills")}</h3>
+          </header>
+
+          <ul class="profile-skills-grid">
+            {
+              profileSkillsDisplayItems.map((item) => (
+                <li><TechBadge stack={item} /></li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section
+          id={`about-panel-edu-${lang}`}
+          role="tabpanel"
+          aria-labelledby={`about-tab-mobile-edu-${lang} about-tab-desktop-edu-${lang}`}
+          tabindex="0"
+          data-profile-panel="edu"
+          class="profile-panel min-w-0 max-w-full overflow-x-hidden"
+          hidden
+          aria-hidden="true"
+        >
+          <header class="profile-panel-header">
+            <h3 class="profile-panel-title">{t(lang, "profile.tab.edu")}</h3>
+          </header>
+
+          <div class="profile-education-grid">
+            <section class="profile-section-block">
+              <h4 class="profile-subsection-title">{t(lang, "profile.edu.sectionTitle")}</h4>
+              <ol class="profile-timeline">
+                {
+                  profileEducationTimeline.map((entry) => (
+                    <li class="profile-timeline-item">
+                      <span class="profile-timeline-marker" aria-hidden="true"></span>
+                      <p class="profile-timeline-period">{entry.period}</p>
+                      <p class="profile-timeline-title">{entry.title}</p>
+                      {entry.summary && <p class="profile-timeline-summary">{entry.summary}</p>}
+                      {entry.highlights.length > 0 && (
+                        <ul class="profile-detail-list profile-detail-list-compact">
+                          {entry.highlights.map((highlight) => <li>{highlight}</li>)}
+                        </ul>
+                      )}
+                    </li>
+                  ))
+                }
+              </ol>
+            </section>
+
+            <section class="profile-section-block">
+              <h4 class="profile-subsection-title">{t(lang, "profile.edu.coursesTitle")}</h4>
+              <ol class="profile-timeline">
+                {
+                  profileEducationCourses.map((entry) => (
+                    <li class="profile-timeline-item">
+                      <span class="profile-timeline-marker" aria-hidden="true"></span>
+                      <p class="profile-timeline-period">{entry.period}</p>
+                      <p class="profile-timeline-title">{entry.title}</p>
+                      {entry.summary && <p class="profile-timeline-summary">{entry.summary}</p>}
+                      {entry.highlights.length > 0 && (
+                        <ul class="profile-detail-list profile-detail-list-compact">
+                          {entry.highlights.map((highlight) => <li>{highlight}</li>)}
+                        </ul>
+                      )}
+                    </li>
+                  ))
+                }
+              </ol>
+            </section>
+          </div>
+        </section>
+
+        <section
+          id={`about-panel-lang-${lang}`}
+          role="tabpanel"
+          aria-labelledby={`about-tab-mobile-lang-${lang} about-tab-desktop-lang-${lang}`}
+          tabindex="0"
+          data-profile-panel="lang"
+          class="profile-panel min-w-0 max-w-full overflow-x-hidden"
+          hidden
+          aria-hidden="true"
+        >
+          <header class="profile-panel-header">
+            <h3 class="profile-panel-title">{t(lang, "profile.tab.lang")}</h3>
+          </header>
+
+          <div class="profile-language-grid">
+            <div class="profile-language-column">
+              <h4 class="profile-subsection-title">{t(lang, "profile.lang.cardTitle")}</h4>
+              <dl class="profile-language-list">
+                {
+                  profileLanguages.map((item) => (
+                    <div class="profile-language-item">
+                      <dt class="profile-language-label">{item.label}</dt>
+                      {item.value && <dd class="profile-language-value">{item.value}</dd>}
+                    </div>
+                  ))
+                }
+              </dl>
+            </div>
+
+            <div class="profile-availability">
+              <p class="profile-side-label">{t(lang, "profile.lang.availabilityTitle")}</p>
+              <p class="muted text-sm leading-relaxed">{t(lang, "profile.lang.availabilityBody")}</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline set:html={profileTabsScript}></script>
+</Section>

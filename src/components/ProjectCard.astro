@@ -3,6 +3,8 @@ import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import type { Locale } from "../i18n/locales";
 import { t } from "../i18n/t";
+import { resolveProjectCover } from "../utils/project-covers";
+import TechBadge from "./TechBadge.astro";
 
 interface ProjectLinks {
   live?: string;
@@ -19,38 +21,53 @@ interface Props {
   links?: ProjectLinks;
   reveal?: boolean;
   maxStack?: number;
+  priority?: boolean;
+  variant?: "default" | "featured";
 }
 
-const { lang, slug, title, description, cover, stack, links = {}, reveal = true, maxStack } = Astro.props;
+const { lang, slug, title, description, cover, stack, links = {}, reveal = true, maxStack = 3, priority = false, variant = "default" } = Astro.props;
+const isFeatured = variant === "featured";
 const caseHref = `/${lang}/projects/${slug}`;
-const stackLimit = Math.min(typeof maxStack === "number" ? maxStack : 3, 3);
+const caseCtaLabel = `${t(lang, "projectCase")}: ${title}`;
+const stackLimit = Math.max(0, Math.floor(maxStack));
 const visibleStack = stack.slice(0, stackLimit);
 const extraStackCount = Math.max(0, stack.length - stackLimit);
 const hasExternalLinks = Boolean(links.live || links.github);
-const projectCoverClass =
-  "project-cover-image aspect-[16/9] w-full object-cover transition-transform duration-300 group-hover/project-cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none";
+const resolvedCover = resolveProjectCover(cover);
+const projectCoverClass = isFeatured
+  ? "project-cover-image aspect-[4/3] w-full object-contain"
+  : "project-cover-image aspect-[16/9] w-full object-cover transition-transform duration-300 group-hover/project-cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none";
+const coverWidths = isFeatured ? [320, 480, 640, 800, 960, 1280, 1920] : [320, 480, 640, 800, 960];
+// Featured cards use two columns inside the padded, 1280px-wide container.
+const coverSizes = isFeatured
+  ? "(min-width: 1280px) 554px, (min-width: 1024px) calc(50vw - 86px), (min-width: 640px) calc(50vw - 78px), calc(100vw - 66px)"
+  : "(min-width: 1024px) 29vw, (min-width: 640px) 44vw, 92vw";
 const externalIconButtonClass =
-  "ease-ui ui-press inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-300 bg-white/90 text-zinc-700 transition-transform duration-150 hover:scale-[1.03] hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800";
+  `ease-ui ui-press inline-flex ${isFeatured ? "h-11 w-11" : "h-9 w-9"} items-center justify-center rounded-full border border-zinc-300 bg-white/90 text-zinc-700 transition-transform duration-150 hover:scale-[1.03] hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800`;
 ---
 
 <article class="card ui-hover-lift flex h-full min-w-0 flex-col p-4 sm:p-5" data-reveal={reveal ? "" : undefined}>
-  <a href={caseHref} class="project-cover group/project-cover mb-3 block overflow-hidden rounded-xl">
+  <a href={caseHref} class="project-cover group/project-cover mb-3 block overflow-hidden rounded-xl" aria-label={caseCtaLabel}>
     {
-      typeof cover === "string" ? (
+      typeof resolvedCover === "string" ? (
         <img
-          src={cover}
+          src={resolvedCover}
           alt={title}
           class={projectCoverClass}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
           decoding="async"
+          fetchpriority={priority ? "high" : "auto"}
         />
       ) : (
         <Image
-          src={cover}
+          src={resolvedCover}
           alt={title}
           class={projectCoverClass}
-          loading="lazy"
+          widths={coverWidths}
+          sizes={coverSizes}
+          loading={priority ? "eager" : "lazy"}
           decoding="async"
+          fetchpriority={priority ? "high" : "auto"}
         />
       )
     }
@@ -58,22 +75,24 @@ const externalIconButtonClass =
 
   <div class="flex min-w-0 flex-1 flex-col space-y-3">
     <h3 class="min-w-0 text-lg font-semibold leading-snug sm:text-xl">
-      <a href={caseHref} class="ui-underline block clamp-2">{title}</a>
+      <a href={caseHref} class="ui-underline block clamp-2" aria-label={caseCtaLabel}>{title}</a>
     </h3>
 
-    <p class="project-description muted clamp-2 text-sm">{description}</p>
+    <p class:list={["project-description muted text-sm", !isFeatured && "clamp-2"]}>{description}</p>
 
     <ul class="project-stack flex flex-wrap gap-2" aria-label={t(lang, "projectStackAria")}>
       {
         visibleStack.map((item) => (
-          <li class="chip">{item}</li>
+          <li>
+            <TechBadge stack={item} size="sm" />
+          </li>
         ))
       }
-      {extraStackCount > 0 && <li class="chip">+{extraStackCount}</li>}
+      {extraStackCount > 0 && <li><span class="tech-badge tech-badge-count tech-badge-sm">+{extraStackCount}</span></li>}
     </ul>
 
     <div class="project-actions mt-auto flex flex-wrap items-center justify-between gap-2">
-      <a href={caseHref} class="btn btn-primary px-3 py-2">{t(lang, "projectCase")}</a>
+      <a href={caseHref} class:list={["btn btn-primary px-3 py-2", isFeatured && "min-h-11"]} aria-label={caseCtaLabel}>{t(lang, "projectCase")}</a>
 
       {hasExternalLinks && (
         <div class="flex items-center gap-1.5">

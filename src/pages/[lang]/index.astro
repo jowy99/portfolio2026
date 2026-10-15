@@ -1,15 +1,17 @@
 ---
 import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
+import ContactSection from "../../components/ContactSection.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
+import ProfileSection from "../../components/ProfileSection.astro";
 import Section from "../../components/Section.astro";
-import SkillIcon from "../../components/SkillIcon.astro";
+import TechBadge from "../../components/TechBadge.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { locales, type Locale } from "../../i18n/locales";
-import { t, tList, tValue } from "../../i18n/t";
+import { t, tList } from "../../i18n/t";
 import { assertLocale } from "../../utils/i18n";
 import { filterProjectsByLocale, getProjectSlug } from "../../utils/projects";
-import heroPhoto from "../../assets/hero/IMG_0116.jpeg";
+import heroPhoto from "../../assets/hero/joel.jpeg";
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -31,64 +33,51 @@ const featuredProjects = [...featuredByOrder, ...nonPinned].slice(0, 4);
 const projectsHref = `/${lang}/projects`;
 const contactHref = `/${lang}/#contact`;
 const heroStack = tList(lang, "hero.stack");
-
-const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "hero.bullet3")];
-const profileWhyBullets = tList(lang, "profile.why.bullets");
-const profileWhyOptimizeItems = tList(lang, "profile.why.optimizeItems");
-const profileWhyWorkItems = tList(lang, "profile.why.workItems");
-const profileSkillsItems = tList(lang, "profile.skills.items");
-const profileLanguageItems = tList(lang, "profile.lang.items");
-const profileTabs = [
-  { id: "why", labelKey: "profile.tab.why", shortLabelKey: "profile.tab.short.why" },
-  { id: "skills", labelKey: "profile.tab.skills", shortLabelKey: "profile.tab.short.skills" },
-  { id: "edu", labelKey: "profile.tab.edu", shortLabelKey: "profile.tab.short.edu" },
-  { id: "lang", labelKey: "profile.tab.lang", shortLabelKey: "profile.tab.short.lang" },
-] as const;
-const contactWhyPoints = [
-  t(lang, "contact.whyPoint1"),
-  t(lang, "contact.whyPoint2"),
-  t(lang, "contact.whyPoint3"),
+const siteOrigin = Astro.site?.toString().replace(/\/$/, "");
+const localeHomeUrl = siteOrigin ? `${siteOrigin}/${lang}` : undefined;
+const rootSiteUrl = siteOrigin ? `${siteOrigin}/` : undefined;
+const sameAsProfiles = ["https://www.linkedin.com/in/joelarnaudcarreras/", "https://github.com/jowy99"];
+const homeStructuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: t(lang, "siteName"),
+    jobTitle: t(lang, "seo.person.jobTitle"),
+    ...(localeHomeUrl ? { url: localeHomeUrl } : {}),
+    sameAs: sameAsProfiles,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: t(lang, "siteName"),
+    ...(rootSiteUrl ? { url: rootSiteUrl } : {}),
+    inLanguage: lang,
+  },
 ];
 
-type EducationItem = {
-  period: string;
-  title: string;
-  summary: string;
-  highlights: string[];
-};
-
-const readEducationItems = (value: unknown): EducationItem[] => {
-  if (!Array.isArray(value)) return [];
-  return value
-    .map((item) => {
-      if (!item || typeof item !== "object") return null;
-      const entry = item as Record<string, unknown>;
-      const period = typeof entry.period === "string" ? entry.period.trim() : "";
-      const title = typeof entry.title === "string" ? entry.title.trim() : "";
-      const summary = typeof entry.summary === "string" ? entry.summary.trim() : "";
-      const highlights = Array.isArray(entry.highlights)
-        ? entry.highlights.filter((highlight): highlight is string => typeof highlight === "string" && highlight.trim().length > 0)
-        : [];
-
-      if (!period || !title) return null;
-      return { period, title, summary, highlights };
-    })
-    .filter((entry): entry is EducationItem => Boolean(entry));
-};
-
-const profileEducationTimeline = readEducationItems(tValue(lang, "profile.edu.timeline"));
-const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.courses"));
+const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "hero.bullet3")];
 ---
 
-<BaseLayout lang={lang} title={`${t(lang, "siteName")} | ${t(lang, "navProjects")}`} description={t(lang, "hero.subtitle")}>
-  <section class="flex min-h-[calc(86svh-4.15rem)] items-center py-10 sm:min-h-[calc(100svh-4.15rem)] sm:py-16" data-reveal>
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.homeTitle")}
+  description={t(lang, "meta.homeDescription")}
+  structuredData={homeStructuredData}
+>
+  <section class="hero-section" data-reveal>
     <div class="site-container w-full">
-      <div class="relative z-10 grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-          <div>
+      <div class="relative z-10 grid min-w-0 w-full items-center gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
+          <div class="hero-copy">
             <p class="hero-kicker">{t(lang, "hero.eyebrow")}</p>
-            <h1 class="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">{t(lang, "hero.title")}</h1>
-            <p class="muted mt-5 max-w-2xl text-lg leading-relaxed">{t(lang, "hero.subtitle")}</p>
-            <div class="hero-mobile-glimpse sm:hidden">
+            <h1 class="hero-title">{t(lang, "hero.title")}</h1>
+            <p class="muted mt-3 max-w-2xl text-base leading-relaxed sm:mt-4 sm:text-lg">{t(lang, "hero.subtitle")}</p>
+
+            <div class="hero-actions">
+              <a href={projectsHref} class="btn btn-primary hero-cta-pulse min-h-11 w-full sm:w-auto">{t(lang, "hero.ctaProjects")}</a>
+              <a href={contactHref} class="btn btn-secondary min-h-11 w-full sm:w-auto">{t(lang, "hero.ctaTalk")}</a>
+            </div>
+
+            <div class="hero-mobile-glimpse order-2 sm:hidden">
               <div class="hero-mobile-thumb-shell">
                 <Picture
                   src={heroPhoto}
@@ -98,7 +87,7 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                   widths={[224, 320, 448]}
                   width={320}
                   height={400}
-                  sizes="112px"
+                  sizes="96px"
                   loading="eager"
                   fetchpriority="high"
                   decoding="async"
@@ -113,15 +102,17 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
               </div>
             </div>
 
-            <ul class="mt-4 flex flex-wrap gap-2">
+            <ul class="tech-badge-list tech-badge-list-hero order-3 mt-4">
               {
                 heroStack.map((item, index) => (
-                  <li class="chip hero-stack-chip" style={`--chip-index: ${index};`}>{item}</li>
+                  <li style={`--chip-index: ${index};`}>
+                    <TechBadge stack={item} className="hero-stack-chip" />
+                  </li>
                 ))
               }
             </ul>
 
-            <ul class="hero-list hidden sm:block">
+            <ul class="hero-list order-4">
               {
                 heroBullets.map((point) => (
                   <li class="hero-list-item">
@@ -131,14 +122,6 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                 ))
               }
             </ul>
-
-            <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <a href={projectsHref} class="btn btn-primary hero-cta-pulse w-full sm:w-auto">{t(lang, "hero.ctaProjects")}</a>
-              <a href={contactHref} class="btn btn-secondary w-full sm:w-auto">{t(lang, "hero.ctaTalk")}</a>
-              <a href="/cv-joel-arnaud.pdf" class="ui-underline w-fit text-sm font-medium text-zinc-700 dark:text-zinc-200" download>
-                {t(lang, "hero.ctaCV")}
-              </a>
-            </div>
 
           </div>
 
@@ -152,7 +135,7 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                 widths={[360, 540, 720, 960]}
                 width={960}
                 height={960}
-                sizes="(max-width: 640px) 90vw, (min-width: 1024px) 28rem, 50vw"
+                sizes="(min-width: 1280px) 426px, (min-width: 1024px) 362px, 234px"
                 loading="eager"
                 fetchpriority="high"
                 decoding="async"
@@ -184,7 +167,9 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
               cover={project.data.cover}
               stack={project.data.stack}
               links={project.data.links}
+              variant="featured"
               maxStack={4}
+              priority={index < 2}
             />
           </div>
         ))
@@ -192,765 +177,11 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
     </div>
 
     <div class="mt-6" data-reveal>
-      <a href={projectsHref} class="btn btn-secondary">{t(lang, "home.featuredCtaAll")}</a>
+      <a href={projectsHref} class="btn btn-secondary min-h-11">{t(lang, "home.featuredCtaAll")}</a>
     </div>
   </Section>
 
-  <Section id="about" title={t(lang, "profile.title")} intro={t(lang, "profile.subtitle")} className="defer-content">
-    <div class="profile-layout min-w-0 max-w-full overflow-x-hidden" data-profile-tabs data-default-tab="why" data-reveal>
-      <div
-        role="tablist"
-        aria-label={t(lang, "profile.title")}
-        data-profile-tablist
-        class="profile-tablist-mobile grid min-w-0 max-w-full grid-cols-2 gap-2 pb-2 pt-1 lg:hidden"
-      >
-        {
-          profileTabs.map((tab) => (
-            <button
-              id={`about-tab-mobile-${tab.id}-${lang}`}
-              type="button"
-              role="tab"
-              aria-selected={tab.id === "why" ? "true" : "false"}
-              aria-controls={`about-panel-${tab.id}-${lang}`}
-              aria-label={t(lang, tab.labelKey)}
-              tabindex={tab.id === "why" ? "0" : "-1"}
-              class="profile-tab profile-tab-mobile inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-full border px-3 py-2 text-sm leading-none"
-              data-profile-tab={tab.id}
-            >
-              {tab.id === "why" && (
-                <svg class="h-4 w-4 shrink-0 text-current" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M12 3.5l2.78 5.63 6.22.9-4.5 4.39 1.06 6.2L12 17.7l-5.56 2.92 1.06-6.2-4.5-4.39 6.22-.9L12 3.5z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-              )}
-              {tab.id === "skills" && (
-                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center font-mono text-[0.72rem] leading-none" aria-hidden="true">
-                  {`{}`}
-                </span>
-              )}
-              {tab.id === "edu" && (
-                <svg class="h-4 w-4 shrink-0 text-current" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M3.5 9.3L12 5l8.5 4.3L12 13.6 3.5 9.3z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M7 11.5v3.2c0 1.1 2.2 2 5 2s5-.9 5-2v-3.2"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linecap="round"
-                  ></path>
-                </svg>
-              )}
-              {tab.id === "lang" && (
-                <svg class="h-4 w-4 shrink-0 text-current" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"></circle>
-                  <path d="M3.5 12h17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
-                  <path
-                    d="M12 3.5c2.3 2.3 3.6 5.3 3.6 8.5S14.3 18.2 12 20.5c-2.3-2.3-3.6-5.3-3.6-8.5S9.7 5.8 12 3.5z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                  ></path>
-                </svg>
-              )}
-              <span class="text-center text-sm leading-none">{t(lang, tab.shortLabelKey)}</span>
-            </button>
-          ))
-        }
-      </div>
+  <ProfileSection lang={lang} />
 
-      <div class="grid min-w-0 max-w-full gap-6 lg:grid-cols-[280px_1fr] lg:items-start">
-        <aside class="hidden self-start lg:sticky lg:block lg:self-start">
-          <div
-            role="tablist"
-            aria-label={t(lang, "profile.title")}
-            data-profile-tablist
-            class="profile-tablist-desktop space-y-2"
-          >
-            {
-              profileTabs.map((tab) => (
-                <button
-                  id={`about-tab-desktop-${tab.id}-${lang}`}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab.id === "why" ? "true" : "false"}
-                  aria-controls={`about-panel-${tab.id}-${lang}`}
-                  tabindex={tab.id === "why" ? "0" : "-1"}
-                  class="profile-tab profile-tab-desktop w-full"
-                  data-profile-tab={tab.id}
-                >
-                  {t(lang, tab.labelKey)}
-                </button>
-              ))
-            }
-          </div>
-        </aside>
-
-        <div class="profile-panels flex min-w-0 max-w-full self-start flex-col gap-4 lg:h-[34rem] lg:self-start">
-        <section
-          id={`about-panel-why-${lang}`}
-          role="tabpanel"
-          aria-labelledby={`about-tab-mobile-why-${lang} about-tab-desktop-why-${lang}`}
-          tabindex="0"
-          data-profile-panel="why"
-          class="profile-panel min-w-0 max-w-full space-y-4 overflow-x-hidden"
-        >
-          <article class="card space-y-4">
-            <h3 class="text-lg font-semibold">{t(lang, "profile.tab.why")}</h3>
-            <ul class="muted list-disc space-y-2 pl-5 text-sm leading-relaxed">
-              {
-                profileWhyBullets.map((item) => (
-                  <li>{item}</li>
-                ))
-              }
-            </ul>
-          </article>
-
-          <div class="grid min-w-0 gap-4 md:grid-cols-2">
-            <article class="card space-y-3">
-              <h4 class="text-base font-semibold">{t(lang, "profile.why.optimizeTitle")}</h4>
-              <ul class="muted list-disc space-y-1.5 pl-5 text-sm">
-                {
-                  profileWhyOptimizeItems.map((item) => (
-                    <li>{item}</li>
-                  ))
-                }
-              </ul>
-            </article>
-
-            <article class="card space-y-3">
-              <h4 class="text-base font-semibold">{t(lang, "profile.why.workTitle")}</h4>
-              <ul class="muted list-disc space-y-1.5 pl-5 text-sm">
-                {
-                  profileWhyWorkItems.map((item) => (
-                    <li>{item}</li>
-                  ))
-                }
-              </ul>
-            </article>
-          </div>
-        </section>
-
-        <section
-          id={`about-panel-skills-${lang}`}
-          role="tabpanel"
-          aria-labelledby={`about-tab-mobile-skills-${lang} about-tab-desktop-skills-${lang}`}
-          tabindex="0"
-          data-profile-panel="skills"
-          class="profile-panel min-w-0 max-w-full space-y-4 overflow-x-hidden"
-          hidden
-          aria-hidden="true"
-        >
-          <article class="card space-y-4">
-            <h3 class="text-lg font-semibold">{t(lang, "profile.tab.skills")}</h3>
-            <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {
-                profileSkillsItems.map((item) => (
-                  <li class="rounded-xl border border-zinc-200 bg-zinc-50/70 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-900/60">
-                    <p class="flex items-center gap-3 text-sm font-medium text-zinc-800 dark:text-zinc-100">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-300/80 bg-white/80 font-mono text-[0.68rem] text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800/70 dark:text-zinc-300"
-                        aria-hidden="true"
-                      >
-                        <SkillIcon stack={item} className="h-4 w-4" />
-                      </span>
-                      <span>{item}</span>
-                    </p>
-                  </li>
-                ))
-              }
-            </ul>
-          </article>
-        </section>
-
-        <section
-          id={`about-panel-edu-${lang}`}
-          role="tabpanel"
-          aria-labelledby={`about-tab-mobile-edu-${lang} about-tab-desktop-edu-${lang}`}
-          tabindex="0"
-          data-profile-panel="edu"
-          class="profile-panel profile-panel-scroll min-w-0 max-w-full space-y-4 overflow-x-hidden lg:h-full lg:overflow-y-auto lg:pr-1"
-          hidden
-          aria-hidden="true"
-        >
-          <div class="min-w-0 flex flex-col gap-4">
-            <article class="card space-y-4">
-              <h3 class="text-lg font-semibold">{t(lang, "profile.edu.sectionTitle")}</h3>
-              <ol class="divide-y divide-zinc-200/60 dark:divide-zinc-800/60">
-                {
-                  profileEducationTimeline.map((entry) => (
-                    <li class="py-5 first:pt-0 last:pb-0 sm:py-6">
-                      <p class="text-xs text-zinc-500 dark:text-zinc-400">{entry.period}</p>
-                      <p class="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">{entry.title}</p>
-                      {entry.summary && <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{entry.summary}</p>}
-                      {entry.highlights.length > 0 && (
-                        <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-300">
-                          {entry.highlights.map((highlight) => <li>{highlight}</li>)}
-                        </ul>
-                      )}
-                    </li>
-                  ))
-                }
-              </ol>
-            </article>
-
-            <article class="card space-y-4">
-              <h3 class="text-lg font-semibold">{t(lang, "profile.edu.coursesTitle")}</h3>
-              <ol class="divide-y divide-zinc-200/60 dark:divide-zinc-800/60">
-                {
-                  profileEducationCourses.map((entry) => (
-                    <li class="py-5 first:pt-0 last:pb-0 sm:py-6">
-                      <p class="text-xs text-zinc-500 dark:text-zinc-400">{entry.period}</p>
-                      <p class="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">{entry.title}</p>
-                      {entry.summary && <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{entry.summary}</p>}
-                      {entry.highlights.length > 0 && (
-                        <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-300">
-                          {entry.highlights.map((highlight) => <li>{highlight}</li>)}
-                        </ul>
-                      )}
-                    </li>
-                  ))
-                }
-              </ol>
-            </article>
-          </div>
-        </section>
-
-        <section
-          id={`about-panel-lang-${lang}`}
-          role="tabpanel"
-          aria-labelledby={`about-tab-mobile-lang-${lang} about-tab-desktop-lang-${lang}`}
-          tabindex="0"
-          data-profile-panel="lang"
-          class="profile-panel min-w-0 max-w-full space-y-4 overflow-x-hidden"
-          hidden
-          aria-hidden="true"
-        >
-          <article class="card space-y-3">
-            <h3 class="text-lg font-semibold">{t(lang, "profile.tab.lang")}</h3>
-            <ul class="muted list-disc space-y-2 pl-5 text-sm leading-relaxed">
-              {
-                profileLanguageItems.map((item) => (
-                  <li>{item}</li>
-                ))
-              }
-            </ul>
-          </article>
-        </section>
-      </div>
-      </div>
-    </div>
-
-    <script is:inline>
-      (() => {
-        const root = document.querySelector("[data-profile-tabs]");
-        if (!(root instanceof HTMLElement)) return;
-
-        const tablists = Array.from(root.querySelectorAll('[role="tablist"][data-profile-tablist]'));
-        const tabs = Array.from(root.querySelectorAll('[role="tab"][data-profile-tab]'));
-        const panels = Array.from(root.querySelectorAll('[role="tabpanel"][data-profile-panel]'));
-        if (tablists.length === 0 || tabs.length === 0 || panels.length === 0) return;
-
-        const valid = new Set(
-          tabs
-            .map((tab) => tab.getAttribute("data-profile-tab"))
-            .filter((value) => Boolean(value)),
-        );
-
-        const readHashTab = () => {
-          const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "";
-          if (!hash.startsWith("profile=")) return null;
-          const value = hash.slice("profile=".length);
-          return valid.has(value) ? value : null;
-        };
-
-        const writeHashTab = (value) => {
-          const nextHash = `#profile=${value}`;
-          if (window.location.hash === nextHash) return;
-          history.replaceState(null, "", `${window.location.pathname}${window.location.search}${nextHash}`);
-        };
-
-        const activate = (value, { focus = false, updateHash = true, focusWithin = null } = {}) => {
-          if (!valid.has(value)) return;
-
-          for (const tab of tabs) {
-            if (!(tab instanceof HTMLButtonElement)) continue;
-            const isActive = tab.dataset.profileTab === value;
-            tab.setAttribute("aria-selected", isActive ? "true" : "false");
-            tab.tabIndex = isActive ? 0 : -1;
-            tab.classList.toggle("is-active", isActive);
-          }
-
-          if (focus) {
-            const targetTab = tabs.find((tab) => {
-              if (!(tab instanceof HTMLButtonElement)) return false;
-              if (tab.dataset.profileTab !== value) return false;
-              if (!(focusWithin instanceof HTMLElement)) return true;
-              return tab.closest("[data-profile-tablist]") === focusWithin;
-            });
-            if (targetTab instanceof HTMLButtonElement) targetTab.focus();
-          }
-
-          for (const panel of panels) {
-            if (!(panel instanceof HTMLElement)) continue;
-            const isActive = panel.dataset.profilePanel === value;
-            panel.hidden = !isActive;
-            panel.setAttribute("aria-hidden", isActive ? "false" : "true");
-            panel.classList.toggle("is-active", isActive);
-          }
-
-          if (updateHash) writeHashTab(value);
-        };
-
-        const initial =
-          readHashTab() ??
-          tabs.find((tab) => tab.getAttribute("aria-selected") === "true")?.getAttribute("data-profile-tab") ??
-          tabs[0]?.getAttribute("data-profile-tab") ??
-          root.getAttribute("data-default-tab") ??
-          "why";
-
-        activate(initial, { updateHash: false });
-
-        for (const tab of tabs) {
-          if (!(tab instanceof HTMLButtonElement)) continue;
-          tab.addEventListener("click", () => {
-            const value = tab.dataset.profileTab;
-            if (value) activate(value);
-          });
-        }
-
-        for (const tablist of tablists) {
-          if (!(tablist instanceof HTMLElement)) continue;
-          tablist.addEventListener("keydown", (event) => {
-            const key = event.key;
-            if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(key)) return;
-            event.preventDefault();
-
-            const listTabs = tabs.filter((tab) => tab.closest("[data-profile-tablist]") === tablist);
-            const currentIndex = listTabs.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
-            if (currentIndex < 0) return;
-
-            let nextIndex = currentIndex;
-            if (key === "Home") nextIndex = 0;
-            if (key === "End") nextIndex = listTabs.length - 1;
-            if (key === "ArrowRight" || key === "ArrowDown") nextIndex = (currentIndex + 1) % listTabs.length;
-            if (key === "ArrowLeft" || key === "ArrowUp") nextIndex = (currentIndex - 1 + listTabs.length) % listTabs.length;
-
-            const nextTab = listTabs[nextIndex];
-            if (!(nextTab instanceof HTMLButtonElement)) return;
-            const value = nextTab.dataset.profileTab;
-            if (value) activate(value, { focus: true, focusWithin: tablist });
-          });
-        }
-
-        window.addEventListener("hashchange", () => {
-          const value = readHashTab();
-          if (value) activate(value, { updateHash: false });
-        });
-      })();
-    </script>
-  </Section>
-
-  <Section id="contact" className="defer-content pb-16 sm:pb-20 lg:pb-28">
-    <div class="contact-unified" data-reveal>
-      <div class="contact-copy-panel">
-        <h2 class="text-4xl font-semibold leading-[1.05] sm:text-5xl">{t(lang, "contactTitle")}</h2>
-        <p class="muted mt-6 max-w-md text-sm leading-relaxed">{t(lang, "contactSubtitle")}</p>
-        <p class="muted mt-4 max-w-md text-sm leading-relaxed">{t(lang, "contact.whyIntro")}</p>
-
-        <ul class="mt-6 space-y-2.5 text-sm leading-relaxed">
-          {
-            contactWhyPoints.map((point) => (
-              <li class="flex gap-2.5">
-                <span class="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-500 dark:bg-zinc-400" aria-hidden="true"></span>
-                <span class="muted">{point}</span>
-              </li>
-            ))
-          }
-        </ul>
-
-        <div class="mt-8 border-t border-zinc-200 pt-5 dark:border-zinc-800">
-          <p class="text-xs font-semibold uppercase tracking-[0.08em] text-zinc-600 dark:text-zinc-300">{t(lang, "contact.socialTitle")}</p>
-          <div class="mt-3 flex flex-wrap gap-4">
-            <a
-              href="https://www.linkedin.com/in/joelarnaudcarreras/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="ui-underline inline-flex items-center gap-2 text-sm font-medium"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M6.94 8.56H3.56V20h3.38V8.56Zm.22-3.53A1.96 1.96 0 1 0 3.24 5a1.96 1.96 0 0 0 3.92.03Zm13.28 7.87c0-3.43-1.83-5.03-4.27-5.03-1.97 0-2.85 1.08-3.34 1.84V8.56H9.44V20h3.39v-5.66c0-1.49.28-2.93 2.13-2.93 1.82 0 1.84 1.7 1.84 3.03V20h3.4v-7.1Z"></path>
-              </svg>
-              {t(lang, "contactLinkedIn")}
-            </a>
-            <a
-              href="https://github.com/jowy99"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="ui-underline inline-flex items-center gap-2 text-sm font-medium"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <use href="#icon-github"></use>
-              </svg>
-              {t(lang, "projectGithub")}
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="contact-form-panel">
-        <div class="contact-form-shell">
-          <form
-            class="grid gap-4 sm:grid-cols-2"
-            method="post"
-            action="/api/contact"
-            aria-label={t(lang, "contactTitle")}
-            data-contact-form
-            data-msg-sending={t(lang, "contact.status.sending")}
-            data-msg-success={t(lang, "contact.status.success")}
-            data-msg-error={t(lang, "contact.status.errorGeneric")}
-            data-msg-invalid={t(lang, "contact.feedback.invalid")}
-            data-msg-rate-limit={t(lang, "contact.feedback.rateLimit")}
-            data-msg-unavailable={t(lang, "contact.feedback.unavailable")}
-          >
-              <label class="contact-field-group" for={`contact-name-${lang}`}>
-                <span class="label">{`${t(lang, "contact.nameLabel")}*`}</span>
-                <input
-                  id={`contact-name-${lang}`}
-                  type="text"
-                  name="name"
-                  autocomplete="name"
-                  required
-                  aria-required="true"
-                  class="field"
-                  placeholder={t(lang, "contact.namePlaceholder")}
-                />
-              </label>
-
-              <label class="contact-field-group" for={`contact-email-${lang}`}>
-                <span class="label">{`${t(lang, "contact.emailLabel")}*`}</span>
-                <input
-                  id={`contact-email-${lang}`}
-                  type="email"
-                  name="email"
-                  autocomplete="email"
-                  required
-                  aria-required="true"
-                  class="field"
-                  placeholder={t(lang, "contact.emailPlaceholder")}
-                />
-              </label>
-
-              <label class="contact-field-group sm:col-span-2" for={`contact-message-${lang}`}>
-                <span class="label">{`${t(lang, "contact.messageLabel")}*`}</span>
-                <textarea
-                  id={`contact-message-${lang}`}
-                  rows="5"
-                  name="message"
-                  required
-                  aria-required="true"
-                  class="field field-textarea"
-                  placeholder={t(lang, "contact.messagePlaceholder")}
-                ></textarea>
-              </label>
-
-            <input
-              id={`contact-company-${lang}`}
-              type="text"
-              name="company"
-              tabindex="-1"
-              autocomplete="off"
-              class="sr-only"
-              aria-label={t(lang, "contact.companyField")}
-              aria-hidden="true"
-            />
-
-            <input type="hidden" name="form_started_at" value="" data-contact-started-at />
-            <input type="hidden" name="lang" value={lang} />
-            <input type="hidden" name="redirect_to" value={`/${lang}/#contact`} />
-
-            <button
-              type="submit"
-              class="btn btn-secondary w-full sm:col-span-2 motion-safe:hover:-translate-y-0.5 transition-transform"
-              data-contact-submit
-              data-label-default={t(lang, "contactSend")}
-              data-label-sending={t(lang, "contact.status.sending")}
-            >
-              {t(lang, "contactSend")}
-            </button>
-            <p class="contact-form-status notice hidden sm:col-span-2" data-contact-status role="status" aria-live="polite" aria-hidden="true"></p>
-            <p class="contact-form-toast notice hidden" data-contact-toast role="status" aria-live="polite" aria-hidden="true"></p>
-            <p class="help sm:col-span-2">{t(lang, "contactNote")}</p>
-          </form>
-        </div>
-      </div>
-    </div>
-  </Section>
-
-  <script is:inline>
-    (() => {
-      const forms = Array.from(document.querySelectorAll("[data-contact-form]"));
-      if (forms.length === 0) return;
-
-      const queryStatus = new URLSearchParams(window.location.search).get("contact");
-      const queryStatusMap = {
-        sent: "success",
-        invalid: "invalid",
-        rate_limit: "rateLimit",
-        service_unavailable: "unavailable",
-        send_error: "error",
-      };
-      const STATUS_ANIMATION_MS = 200;
-      const STATUS_SUCCESS_HIDE_MS = 5200;
-      const hideTimers = new WeakMap();
-      const cleanupTimers = new WeakMap();
-      const SVG_NS = "http://www.w3.org/2000/svg";
-      const toastMounted = new WeakSet();
-
-      const getMessage = (form, code) => {
-        const dataset = form.dataset;
-        if (code === "success") return dataset.msgSuccess || "";
-        if (code === "sending") return dataset.msgSending || "";
-        if (code === "invalid") return dataset.msgInvalid || dataset.msgError || "";
-        if (typeof code === "string" && code.startsWith("invalid_")) return dataset.msgInvalid || dataset.msgError || "";
-        if (code === "rate_limited") return dataset.msgRateLimit || dataset.msgError || "";
-        if (code === "service_unavailable") return dataset.msgUnavailable || dataset.msgError || "";
-        if (code === "rateLimit") return dataset.msgRateLimit || dataset.msgError || "";
-        if (code === "unavailable") return dataset.msgUnavailable || dataset.msgError || "";
-        if (typeof code === "string" && code.trim().length > 0 && !code.includes("_")) return code;
-        return dataset.msgError || "";
-      };
-
-      const createStatusIcon = (type) => {
-        const svg = document.createElementNS(SVG_NS, "svg");
-        svg.setAttribute("viewBox", "0 0 24 24");
-        svg.setAttribute("width", "16");
-        svg.setAttribute("height", "16");
-        svg.setAttribute("fill", "none");
-        svg.setAttribute("stroke", "currentColor");
-        svg.setAttribute("stroke-width", "2");
-        svg.setAttribute("stroke-linecap", "round");
-        svg.setAttribute("stroke-linejoin", "round");
-
-        if (type === "info") {
-          const track = document.createElementNS(SVG_NS, "circle");
-          track.setAttribute("cx", "12");
-          track.setAttribute("cy", "12");
-          track.setAttribute("r", "8");
-          track.setAttribute("opacity", "0.3");
-
-          const arc = document.createElementNS(SVG_NS, "path");
-          arc.setAttribute("d", "M20 12a8 8 0 0 0-8-8");
-          arc.setAttribute("class", "notice-spinner");
-
-          svg.append(track, arc);
-          return svg;
-        }
-
-        if (type === "success") {
-          const circle = document.createElementNS(SVG_NS, "circle");
-          circle.setAttribute("cx", "12");
-          circle.setAttribute("cy", "12");
-          circle.setAttribute("r", "9");
-          circle.setAttribute("opacity", "0.3");
-
-          const check = document.createElementNS(SVG_NS, "path");
-          check.setAttribute("d", "M7 12.5l3.2 3.2L17 9.2");
-
-          svg.append(circle, check);
-          return svg;
-        }
-
-        const triangle = document.createElementNS(SVG_NS, "path");
-        triangle.setAttribute("d", "M12 4.2 20 19H4L12 4.2Z");
-        triangle.setAttribute("opacity", "0.3");
-
-        const line = document.createElementNS(SVG_NS, "path");
-        line.setAttribute("d", "M12 9.4v5");
-
-        const dot = document.createElementNS(SVG_NS, "circle");
-        dot.setAttribute("cx", "12");
-        dot.setAttribute("cy", "16.7");
-        dot.setAttribute("r", "0.7");
-        dot.setAttribute("fill", "currentColor");
-        dot.setAttribute("stroke", "none");
-
-        svg.append(triangle, line, dot);
-        return svg;
-      };
-
-      const renderStatusContent = (statusEl, type, message) => {
-        if (!(statusEl instanceof HTMLElement)) return;
-        statusEl.replaceChildren();
-
-        const icon = document.createElement("span");
-        icon.className = "notice-icon";
-        icon.setAttribute("aria-hidden", "true");
-        icon.append(createStatusIcon(type));
-
-        const text = document.createElement("span");
-        text.className = "notice-text";
-        text.textContent = message;
-
-        statusEl.append(icon, text);
-      };
-
-      const clearStatusTimers = (statusEl) => {
-        const hideTimer = hideTimers.get(statusEl);
-        if (hideTimer) {
-          window.clearTimeout(hideTimer);
-          hideTimers.delete(statusEl);
-        }
-        const cleanupTimer = cleanupTimers.get(statusEl);
-        if (cleanupTimer) {
-          window.clearTimeout(cleanupTimer);
-          cleanupTimers.delete(statusEl);
-        }
-      };
-
-      const hideStatus = (statusEl) => {
-        if (!(statusEl instanceof HTMLElement)) return;
-        clearStatusTimers(statusEl);
-        statusEl.classList.remove("is-visible");
-        statusEl.setAttribute("aria-hidden", "true");
-
-        const cleanupTimer = window.setTimeout(() => {
-          if (statusEl.classList.contains("is-visible")) return;
-          statusEl.classList.add("hidden");
-          statusEl.classList.remove("is-success", "is-error", "is-info");
-          statusEl.replaceChildren();
-        }, STATUS_ANIMATION_MS);
-
-        cleanupTimers.set(statusEl, cleanupTimer);
-      };
-
-      const showStatus = (statusEl, type, message, { autoHideMs = 0 } = {}) => {
-        if (!(statusEl instanceof HTMLElement)) return;
-        if (!message) return;
-        clearStatusTimers(statusEl);
-        statusEl.classList.remove("hidden", "is-success", "is-error", "is-info", "is-visible");
-        statusEl.setAttribute("aria-hidden", "false");
-        renderStatusContent(statusEl, type, message);
-
-        if (type === "success") {
-          statusEl.classList.add("is-success");
-          statusEl.setAttribute("role", "status");
-          statusEl.setAttribute("aria-live", "polite");
-        } else if (type === "info") {
-          statusEl.classList.add("is-info");
-          statusEl.setAttribute("role", "status");
-          statusEl.setAttribute("aria-live", "polite");
-        } else {
-          statusEl.classList.add("is-error");
-          statusEl.setAttribute("role", "alert");
-          statusEl.setAttribute("aria-live", "assertive");
-        }
-
-        window.requestAnimationFrame(() => {
-          statusEl.classList.add("is-visible");
-        });
-
-        if (autoHideMs > 0) {
-          const hideTimer = window.setTimeout(() => hideStatus(statusEl), autoHideMs);
-          hideTimers.set(statusEl, hideTimer);
-        }
-      };
-
-      for (const node of forms) {
-        if (!(node instanceof HTMLFormElement)) continue;
-        const form = node;
-        const statusEl = form.querySelector("[data-contact-status]");
-        const toastEl = form.querySelector("[data-contact-toast]");
-        const submitButton = form.querySelector("[data-contact-submit]");
-        const startedAtInput = form.querySelector("[data-contact-started-at]");
-
-        if (toastEl instanceof HTMLElement && !toastMounted.has(toastEl)) {
-          document.body.append(toastEl);
-          toastMounted.add(toastEl);
-        }
-
-        if (startedAtInput instanceof HTMLInputElement && !startedAtInput.value) {
-          startedAtInput.value = String(Date.now());
-        }
-
-        if (queryStatus) {
-          const mappedStatus = queryStatusMap[queryStatus];
-          if (mappedStatus === "success") {
-            hideStatus(statusEl);
-            showStatus(toastEl, "success", getMessage(form, mappedStatus), { autoHideMs: STATUS_SUCCESS_HIDE_MS });
-          } else if (mappedStatus) {
-            hideStatus(statusEl);
-            showStatus(toastEl, "error", getMessage(form, mappedStatus));
-          }
-        }
-
-        form.addEventListener("submit", async (event) => {
-          event.preventDefault();
-          if (!form.reportValidity()) return;
-
-          if (!(submitButton instanceof HTMLButtonElement)) return;
-          const defaultLabel = submitButton.dataset.labelDefault || submitButton.textContent || "";
-          const sendingLabel = submitButton.dataset.labelSending || defaultLabel;
-
-          submitButton.disabled = true;
-          submitButton.textContent = sendingLabel;
-          form.setAttribute("aria-busy", "true");
-          hideStatus(toastEl);
-          showStatus(statusEl, "info", getMessage(form, "sending"));
-
-          const formData = new FormData(form);
-          if (startedAtInput instanceof HTMLInputElement && !startedAtInput.value) {
-            startedAtInput.value = String(Date.now());
-            formData.set("form_started_at", startedAtInput.value);
-          }
-
-          try {
-            const response = await fetch(form.action, {
-              method: "POST",
-              body: formData,
-              headers: {
-                accept: "application/json",
-              },
-            });
-
-            const payload = await response.json().catch(() => null);
-            const isSuccess = response.ok && payload && payload.ok === true;
-
-            if (isSuccess) {
-              form.reset();
-              if (startedAtInput instanceof HTMLInputElement) {
-                startedAtInput.value = String(Date.now());
-              }
-              hideStatus(statusEl);
-              showStatus(toastEl, "success", getMessage(form, "success"), { autoHideMs: STATUS_SUCCESS_HIDE_MS });
-              return;
-            }
-
-            const errorCode = payload && typeof payload.error === "string" ? payload.error : "error";
-            hideStatus(statusEl);
-            showStatus(toastEl, "error", getMessage(form, errorCode));
-          } catch {
-            hideStatus(statusEl);
-            showStatus(toastEl, "error", getMessage(form, "error"));
-          } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = defaultLabel;
-            form.removeAttribute("aria-busy");
-          }
-        });
-      }
-
-      if (queryStatus) {
-        const nextUrl = new URL(window.location.href);
-        nextUrl.searchParams.delete("contact");
-        history.replaceState(null, "", `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
-      }
-    })();
-  </script>
+  <ContactSection lang={lang} />
 </BaseLayout>
