@@ -3,7 +3,7 @@
 Portfolio construido con Astro + Tailwind v4, i18n por rutas y enfoque Astro-first (sin SPA ni React).
 
 ## Stack
-- Astro 5 + TypeScript
+- Astro 7 + TypeScript
 - `@astrojs/node` (rutas API en servidor + páginas prerenderizadas)
 - Tailwind CSS v4 (`@tailwindcss/vite`)
 - Content Collections (Markdown) para proyectos
@@ -30,6 +30,7 @@ npm run start
 npm run preview
 npm run compress:dist
 npm run preview:perf
+npm run test:preview
 ```
 
 Puertos por defecto:
@@ -46,7 +47,7 @@ npm run build && npm run preview
 Luego ejecuta Lighthouse contra la URL de preview:
 
 ```bash
-npx lighthouse http://localhost:4322/es --preset=mobile
+npx lighthouse http://localhost:4322/es
 ```
 
 No ejecutes Lighthouse sobre `npm run dev`.
@@ -60,9 +61,20 @@ Si quieres auditar localmente con compresion activa (brotli/gzip), usa:
 npm run preview:perf
 ```
 
-Ese comando construye `dist`, genera `.br/.gz` y sirve con `Content-Encoding`.
+Ese comando construye `dist` y sirve el build con compresion HTTP Brotli/gzip,
+incluidas las rutas SSR (busqueda y filtros). No genera ni necesita `.br/.gz`.
+`compress:dist` sigue disponible para servidores que utilicen archivos precomprimidos.
+
+La vista previa usa `127.0.0.1:4322`; puedes cambiarlo con `HOST` y `PORT`.
+Las configuraciones de Nginx en `ops/nginx/` habilitan gzip para el despliegue.
+Modificar estos archivos no actualiza el servidor remoto: requieren instalacion,
+`nginx -t` y recarga durante un despliegue autorizado.
+Tras compilar, `pnpm run test:preview` comprueba compresion, integridad de las
+respuestas, rutas SSR, cache y archivos estaticos sin enviar correos.
 
 ## Notas de rendimiento
+Resultados y condiciones de la ultima medicion: [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md).
+
 - Hero migrado a `astro:assets` con `<Picture>` responsivo (`avif/webp/jpeg`) y tamaños adaptados.
 - Covers de proyectos integradas en content collection con `image()` + `<Image>` para definir dimensiones y evitar CLS.
 - Eliminado `@import` remoto de Google Fonts para reducir recursos bloqueantes.
@@ -106,7 +118,7 @@ http://localhost:4321
 - `http://localhost:4322/ca`
 - `http://localhost:4322/fr`
 - `http://localhost:4322/es/projects`
-- `http://localhost:4322/es/projects/atlas-ui`
+- `http://localhost:4322/es/projects/weather-app`
 - `http://localhost:4322/robots.txt`
 
 ## Formulario de contacto (Gmail SMTP)
