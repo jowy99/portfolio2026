@@ -11,7 +11,7 @@ stack:
   - CLI
 links:
   github: "https://github.com/jowy99/Proyecto-Python-SQL"
-role: "Solo Developer"
+role: "Academic project"
 impact:
   - "Completed in parallel with Monopoly, taking on work designed for a 3-person team"
   - "Functional CRUD over multiple tables in one terminal app"
@@ -20,44 +20,49 @@ impact:
 
 ## Summary
 
-Python DB Manager is an academic terminal application for basic database operations across multiple tables. The project connects to MySQL and allows direct data manipulation from the command line.
+- Terminal program connected to MySQL
+- Manages students and modules
+- Done alone, though meant for a group
 
-Although it was designed as a team assignment, I developed it independently and in parallel with Monopoly.
+## Goals
 
-## Objectives
-
-1. Implement a stable connection between Python and MySQL.
-2. Support create, delete, update, and read operations from terminal.
-3. Manage multiple tables within one application flow.
-4. Meet all functional requirements of the academic assignment.
+- Connect Python with MySQL
+- Manage data from the terminal
+- Work with several tables
+- Meet the assignment's requirements
 
 ## Challenges
 
-The main challenge was the lack of clear guidance from the professor on both project structure and technical implementation. I had to research autonomously how to connect, query, and update MySQL from Python.
+- Defining the structure on my own
+- Learning to query MySQL from Python
+- Building it alongside Monopoly
 
-The workload was also demanding because this project and Monopoly were both originally planned for group work.
+## Technical decisions
 
-## Technical Decisions
-
-I chose a direct CLI flow, with operations grouped by action type to keep usage clear. The data-access layer was organized to reuse common queries and reduce duplication.
-
-The priority was stable CRUD behavior and consistent data handling across tables.
+- Terminal menu organized by action
+- Reusing common queries
+- Checking data before acting
 
 ## Highlights
 
-- Operations to add, remove, edit, and view records.
-- Simultaneous management of multiple tables from one app.
-- Functional Python + MySQL integration in an academic context.
-- 100% terminal implementation, no GUI.
+- Registering and removing students
+- Enrolling in modules
+- Student and module listings
 
 ## Results / Impact
 
-The project was completed functionally within the expected academic scope. It demonstrated technical autonomy and ability to unblock issues without direct support.
+- Assignment completed
+- Code available on GitHub
 
-It also strengthened my ability to work on parallel workstreams and maintain consistent delivery under constraints.
+## Learnings
 
-## What I Learned / What I'd Improve
+### What I learned
 
-I learned that clean, modular code structure significantly reduces change cost when requirements are unclear. I also confirmed that documenting technical decisions early speeds up debugging and maintenance.
+- Combining Python and SQL
+- The value of clear, modular code
 
-In a future iteration, I would add stricter validations, improved error handling, and a small set of automated tests for critical queries.
+### What I'd do better
+
+- Stricter validation
+- Better error handling
+- Tests for the queries

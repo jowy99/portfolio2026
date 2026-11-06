@@ -10,7 +10,7 @@ stack:
   - CLI
 links:
   github: "https://github.com/jowy99/monopoly"
-role: "Solo Developer"
+role: "Academic project"
 impact:
   - "Completed independently although originally planned for a 3-person team"
   - "Functional terminal version with core game mechanics"
@@ -19,44 +19,48 @@ impact:
 
 ## Summary
 
-Monopoly is a basic terminal implementation of the classic board game. It was developed as an academic assignment and met the functional requirements defined for the course.
+- Monopoly game for the terminal, in Java
+- Board with 10 streets
+- Done alone, though meant for three people
 
-Although the work was planned for a three-person team, I handled the entire implementation myself and built the project from scratch.
+## Goals
 
-## Objectives
-
-1. Build a functional Java console game.
-2. Meet the assignment's academic criteria.
-3. Apply object-oriented programming concepts in a practical case.
-4. Deliver a stable result within the available timeline.
+- Build a working game in Java
+- Apply object-oriented programming
+- Meet the assignment's criteria
 
 ## Challenges
 
-The main challenge was working with limited teaching guidance on project structure and core Java concepts. That lack of context required independent research and iterative problem solving.
+- Defining the project structure
+- Strengthening Java basics
+- Taking on the whole team's workload
 
-There was also schedule pressure from taking on a workload originally distributed across multiple people.
+## Technical decisions
 
-## Technical Decisions
-
-I chose a simple, modular architecture to separate game logic, turns, and state management. The goal was readable code and easier adjustments without breaking the main flow.
-
-The implementation was fully terminal-based, with no GUI, to prioritize core rules and stability.
+- Simple, modular architecture
+- Classes for board, players and bank
+- Terminal only, focused on the rules
 
 ## Highlights
 
-- Terminal game with a playable turn flow.
-- Implementation of one Monopoly street and core interaction mechanics.
-- Entire codebase built by one developer.
-- Public repository for technical review.
+- Turns and dice
+- Buying streets
+- Class, sequence and use-case diagrams
 
 ## Results / Impact
 
-The project was completed and functional within the academic scope. It demonstrated delivery ownership and autonomous problem solving despite limited guidance.
+- Finished project
+- Code available on GitHub
 
-As a practical result, it consolidated my Java fundamentals and confidence to tackle technical projects with minimal supervision.
+## Learnings
 
-## What I Learned / What I'd Improve
+### What I learned
 
-I learned that early code organization and lightweight documentation help significantly when context is unclear. I also confirmed that breaking problems into small steps accelerates progress in learning projects.
+- Strengthening Java and OOP
+- Splitting problems into small steps
 
-In a future iteration, I would expand game rules, add more test cases, and improve terminal input UX.
+### What I'd do better
+
+- Expand the game rules
+- Add more tests
+- Improve console input

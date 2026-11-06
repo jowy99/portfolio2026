@@ -10,9 +10,8 @@ stack:
   - TailwindCSS
   - API
 links:
-  live: "https://weather.joelarnaud.com/"
   github: "https://github.com/jowy99/weather-app"
-role: "Solo Developer"
+role: "Personal project"
 impact:
   - "Real-time weather lookup with focus on performance and usability"
   - "Favorites and caching strategy to reduce unnecessary API requests"
@@ -21,45 +20,49 @@ impact:
 
 ## Summary
 
-Weather App is a weather application with multiple features to check real-time conditions for any city. The interface follows a modern, accessible, and minimalist approach for daily use.
+- Weather app for any city
+- Modern, minimalist interface
+- Data from WeatherAPI
 
-I developed the project fully with React, Vite, and TailwindCSS, integrating weather data from weatherapi.com.
+## Goals
 
-## Objectives
-
-1. Build a clear, fast, and responsive weather app.
-2. Practice external API consumption and state management in React.
-3. Improve UX through practical, real-use features.
-4. Consolidate UI and performance best practices.
+- Practice consuming external APIs
+- Manage state in React
+- Build a clear, responsive interface
 
 ## Challenges
 
-One key challenge was optimizing user location management and weather data cache to reduce API calls without sacrificing data freshness.
+- Handling the user's location
+- Fewer requests while keeping data fresh
+- Consistency across mobile and desktop
 
-I also focused on accessibility, responsive behavior, and interaction details to keep the experience consistent across mobile and desktop.
+## Technical decisions
 
-## Technical Decisions
-
-I used React for component architecture, Vite for fast development workflow, and TailwindCSS for efficient design iteration.
-
-I implemented favorites storage (up to 5 locations) and keyboard shortcuts to speed up city search.
+- Components with React
+- Development environment with Vite
+- Styles with TailwindCSS
+- Local cache with expiry
 
 ## Highlights
 
-- Keyboard shortcuts for quick search.
-- Save up to 5 favorite locations.
-- Dynamic light/dark mode.
-- Detailed forecast data including humidity, pressure, and conditions.
-- Optimized design for mobile and desktop.
+- Search with a keyboard shortcut
+- Saved favorite locations
+- Light and dark mode
+- Detailed humidity, pressure and conditions
 
 ## Results / Impact
 
-Even though many weather apps exist, this project achieved its goal as a real learning lab. It helped me deepen React, API integration, and UX decisions for everyday use.
+- My hands-on React lab
+- Code available on GitHub
 
-The result is a functional and maintainable application that raised my frontend level.
+## Learnings
 
-## What I Learned / What I'd Improve
+### What I learned
 
-I improved how I manage state and caching in real-time data interfaces, and how small product decisions can significantly improve usability.
+- Managing state and cache
+- Deciding with daily use in mind
 
-In a next iteration, I would add automated tests for critical flows and a more complete network error handling strategy.
+### What I'd do better
+
+- Add tests to key flows
+- Improve network error handling

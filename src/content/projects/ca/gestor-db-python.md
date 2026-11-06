@@ -11,7 +11,7 @@ stack:
   - CLI
 links:
   github: "https://github.com/jowy99/Proyecto-Python-SQL"
-role: "Solo Developer"
+role: "Projecte acadèmic"
 impact:
   - "Projecte completat en paral·lel a Monopoly, assumint feina pensada per a 3 persones"
   - "CRUD funcional sobre múltiples taules en una sola aplicació de terminal"
@@ -20,44 +20,49 @@ impact:
 
 ## Resum
 
-Gestor DB Python és una aplicació acadèmica de terminal per fer operacions bàsiques de base de dades sobre múltiples taules. El projecte es connecta a MySQL i permet manipular dades de manera directa des de consola.
-
-Tot i que estava plantejat per a equip, vaig desenvolupar el treball de forma individual i en paral·lel amb Monopoly.
+- Programa de terminal connectat a MySQL
+- Gestiona alumnes i mòduls
+- Fet en solitari, tot i que era per a un grup
 
 ## Objectius
 
-1. Implementar una connexió estable entre Python i MySQL.
-2. Permetre altes, baixes, edicions i consultes des de terminal.
-3. Gestionar diverses taules dins d'un mateix flux d'aplicació.
-4. Complir tots els requisits funcionals de l'entrega acadèmica.
+- Connectar Python amb MySQL
+- Gestionar dades des de la terminal
+- Treballar amb diverses taules
+- Complir els requisits de l'entrega
 
 ## Reptes
 
-El repte principal va ser la manca d'orientació clara per part del professor, tant en estructura de projecte com en implementació tècnica. Això em va obligar a investigar de manera autònoma com connectar, consultar i actualitzar dades a MySQL des de Python.
-
-També hi va haver càrrega extra perquè aquest projecte i Monopoly estaven pensats inicialment per a treball en grup.
+- Definir l'estructura pel meu compte
+- Aprendre a consultar MySQL des de Python
+- Desenvolupar-lo alhora que Monopoly
 
 ## Decisions tècniques
 
-Vaig optar per un flux CLI directe, amb operacions separades per tipus d'acció per mantenir claredat d'ús. La capa d'accés a dades es va organitzar per reutilitzar consultes comunes i reduir duplicacions.
+- Menú de terminal per accions
+- Reutilitzar les consultes comunes
+- Comprovar dades abans d'operar
 
-La prioritat va ser assegurar estabilitat en operacions CRUD i consistència de dades entre taules.
+## Destacat
 
-## Punts destacats
-
-- Operacions per afegir, eliminar, editar i visualitzar informació.
-- Gestió simultània de múltiples taules des d'una sola aplicació.
-- Integració funcional Python + MySQL en entorn acadèmic.
-- Implementació 100% terminal, sense interfície gràfica.
+- Registre i baixa d'alumnes
+- Matrícula en mòduls
+- Llistats d'alumnes i mòduls
 
 ## Resultats / Impacte
 
-El projecte es va completar de forma funcional dins del marc acadèmic esperat. Va permetre demostrar autonomia tècnica i capacitat de desbloqueig sense suport directe.
+- Entrega completada
+- Codi disponible a GitHub
 
-També va reforçar la meva capacitat de treballar en paral·lel en diversos fronts mantenint entregues consistents.
+## Aprenentatges
 
-## Què vaig aprendre / Què milloraria
+### El que vaig aprendre
 
-Vaig aprendre que una estructura de codi clara i modular redueix molt el cost de canvis quan els requisits són difusos. També vaig confirmar que documentar decisions tècniques des del principi accelera depuració i manteniment.
+- Unir Python i SQL
+- El valor d'un codi clar i modular
 
-En una iteració següent afegiria validacions més estrictes, millor control d'errors i un petit conjunt de proves automatitzades per a consultes crítiques.
+### Què faria millor
+
+- Validacions més estrictes
+- Millor control d'errors
+- Tests per a les consultes

@@ -10,9 +10,8 @@ stack:
   - TailwindCSS
   - API
 links:
-  live: "https://weather.joelarnaud.com/"
   github: "https://github.com/jowy99/weather-app"
-role: "Solo Developer"
+role: "Projet personnel"
 impact:
   - "Consultation météo en temps réel avec focus sur performance et usabilité"
   - "Implémentation des favoris et du cache pour réduire les appels API inutiles"
@@ -21,45 +20,49 @@ impact:
 
 ## Résumé
 
-Weather App est une application météo avec plusieurs fonctionnalités permettant de consulter le climat de n'importe quelle ville en temps réel. L'interface suit une approche moderne, accessible et minimaliste.
-
-Le projet a été développé entièrement par moi avec React, Vite et TailwindCSS, en intégrant les données de weatherapi.com.
+- Application météo pour n'importe quelle ville
+- Interface moderne et minimaliste
+- Données de WeatherAPI
 
 ## Objectifs
 
-1. Construire une application météo claire, rapide et responsive.
-2. Pratiquer la consommation d'APIs externes et la gestion d'état en React.
-3. Améliorer l'expérience utilisateur avec des fonctionnalités utiles en usage réel.
-4. Consolider les bonnes pratiques UI et performance.
+- Pratiquer la consommation d'API externes
+- Gérer l'état dans React
+- Créer une interface claire et responsive
 
 ## Défis
 
-L'un des principaux défis a été d'optimiser la gestion de la localisation utilisateur et du cache météo pour réduire les appels API sans perdre la fraîcheur des données.
-
-J'ai également travaillé l'accessibilité, le responsive et les détails d'interaction pour garantir une expérience cohérente sur mobile et desktop.
+- Gérer la localisation de l'utilisateur
+- Moins de requêtes avec des données fraîches
+- Cohérence sur mobile et ordinateur
 
 ## Décisions techniques
 
-J'ai utilisé React pour l'architecture des composants, Vite pour un environnement de développement rapide et TailwindCSS pour itérer le design efficacement.
-
-J'ai implémenté la sauvegarde de lieux favoris (jusqu'à 5) et des raccourcis clavier pour accélérer la recherche de villes.
+- Composants avec React
+- Environnement de développement avec Vite
+- Styles avec TailwindCSS
+- Cache local avec expiration
 
 ## Points forts
 
-- Raccourcis clavier pour la recherche rapide.
-- Sauvegarde jusqu'à 5 lieux favoris.
-- Bascule dynamique mode clair/sombre.
-- Prévisions détaillées: humidité, pression et conditions.
-- Design optimisé mobile et desktop.
+- Recherche avec raccourci clavier
+- Lieux favoris enregistrés
+- Modes clair et sombre
+- Humidité, pression et conditions détaillées
 
 ## Résultats / Impact
 
-Même s'il existe de nombreuses applications météo, ce projet a rempli son objectif comme laboratoire d'apprentissage concret. Il m'a permis d'approfondir React, l'intégration d'API et les décisions UX orientées usage quotidien.
+- Mon laboratoire pratique de React
+- Code disponible sur GitHub
 
-Le résultat est une application fonctionnelle et maintenable qui a renforcé mon niveau frontend.
+## Apprentissages
 
-## Ce que j'ai appris / Ce que j'améliorerais
+### Ce que j'ai appris
 
-J'ai amélioré ma gestion de l'état et du cache dans des interfaces en temps réel, ainsi que ma capacité à prendre de petites décisions produit à fort impact sur l'usabilité.
+- Gérer l'état et le cache
+- Décider en pensant à l'usage quotidien
 
-Dans une prochaine itération, j'ajouterais des tests automatisés sur les flux critiques et une stratégie plus complète de gestion des erreurs réseau.
+### Ce que je ferais mieux
+
+- Ajouter des tests aux parcours clés
+- Améliorer la gestion des erreurs réseau

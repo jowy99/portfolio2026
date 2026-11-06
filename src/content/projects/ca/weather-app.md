@@ -10,9 +10,8 @@ stack:
   - TailwindCSS
   - API
 links:
-  live: "https://weather.joelarnaud.com/"
   github: "https://github.com/jowy99/weather-app"
-role: "Solo Developer"
+role: "Projecte personal"
 impact:
   - "Consulta de clima en temps real amb focus en rendiment i usabilitat"
   - "Implementació de favorits i memòria cau per reduir peticions innecessàries"
@@ -21,45 +20,49 @@ impact:
 
 ## Resum
 
-Weather App és una aplicació del temps amb múltiples funcionalitats per consultar el clima de qualsevol ciutat en temps real. La interfície segueix una línia moderna, accessible i minimalista.
-
-El projecte va ser desenvolupat completament per mi amb React, Vite i TailwindCSS, integrant dades de weatherapi.com.
+- Aplicació del temps per a qualsevol ciutat
+- Interfície moderna i minimalista
+- Dades de WeatherAPI
 
 ## Objectius
 
-1. Construir una aplicació meteo clara, ràpida i responsive.
-2. Practicar consum d'APIs externes i gestió d'estat amb React.
-3. Millorar l'experiència d'usuari amb funcionalitats útils en ús real.
-4. Consolidar bones pràctiques de UI i rendiment.
+- Practicar el consum d'APIs externes
+- Gestionar l'estat a React
+- Crear una interfície clara i responsive
 
 ## Reptes
 
-Un dels reptes principals va ser optimitzar la gestió d'ubicació de l'usuari i la memòria cau de dades meteorològiques per reduir peticions sense perdre frescor de la informació.
-
-També vaig treballar accessibilitat, adaptació responsive i detalls d'interacció per garantir consistència en mòbil i escriptori.
+- Gestionar la ubicació de l'usuari
+- Reduir peticions sense perdre dades fresques
+- Mantenir la coherència en mòbil i escriptori
 
 ## Decisions tècniques
 
-Vaig utilitzar React per a l'arquitectura de components, Vite per a un entorn de desenvolupament ràpid i TailwindCSS per iterar disseny de forma eficient.
+- Components amb React
+- Entorn de desenvolupament amb Vite
+- Estils amb TailwindCSS
+- Memòria cau local amb caducitat
 
-Vaig implementar emmagatzematge de favorits (fins a 5 ubicacions) i dreceres de teclat per accelerar la cerca de ciutats.
+## Destacat
 
-## Punts destacats
-
-- Dreceres de teclat per cerca ràpida.
-- Emmagatzematge de fins a 5 ubicacions favorites.
-- Canvi dinàmic entre mode clar i fosc.
-- Pronòstic detallat amb humitat, pressió i condicions.
-- Disseny optimitzat per mòbil i escriptori.
+- Cerca amb drecera de teclat
+- Ubicacions preferides desades
+- Mode clar i fosc
+- Humitat, pressió i condicions detallades
 
 ## Resultats / Impacte
 
-Tot i existir moltes apps meteo, aquest projecte va complir el seu objectiu com a laboratori real d'aprenentatge. Em va permetre aprofundir en React, consum d'APIs i decisions de UX orientades a ús diari.
+- El meu laboratori pràctic de React
+- Codi disponible a GitHub
 
-El resultat és una aplicació funcional i mantenible que em va ajudar a pujar nivell tècnic en frontend modern.
+## Aprenentatges
 
-## Què vaig aprendre / Què milloraria
+### El que vaig aprendre
 
-Vaig aprendre a gestionar millor estat i caché en interfícies amb dades en temps real, i a prendre petites decisions de producte que milloren molt la usabilitat.
+- Gestionar estat i memòria cau
+- Decidir pensant en l'ús diari
 
-En una iteració següent afegiria proves automatitzades per als fluxos crítics i una estratègia més completa de gestió d'errors de xarxa.
+### Què faria millor
+
+- Afegir tests als fluxos clau
+- Millorar la gestió d'errors de xarxa

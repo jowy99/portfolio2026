@@ -17,6 +17,14 @@ export type TechKey =
   | "cli"
   | "oop"
   | "nextjs"
+  | "postgresql"
+  | "hono"
+  | "nodejs"
+  | "prisma"
+  | "drizzle"
+  | "sqlite"
+  | "express"
+  | "discordjs"
   | "custom";
 
 type TechDefinition = {
@@ -34,6 +42,14 @@ export type ResolvedTech = {
 };
 
 const TECH_DEFINITIONS: TechDefinition[] = [
+  { key: "discordjs", label: "discord.js", accentRgb: "88 101 242", aliases: ["discordjs", "discord.js"] },
+  { key: "postgresql", label: "PostgreSQL", accentRgb: "51 103 145", aliases: ["postgresql","postgres"] },
+  { key: "hono", label: "Hono", accentRgb: "232 80 46", aliases: ["hono"] },
+  { key: "nodejs", label: "Node.js", accentRgb: "67 133 61", aliases: ["nodejs","node.js","node"] },
+  { key: "prisma", label: "Prisma", accentRgb: "45 55 72", aliases: ["prisma"] },
+  { key: "drizzle", label: "Drizzle", accentRgb: "120 150 40", aliases: ["drizzle"] },
+  { key: "sqlite", label: "SQLite", accentRgb: "0 60 86", aliases: ["sqlite"] },
+  { key: "express", label: "Express", accentRgb: "55 65 81", aliases: ["express","expressjs"] },
   { key: "laravel", label: "Laravel", accentRgb: "255 45 32", aliases: ["laravel"] },
   { key: "astro", label: "Astro", accentRgb: "255 93 1", aliases: ["astro", "astrojs"] },
   { key: "tailwindcss", label: "Tailwind CSS", accentRgb: "14 165 233", aliases: ["tailwind", "tailwindcss"] },

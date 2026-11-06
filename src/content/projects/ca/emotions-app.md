@@ -9,9 +9,8 @@ stack:
   - JavaScript
   - TailwindCSS
   - MySQL
-links:
-  github: "https://github.com/jowy99/emotions"
-role: "Solo Developer"
+links: {}
+role: "Projecte personal, Sense acabar"
 impact:
   - "Desenvolupament end-to-end d'una aplicació web completa amb backend, frontend i base de dades"
   - "Aprenentatge pràctic en arquitectura i resolució de problemes en un projecte de més escala"
@@ -20,44 +19,48 @@ impact:
 
 ## Resum
 
-Emotions és una plataforma inspirada en Twitter, pensada per facilitar l'expressió directa de sentiments. Combina una interfície moderna amb funcionalitats útils, com perfils personalitzats i un flux d'ús clar.
-
-Vaig construir el projecte de manera integral, cobrint totes les fases tècniques.
+- Plataforma inspirada en Twitter
+- Per expressar com et sents
+- Amb perfils d'usuari personalitzats
 
 ## Objectius
 
-1. Crear una aplicació web centrada en la comunicació emocional.
-2. Dissenyar una experiència simple, directa i agradable.
-3. Consolidar coneixements full-stack en un projecte real de més abast.
-4. Construir una base mantenible per fer evolucionar l'aplicació.
+- Crear una app centrada en les emocions
+- Dissenyar una experiència simple i directa
+- Consolidar coneixements full-stack
 
 ## Reptes
 
-Va ser un dels meus primers projectes d'aquesta dimensió, així que el repte principal va ser gestionar una complexitat més alta en arquitectura i decisions tècniques. Cada bloqueig va requerir recerca, proves i ajustos iteratius.
-
-Tot i que encara no està completament acabat, el progrés assolit és sòlid i valida la direcció del producte.
+- Un dels meus primers projectes d'aquesta escala
+- Més complexitat d'arquitectura
+- Resoldre bloquejos investigant i provant
 
 ## Decisions tècniques
 
-Vaig desenvolupar l'aplicació des de zero amb Laravel per a backend, MySQL per a persistència i TailwindCSS + JavaScript al frontend.
+- Backend amb Laravel
+- Dades a MySQL
+- Frontend amb JavaScript i TailwindCSS
+- Interfície minimalista
 
-Vaig prioritzar una interfície minimalista perquè la interacció fos natural i ràpida.
+## Destacat
 
-## Punts destacats
-
-- Sistema de perfils inspirat en patrons socials coneguts.
-- Experiència simple per publicar i consultar contingut emocional.
-- Implementació full-stack realitzada de manera independent.
-- Base activa per continuar evolucionant funcionalitats.
+- Sistema de perfils d'usuari
+- Publicació i consulta de contingut
+- Desenvolupament full-stack independent
 
 ## Resultats / Impacte
 
-Emotions va néixer com una solució personal orientada a millorar la comunicació del dia a dia. El projecte em va donar experiència real construint una aplicació completa i gestionant reptes tècnics de punta a punta.
+- Experiència construint una app de principi a fi
+- Més confiança per a projectes grans
 
-També va reforçar la meva capacitat de mantenir el focus de producte mentre resolia problemes tècnics complexos.
+## Aprenentatges
 
-## Què vaig aprendre / Què milloraria
+### El que vaig aprendre
 
-Aquest projecte va reforçar els meus fonaments en Laravel, el meu criteri tècnic i la meva confiança per afrontar productes de més mida.
+- Consolidar els fonaments de Laravel
+- Mantenir el focus en el producte
 
-En següents iteracions milloraria la cobertura de proves, la modularitat d'alguns fluxos i la planificació per fites per accelerar entregues sense perdre qualitat.
+### Què faria millor
+
+- Ampliar els tests
+- Planificar per fites

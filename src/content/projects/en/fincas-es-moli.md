@@ -11,7 +11,7 @@ stack:
   - MySQL
 links:
   live: "https://fincasesmoli.com/es"
-role: "Frontend Developer (collaboration)"
+role: "Collaboration, Frontend"
 impact:
   - "Delivered a modern and functional website with high client satisfaction"
   - "Smooth experience for buyers and an operational admin panel for employees"
@@ -20,44 +20,49 @@ impact:
 
 ## Summary
 
-Fincas es Moli is a website for a real-estate company in Menorca, created to improve its online presence with a modern, fast, and functional approach. The platform serves both buyers and employees, combining clear navigation with administration tools.
+- Website for a real-estate agency in Menorca
+- Designed for buyers and staff
+- Built together with my brother
 
-I collaborated with my brother on development while balancing studies and internships.
+## Goals
 
-## Objectives
-
-1. Build an attractive and reliable website to attract buyers.
-2. Improve the property browsing experience.
-3. Provide a useful back-office panel for internal management.
-4. Keep navigation performance and fluency high.
+- Attract buyers with an appealing website
+- Improve property browsing
+- Add an internal management panel
+- Keep navigation smooth
 
 ## Challenges
 
-The main challenge was time management while balancing studies, internship work, and project collaboration. Prioritizing tasks and keeping continuous communication were key to sustained progress.
+- Balancing studies, internship and project
+- Balancing business and usability
+- Serving both clients and the internal team
 
-Another challenge was balancing business needs and usability so the site worked for both end customers and internal staff.
+## Technical decisions
 
-## Technical Decisions
-
-My main focus was frontend: interface, visual structure, and user experience. I also supported backend tasks such as the contact form implementation.
-
-The technical base used Laravel, JavaScript, TailwindCSS, and MySQL to keep development speed high with a stable platform.
+- Laravel as the project's base
+- Interface with JavaScript and TailwindCSS
+- Data in MySQL
 
 ## Highlights
 
-- Smooth navigation with strong performance focus.
-- Clear interface for exploring properties.
-- Admin panel to add and edit listings.
-- Frontend ownership plus backend support.
+- Panel to add and edit properties
+- Contact form
+- Clear interface for browsing properties
 
 ## Results / Impact
 
-The final result met project goals and the client was satisfied with delivery. The website strengthened digital presence and improved daily property management.
+- Published and accessible website
+- Stronger digital presence
+- Simpler day-to-day property management
 
-On a personal level, it reinforced my experience applying frontend development to a real business context and collaborating in a production project.
+## Learnings
 
-## What I Learned / What I'd Improve
+### What I learned
 
-I improved how I plan time and priorities when multiple responsibilities overlap. I also reinforced the importance of aligning expectations across design, development, and client operational needs.
+- Organizing time and priorities
+- Aligning design, development and business
 
-In a next iteration, I would improve usage analytics and add more automation in the admin panel for recurring tasks.
+### What I'd do better
+
+- Measure how the website is used
+- Automate more panel tasks

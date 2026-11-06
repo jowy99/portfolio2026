@@ -11,7 +11,7 @@ stack:
   - MySQL
 links:
   live: "https://fincasesmoli.com/es"
-role: "Frontend Developer (col·laboració)"
+role: "Col·laboració, Frontend"
 impact:
   - "Entrega d'una web moderna i funcional amb alta satisfacció del client"
   - "Experiència fluida per a compradors i panell operatiu per a empleats"
@@ -20,44 +20,49 @@ impact:
 
 ## Resum
 
-Fincas es Moli és una web per a una immobiliària de Menorca, creada per millorar la seva presència online amb un enfocament modern, ràpid i funcional. La plataforma està orientada tant a compradors com a empleats, combinant navegació clara i eines d'administració.
-
-Vaig col·laborar en el desenvolupament amb el meu germà, compaginant estudis i pràctiques.
+- Web per a una immobiliària de Menorca
+- Pensada per a compradors i empleats
+- Desenvolupada amb el meu germà
 
 ## Objectius
 
-1. Construir una web atractiva i fiable per captar compradors.
-2. Millorar l'experiència de consulta de propietats.
-3. Incorporar un panell back-office útil per a la gestió interna.
-4. Mantenir rendiment i fluïdesa de navegació.
+- Captar compradors amb una web atractiva
+- Millorar la consulta de propietats
+- Incorporar un panell de gestió interna
+- Mantenir una navegació fluida
 
 ## Reptes
 
-El principal repte va ser la gestió del temps disponible mentre compaginava estudis, pràctiques i col·laboració en el projecte. Va ser clau prioritzar tasques i mantenir comunicació constant.
-
-També calia equilibrar necessitats de negoci i usabilitat perquè la web servís tant al client final com a l'equip intern.
+- Compaginar estudis, pràctiques i projecte
+- Equilibrar negoci i usabilitat
+- Servir clients i equip intern
 
 ## Decisions tècniques
 
-Em vaig centrar sobretot en frontend: interfície, estructura visual i experiència d'usuari. També vaig participar en tasques de backend, com la implementació del formulari de contacte.
+- Laravel com a base del projecte
+- Interfície amb JavaScript i TailwindCSS
+- Dades a MySQL
 
-La base tècnica es va recolzar en Laravel, JavaScript, TailwindCSS i MySQL per mantenir velocitat de desenvolupament i estabilitat.
+## Destacat
 
-## Punts destacats
-
-- Navegació fluida amb focus en rendiment.
-- Interfície clara per explorar propietats.
-- Panell d'administració per alta i edició d'immobles.
-- Col·laboració en frontend i suport en backend.
+- Panell per donar d'alta i editar immobles
+- Formulari de contacte
+- Interfície clara per explorar propietats
 
 ## Resultats / Impacte
 
-El resultat final va complir objectius i el client va quedar satisfet. La web va reforçar la presència digital i va millorar la gestió diària de propietats.
+- Web publicada i accessible
+- Millor presència digital
+- Gestió diària de propietats més senzilla
 
-A nivell personal, el projecte va consolidar la meva experiència en frontend aplicat a negoci real i en treball col·laboratiu.
+## Aprenentatges
 
-## Què vaig aprendre / Què milloraria
+### El que vaig aprendre
 
-Vaig aprendre a gestionar millor temps i prioritats quan coincideixen diverses responsabilitats. També vaig reafirmar la importància d'alinear expectatives entre disseny, desenvolupament i necessitats operatives del client.
+- Organitzar temps i prioritats
+- Alinear disseny, desenvolupament i negoci
 
-En una iteració següent milloraria la instrumentació de mètriques d'ús i ampliaria automatitzacions del panell per a processos recurrents.
+### Què faria millor
+
+- Mesurar l'ús de la web
+- Automatitzar més tasques del panell

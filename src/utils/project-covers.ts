@@ -1,17 +1,33 @@
 import type { ImageMetadata } from "astro";
 
+import defiance from "../assets/projects/defiance.png";
+import directe from "../assets/projects/directe.png";
+import diet from "../assets/projects/diet.png";
+import fitplanner from "../assets/projects/fitplanner.png";
+import discordBots from "../assets/projects/discord-bots.png";
 import emotionsApp from "../assets/projects/emotionsapp.png";
 import festivalDeGranada from "../assets/projects/festivaldegranada.png";
 import fincasEsMoli from "../assets/projects/fincasesmoli.png";
+import meetsync from "../assets/projects/meetsync.png";
 import memoryGame from "../assets/projects/memorygame.png";
 import monopoly from "../assets/projects/monopoly.png";
+import plannr from "../assets/projects/plannr.png";
 import pythonDatabase from "../assets/projects/pythondatabase.png";
+import recipies from "../assets/projects/recipies.png";
 import weatherApp from "../assets/projects/weatherapp.png";
 
 export type ProjectCover = ImageMetadata | string;
 
 const projectCoverAssets: Record<string, ImageMetadata> = {
+  "/images/projects/defiance.png": defiance,
+  "/images/projects/directe.png": directe,
+  "/images/projects/diet.png": diet,
+  "/images/projects/fitplanner.png": fitplanner,
+  "/images/projects/discord-bots.png": discordBots,
   "/images/projects/emotionsapp.png": emotionsApp,
+  "/images/projects/meetsync.png": meetsync,
+  "/images/projects/plannr.png": plannr,
+  "/images/projects/recipies.png": recipies,
   "/images/projects/festivaldegranada.png": festivalDeGranada,
   "/images/projects/fincasesmoli.png": fincasEsMoli,
   "/images/projects/memorygame.png": memoryGame,
