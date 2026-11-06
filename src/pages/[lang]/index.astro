@@ -2,7 +2,7 @@
 import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
 import ContactSection from "../../components/ContactSection.astro";
-import ProjectCard from "../../components/ProjectCard.astro";
+import FeaturedProjects from "../../components/FeaturedProjects.astro";
 import ProfileSection from "../../components/ProfileSection.astro";
 import Section from "../../components/Section.astro";
 import TechBadge from "../../components/TechBadge.astro";
@@ -64,7 +64,7 @@ const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "
   description={t(lang, "meta.homeDescription")}
   structuredData={homeStructuredData}
 >
-  <section class="hero-section" data-reveal>
+  <section class="hero-section">
     <div class="site-container w-full">
       <div class="relative z-10 grid min-w-0 w-full items-center gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
           <div class="hero-copy">
@@ -154,27 +154,18 @@ const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "
     </div>
   </section>
 
-  <Section id="projects" title={t(lang, "home.featuredTitle")} className="defer-content">
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6" data-reveal>
-      {
-        featuredProjects.map((project, index) => (
-          <div>
-            <ProjectCard
-              lang={lang}
-              slug={getProjectSlug(project)}
-              title={project.data.title}
-              description={project.data.description}
-              cover={project.data.cover}
-              stack={project.data.stack}
-              links={project.data.links}
-              variant="featured"
-              maxStack={4}
-              priority={index < 2}
-            />
-          </div>
-        ))
-      }
-    </div>
+  <Section id="projects" title={t(lang, "home.featuredTitle")}>
+    <FeaturedProjects
+      lang={lang}
+      projects={featuredProjects.map((project) => ({
+        slug: getProjectSlug(project),
+        title: project.data.title,
+        description: project.data.description,
+        cover: project.data.cover,
+        stack: project.data.stack,
+        links: project.data.links,
+      }))}
+    />
 
     <div class="mt-6" data-reveal>
       <a href={projectsHref} class="btn btn-secondary min-h-11">{t(lang, "home.featuredCtaAll")}</a>

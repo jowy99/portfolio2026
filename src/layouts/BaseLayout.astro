@@ -21,6 +21,8 @@ interface Props {
   updatedTime?: string;
   centerMain?: boolean;
   bottomBackLink?: boolean;
+  bottomContact?: boolean;
+  bottomLinks?: { live?: string; github?: string };
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
@@ -35,6 +37,8 @@ const {
   updatedTime,
   centerMain = false,
   bottomBackLink = false,
+  bottomContact = false,
+  bottomLinks,
   structuredData,
 } = Astro.props;
 
@@ -107,6 +111,12 @@ const localeAlternates = locales
     }
     <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
     <title>{title}</title>
+    <noscript>
+      <style is:inline>
+        :root { scroll-behavior: auto; }
+        html [data-reveal] { opacity: 1; transform: none; }
+      </style>
+    </noscript>
     <script is:inline set:html={themeInitScript}></script>
   </head>
   <body class="relative isolate min-h-screen overflow-x-clip">
@@ -139,7 +149,7 @@ const localeAlternates = locales
         <div class:list={[centerMain && "flex flex-1 items-center"]}>
           <slot />
         </div>
-        {bottomBackLink && <BackLink lang={lang} pathname={Astro.url.pathname} variant="footer" />}
+        {bottomBackLink && <BackLink lang={lang} pathname={Astro.url.pathname} variant="footer" showContact={bottomContact} links={bottomLinks} />}
       </main>
       <Footer lang={lang} />
     </div>

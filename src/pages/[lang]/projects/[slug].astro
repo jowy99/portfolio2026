@@ -1,7 +1,6 @@
 ---
-import { getCollection, render } from "astro:content";
-import { Image } from "astro:assets";
-import TechBadge from "../../../components/TechBadge.astro";
+import { getCollection } from "astro:content";
+import ProjectStory from "../../../components/ProjectStory.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import type { Locale } from "../../../i18n/locales";
 import { t } from "../../../i18n/t";
@@ -36,10 +35,6 @@ if (!project) {
   throw new Error(`${t(lang, "projects.errors.notFound")}: ${slug}`);
 }
 
-const { Content } = await render(project);
-const contactHref = `/${lang}/#contact`;
-const hasExternalLinks = Boolean(project.data.links.live || project.data.links.github);
-const hasProjectMeta = Boolean(project.data.role || (project.data.impact && project.data.impact.length > 0));
 const siteOrigin = Astro.site?.toString().replace(/\/$/, "");
 const projectPath = `/${lang}/projects/${getProjectSlug(project)}`;
 const projectsPath = `/${lang}/projects`;
@@ -104,110 +99,19 @@ const breadcrumbStructuredData = {
   publishedTime={project.data.date.toISOString()}
   updatedTime={project.data.date.toISOString()}
   bottomBackLink={true}
+  bottomContact={true}
+  bottomLinks={project.data.links}
   structuredData={[breadcrumbStructuredData, projectStructuredData]}
 >
-  <section class="pt-12 pb-8 md:pt-14 md:pb-10" data-reveal>
-    <div class="site-container">
-      <h1 class="max-w-4xl text-4xl font-semibold leading-tight md:text-5xl">{project.data.title}</h1>
-      <p class="muted mt-4 max-w-3xl text-lg">{project.data.description}</p>
-
-      <div class="mt-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white/60 p-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60">
-        {
-          typeof resolvedCover === "string" ? (
-            <img
-              src={resolvedCover}
-              alt={project.data.title}
-              class="aspect-[16/8] w-full rounded-xl object-cover"
-              loading="eager"
-              decoding="async"
-              fetchpriority="high"
-            />
-          ) : (
-            <Image
-              src={resolvedCover}
-              alt={project.data.title}
-              class="aspect-[16/8] w-full rounded-xl object-cover"
-              widths={[640, 960, 1280, 1600]}
-              sizes="(min-width: 1280px) 1152px, calc(100vw - 2rem)"
-              loading="eager"
-              decoding="async"
-              fetchpriority="high"
-            />
-          )
-        }
-      </div>
-
-      <ul class="mt-6 flex flex-wrap gap-2" aria-label={t(lang, "projectStackAria")}>
-        {
-          project.data.stack.map((item) => (
-            <li>
-              <TechBadge stack={item} />
-            </li>
-          ))
-        }
-      </ul>
-
-      {hasExternalLinks && (
-        <div class="mt-6 flex flex-wrap gap-3">
-          {project.data.links.live && (
-            <a href={project.data.links.live} class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <use href="#icon-globe"></use>
-              </svg>
-              {t(lang, "projectLive")}
-            </a>
-          )}
-          {project.data.links.github && (
-            <a href={project.data.links.github} class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <use href="#icon-github"></use>
-              </svg>
-              {t(lang, "projectGithub")}
-            </a>
-          )}
-        </div>
-      )}
-    </div>
-  </section>
-
-  <section class="pt-2 pb-12 md:pb-14">
-    <div class="site-container">
-      <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_290px]">
-        <aside class="order-1 min-w-0 space-y-4 lg:order-2 lg:sticky lg:top-24 lg:self-start" data-reveal>
-          {hasProjectMeta && (
-            <div class="card space-y-3">
-              {project.data.role && (
-                <p>
-                  <strong>{t(lang, "detailRole")}: </strong>{project.data.role}
-                </p>
-              )}
-
-              {project.data.impact && project.data.impact.length > 0 && (
-                <div>
-                  <p><strong>{t(lang, "detailImpact")}</strong></p>
-                  <ul class="mt-2 space-y-1 text-sm">
-                    {
-                      project.data.impact.map((item) => (
-                        <li class="muted">• {item}</li>
-                      ))
-                    }
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
-          <div class="card space-y-3">
-            <a href={contactHref} class="btn btn-primary w-full">{t(lang, "ctaContact")}</a>
-            <a href="/cv-joel-arnaud.pdf" class="btn btn-secondary w-full" download>{t(lang, "heroDownloadCv")}</a>
-          </div>
-        </aside>
-
-        <article class="prose-project order-2 min-w-0 lg:order-1" data-reveal>
-          <Content />
-        </article>
-      </div>
-    </div>
-  </section>
+  <ProjectStory
+    lang={lang}
+    title={project.data.title}
+    description={project.data.description}
+    role={project.data.role}
+    stack={project.data.stack}
+    links={project.data.links}
+    body={project.body ?? ""}
+    cover={typeof resolvedCover === "string" ? undefined : resolvedCover}
+  />
 
 </BaseLayout>

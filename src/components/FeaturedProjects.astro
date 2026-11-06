@@ -1,0 +1,63 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+import { resolveProjectCover } from "../utils/project-covers";
+import TechBadge from "./TechBadge.astro";
+
+interface FeaturedProject {
+  slug: string;
+  title: string;
+  description: string;
+  cover: ImageMetadata | string;
+  stack: string[];
+  links: { live?: string; github?: string };
+}
+
+interface Props {
+  lang: Locale;
+  projects: FeaturedProject[];
+}
+
+const { lang, projects } = Astro.props;
+const items = projects.map((project) => ({ ...project, cover: resolveProjectCover(project.cover) }));
+---
+
+<div class="featured-grid">
+  {
+    items.map((project, index) => (
+      <article class:list={["featured-card", index === 0 && "is-lead"]}>
+        <div class="featured-media">
+          {
+            typeof project.cover === "string" ? (
+              <img src={project.cover} alt="" loading="lazy" decoding="async" />
+            ) : (
+              <Image
+                src={project.cover}
+                alt=""
+                widths={[360, 480, 640, 800, 1100]}
+                sizes={index === 0 ? "(min-width: 1024px) 680px, calc(100vw - 32px)" : "(min-width: 1024px) 390px, calc(100vw - 32px)"}
+                loading="lazy"
+                decoding="async"
+              />
+            )
+          }
+        </div>
+        <div class="featured-body">
+          <h3 class="featured-title">
+            <a href={`/${lang}/projects/${project.slug}`} class="featured-link">{project.title}</a>
+          </h3>
+          <p class="featured-description muted">{project.description}</p>
+          <ul class="featured-stack" aria-label={t(lang, "projectStackAria")}>
+            {project.stack.slice(0, index === 0 ? 6 : 3).map((item) => <li><TechBadge stack={item} size="sm" /></li>)}
+          </ul>
+          <div class="featured-actions">
+            {project.links.live && <a href={project.links.live} class="btn btn-secondary min-h-11" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#icon-globe"></use></svg>{t(lang, "projectLive")}</a>}
+            {project.links.github && <a href={project.links.github} class="btn btn-secondary min-h-11" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#icon-github"></use></svg>{t(lang, "projectGithub")}</a>}
+          </div>
+        </div>
+      </article>
+    ))
+  }
+</div>

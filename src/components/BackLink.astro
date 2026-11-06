@@ -7,9 +7,11 @@ interface Props {
   lang: Locale;
   pathname: string;
   variant?: "top" | "footer";
+  showContact?: boolean;
+  links?: { live?: string; github?: string };
 }
 
-const { lang, pathname, variant = "top" } = Astro.props;
+const { lang, pathname, variant = "top", showContact = false, links = {} } = Astro.props;
 const backLink = resolveBackLink(lang, pathname);
 const label = backLink ? t(lang, backLink.labelKey) : "";
 ---
@@ -25,6 +27,13 @@ const label = backLink ? t(lang, backLink.labelKey) : "";
           </svg>
           <span class="truncate">{label}</span>
         </a>
+        {showContact && (
+          <div class="back-link-actions">
+            {links.github && <a href={links.github} class="btn btn-secondary min-h-11" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#icon-github"></use></svg>{t(lang, "projectGithub")}</a>}
+            {links.live && <a href={links.live} class="btn btn-secondary min-h-11" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#icon-globe"></use></svg>{t(lang, "projectLive")}</a>}
+            <a href={`/${lang}/#contact`} class="btn btn-primary min-h-11">{t(lang, "ctaContact")}</a>
+          </div>
+        )}
       </div>
     </div>
   )

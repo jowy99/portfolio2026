@@ -10,12 +10,7 @@
     service_unavailable: "unavailable",
     send_error: "error",
   };
-  const STATUS_ANIMATION_MS = 200;
-  const STATUS_SUCCESS_HIDE_MS = 5200;
-  const hideTimers = new WeakMap();
-  const cleanupTimers = new WeakMap();
   const SVG_NS = "http://www.w3.org/2000/svg";
-  const toastMounted = new WeakSet();
 
   const getMessage = (form, code) => {
     const dataset = form.dataset;
@@ -104,42 +99,11 @@
     statusEl.append(icon, text);
   };
 
-  const clearStatusTimers = (statusEl) => {
-    const hideTimer = hideTimers.get(statusEl);
-    if (hideTimer) {
-      window.clearTimeout(hideTimer);
-      hideTimers.delete(statusEl);
-    }
-    const cleanupTimer = cleanupTimers.get(statusEl);
-    if (cleanupTimer) {
-      window.clearTimeout(cleanupTimer);
-      cleanupTimers.delete(statusEl);
-    }
-  };
-
-  const hideStatus = (statusEl) => {
-    if (!(statusEl instanceof HTMLElement)) return;
-    clearStatusTimers(statusEl);
-    statusEl.classList.remove("is-visible");
-    statusEl.setAttribute("aria-hidden", "true");
-
-    const cleanupTimer = window.setTimeout(() => {
-      if (statusEl.classList.contains("is-visible")) return;
-      statusEl.classList.add("hidden");
-      statusEl.classList.remove("is-success", "is-error", "is-info");
-      statusEl.replaceChildren();
-    }, STATUS_ANIMATION_MS);
-
-    cleanupTimers.set(statusEl, cleanupTimer);
-  };
-
-  const showStatus = (statusEl, type, message, { autoHideMs = 0 } = {}) => {
+  const showStatus = (statusEl, type, message) => {
     if (!(statusEl instanceof HTMLElement)) return;
     if (!message) return;
-    clearStatusTimers(statusEl);
     statusEl.classList.remove("hidden", "is-success", "is-error", "is-info", "is-visible");
     statusEl.setAttribute("aria-hidden", "false");
-    renderStatusContent(statusEl, type, message);
 
     if (type === "success") {
       statusEl.classList.add("is-success");
@@ -155,27 +119,30 @@
       statusEl.setAttribute("aria-live", "assertive");
     }
 
+    renderStatusContent(statusEl, type, message);
     window.requestAnimationFrame(() => {
       statusEl.classList.add("is-visible");
     });
-
-    if (autoHideMs > 0) {
-      const hideTimer = window.setTimeout(() => hideStatus(statusEl), autoHideMs);
-      hideTimers.set(statusEl, hideTimer);
-    }
   };
 
   for (const node of forms) {
     if (!(node instanceof HTMLFormElement)) continue;
     const form = node;
     const statusEl = form.querySelector("[data-contact-status]");
-    const toastEl = form.querySelector("[data-contact-toast]");
     const submitButton = form.querySelector("[data-contact-submit]");
     const startedAtInput = form.querySelector("[data-contact-started-at]");
+    const fields = Array.from(form.querySelectorAll(".field"))
+      .filter((field) => field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement);
 
-    if (toastEl instanceof HTMLElement && !toastMounted.has(toastEl)) {
-      document.body.append(toastEl);
-      toastMounted.add(toastEl);
+    for (const field of fields) {
+      field.addEventListener("input", () => {
+        field.setCustomValidity("");
+        field.removeAttribute("aria-invalid");
+      });
+      field.addEventListener("invalid", () => {
+        field.setAttribute("aria-invalid", "true");
+        showStatus(statusEl, "error", getMessage(form, "invalid"));
+      });
     }
 
     if (startedAtInput instanceof HTMLInputElement && !startedAtInput.value) {
@@ -185,26 +152,31 @@
     if (queryStatus) {
       const mappedStatus = queryStatusMap[queryStatus];
       if (mappedStatus === "success") {
-        hideStatus(statusEl);
-        showStatus(toastEl, "success", getMessage(form, mappedStatus), { autoHideMs: STATUS_SUCCESS_HIDE_MS });
+        showStatus(statusEl, "success", getMessage(form, mappedStatus));
       } else if (mappedStatus) {
-        hideStatus(statusEl);
-        showStatus(toastEl, "error", getMessage(form, mappedStatus));
+        showStatus(statusEl, "error", getMessage(form, mappedStatus));
       }
     }
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      if (!form.reportValidity()) return;
+      if (!(submitButton instanceof HTMLButtonElement) || submitButton.disabled) return;
 
-      if (!(submitButton instanceof HTMLButtonElement)) return;
+      // The API validates trimmed lengths, including values supplied by autofill.
+      for (const field of fields) {
+        const length = field.value.trim().length;
+        const invalidLength =
+          (field.minLength >= 0 && length < field.minLength) ||
+          (field.maxLength >= 0 && length > field.maxLength);
+        field.setCustomValidity(invalidLength ? getMessage(form, "invalid") : "");
+      }
+      if (!form.reportValidity()) return;
       const defaultLabel = submitButton.dataset.labelDefault || submitButton.textContent || "";
       const sendingLabel = submitButton.dataset.labelSending || defaultLabel;
 
       submitButton.disabled = true;
       submitButton.textContent = sendingLabel;
       form.setAttribute("aria-busy", "true");
-      hideStatus(toastEl);
       showStatus(statusEl, "info", getMessage(form, "sending"));
 
       const formData = new FormData(form);
@@ -230,17 +202,14 @@
           if (startedAtInput instanceof HTMLInputElement) {
             startedAtInput.value = String(Date.now());
           }
-          hideStatus(statusEl);
-          showStatus(toastEl, "success", getMessage(form, "success"), { autoHideMs: STATUS_SUCCESS_HIDE_MS });
+          showStatus(statusEl, "success", getMessage(form, "success"));
           return;
         }
 
         const errorCode = payload && typeof payload.error === "string" ? payload.error : "error";
-        hideStatus(statusEl);
-        showStatus(toastEl, "error", getMessage(form, errorCode));
+        showStatus(statusEl, "error", getMessage(form, errorCode));
       } catch {
-        hideStatus(statusEl);
-        showStatus(toastEl, "error", getMessage(form, "error"));
+        showStatus(statusEl, "error", getMessage(form, "error"));
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = defaultLabel;

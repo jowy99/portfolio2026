@@ -212,8 +212,6 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
           tabindex="0"
           data-profile-panel="skills"
           class="profile-panel min-w-0 max-w-full overflow-x-hidden"
-          hidden
-          aria-hidden="true"
         >
           <header class="profile-panel-header">
             <h3 class="profile-panel-title">{t(lang, "profile.tab.skills")}</h3>
@@ -235,8 +233,6 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
           tabindex="0"
           data-profile-panel="edu"
           class="profile-panel min-w-0 max-w-full overflow-x-hidden"
-          hidden
-          aria-hidden="true"
         >
           <header class="profile-panel-header">
             <h3 class="profile-panel-title">{t(lang, "profile.tab.edu")}</h3>
@@ -294,8 +290,6 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
           tabindex="0"
           data-profile-panel="lang"
           class="profile-panel min-w-0 max-w-full overflow-x-hidden"
-          hidden
-          aria-hidden="true"
         >
           <header class="profile-panel-header">
             <h3 class="profile-panel-title">{t(lang, "profile.tab.lang")}</h3>
@@ -326,5 +320,13 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
     </div>
   </div>
 
+  <noscript>
+    <style is:inline>
+      .profile-tablist-mobile, .profile-sidebar { display: none; }
+      .profile-shell { display: block; }
+      .profile-panel { animation: none; }
+      .profile-panel + .profile-panel { margin-top: 2rem; }
+    </style>
+  </noscript>
   <script is:inline set:html={profileTabsScript}></script>
 </Section>

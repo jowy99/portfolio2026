@@ -28,7 +28,7 @@ const contactWhyPoints = [
         {
           contactWhyPoints.map((point) => (
             <li class="flex gap-2.5">
-              <span class="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-500 dark:bg-zinc-400" aria-hidden="true"></span>
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500 dark:bg-zinc-400" aria-hidden="true"></span>
               <span class="muted">{point}</span>
             </li>
           ))
@@ -42,7 +42,7 @@ const contactWhyPoints = [
             href="https://www.linkedin.com/in/joelarnaudcarreras/"
             target="_blank"
             rel="noopener noreferrer"
-            class="ui-underline inline-flex items-center gap-2 text-sm font-medium"
+            class="ui-underline inline-flex min-h-11 items-center gap-2 text-sm font-medium"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M6.94 8.56H3.56V20h3.38V8.56Zm.22-3.53A1.96 1.96 0 1 0 3.24 5a1.96 1.96 0 0 0 3.92.03Zm13.28 7.87c0-3.43-1.83-5.03-4.27-5.03-1.97 0-2.85 1.08-3.34 1.84V8.56H9.44V20h3.39v-5.66c0-1.49.28-2.93 2.13-2.93 1.82 0 1.84 1.7 1.84 3.03V20h3.4v-7.1Z"></path>
@@ -53,7 +53,7 @@ const contactWhyPoints = [
             href="https://github.com/jowy99"
             target="_blank"
             rel="noopener noreferrer"
-            class="ui-underline inline-flex items-center gap-2 text-sm font-medium"
+            class="ui-underline inline-flex min-h-11 items-center gap-2 text-sm font-medium"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <use href="#icon-github"></use>
@@ -86,6 +86,8 @@ const contactWhyPoints = [
                 type="text"
                 name="name"
                 autocomplete="name"
+                minlength="2"
+                maxlength="80"
                 required
                 aria-required="true"
                 class="field"
@@ -100,6 +102,8 @@ const contactWhyPoints = [
                 type="email"
                 name="email"
                 autocomplete="email"
+                maxlength="120"
+                pattern={"[^\\s@]+@[^\\s@]+\\.[^\\s@]+"}
                 required
                 aria-required="true"
                 class="field"
@@ -113,6 +117,8 @@ const contactWhyPoints = [
                 id={`contact-message-${lang}`}
                 rows="5"
                 name="message"
+                minlength="10"
+                maxlength="4000"
                 required
                 aria-required="true"
                 class="field field-textarea"
@@ -137,15 +143,14 @@ const contactWhyPoints = [
 
           <button
             type="submit"
-            class="btn btn-secondary w-full sm:col-span-2 motion-safe:hover:-translate-y-0.5 transition-transform"
+            class="btn btn-secondary min-h-11 w-full sm:col-span-2 motion-safe:hover:-translate-y-0.5 transition-transform disabled:cursor-wait disabled:opacity-60"
             data-contact-submit
             data-label-default={t(lang, "contactSend")}
             data-label-sending={t(lang, "contact.status.sending")}
           >
             {t(lang, "contactSend")}
           </button>
-          <p class="contact-form-status notice hidden sm:col-span-2" data-contact-status role="status" aria-live="polite" aria-hidden="true"></p>
-          <p class="contact-form-toast notice hidden" data-contact-toast role="status" aria-live="polite" aria-hidden="true"></p>
+          <p class="contact-form-status notice hidden sm:col-span-2" data-contact-status role="status" aria-live="polite" aria-atomic="true" aria-hidden="true"></p>
           <p class="help sm:col-span-2">{t(lang, "contactNote")}</p>
         </form>
       </div>

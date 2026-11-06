@@ -91,7 +91,6 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
         <div
           id={mobileMenuPanelId}
           class="ui-panel-surface mobile-menu-panel absolute right-0 top-full mt-2 z-50 w-[min(22rem,calc(100vw-3.25rem))] p-2.5"
-          aria-hidden="true"
           data-mobile-menu-panel
         >
           <nav class="space-y-1">
@@ -340,7 +339,12 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
 </script>
 
 <noscript>
-  <style>
+  <style is:inline>
+    .site-header { position: static; }
+    @media (max-width: 1023px) {
+      .site-header-shell { height: auto; flex-wrap: wrap; padding-block: .75rem; }
+      .site-header-shell > .mobile-menu { width: 100%; margin-left: 0; }
+    }
     .mobile-menu > [data-mobile-menu-toggle] { display: none; }
     .mobile-menu > [data-mobile-menu-panel] {
       opacity: 1;
@@ -349,7 +353,7 @@ const mobileMenuPanelId = `mobile-menu-panel-${lang}`;
       visibility: visible;
       position: static;
       margin-top: .5rem;
-      width: min(22rem, calc(100vw - 3.25rem));
+      width: 100%;
     }
   </style>
 </noscript>
