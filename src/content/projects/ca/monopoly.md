@@ -10,7 +10,7 @@ stack:
   - CLI
 links:
   github: "https://github.com/jowy99/monopoly"
-role: "Solo Developer"
+role: "Projecte acadèmic"
 impact:
   - "Projecte completat de manera individual tot i estar plantejat per a 3 persones"
   - "Versió funcional en terminal amb mecàniques bàsiques del joc"
@@ -19,44 +19,48 @@ impact:
 
 ## Resum
 
-Monopoly és una versió bàsica del clàssic joc de taula, implementada per executar-se en terminal. El projecte es va fer com a tasca acadèmica i va complir els requisits funcionals de l'assignatura.
-
-Tot i que el treball estava plantejat per a un equip de tres persones, vaig assumir tota la implementació de manera individual.
+- Joc de Monopoly per a terminal, en Java
+- Tauler amb 10 carrers
+- Fet en solitari, tot i que era per a tres persones
 
 ## Objectius
 
-1. Construir un joc funcional en Java orientat a consola.
-2. Complir els criteris acadèmics de la pràctica.
-3. Aplicar conceptes de programació orientada a objectes en un cas real.
-4. Entregar un resultat estable dins del termini disponible.
+- Construir un joc funcional en Java
+- Aplicar programació orientada a objectes
+- Complir els criteris de la pràctica
 
 ## Reptes
 
-El repte principal va ser treballar amb poca guia docent sobre estructura de projecte i conceptes base de Java. Aquesta manca de context va obligar a resoldre dubtes mitjançant recerca i prova iterativa.
-
-També hi va haver pressió de temps per assumir una càrrega prevista originalment per a diverses persones.
+- Definir l'estructura del projecte
+- Consolidar els conceptes base de Java
+- Assumir la càrrega de tot l'equip
 
 ## Decisions tècniques
 
-Vaig optar per una arquitectura simple i modular per separar lògica de joc, torns i estat de la partida. L'objectiu era mantenir el codi llegible i facilitar canvis sense trencar el flux principal.
+- Arquitectura simple i modular
+- Classes per a tauler, jugadors i banca
+- Només terminal, centrat en les regles
 
-La implementació es va centrar al 100% en terminal, sense interfície gràfica, prioritzant funcionalitat i estabilitat.
+## Destacat
 
-## Punts destacats
-
-- Joc executable en terminal amb flux de torns.
-- Implementació d'un carrer de Monopoly i mecàniques bàsiques.
-- Codi construït íntegrament per una sola persona.
-- Repositori públic per a revisió tècnica.
+- Torns i daus
+- Compra de carrers
+- Diagrames de classes, seqüència i ús
 
 ## Resultats / Impacte
 
-El projecte va quedar acabat i funcional dins del marc acadèmic. Va demostrar capacitat d'entrega i resolució autònoma amb orientació limitada.
+- Projecte acabat
+- Codi disponible a GitHub
 
-Com a resultat pràctic, vaig consolidar fonaments de Java i confiança per abordar projectes tècnics amb mínima supervisió.
+## Aprenentatges
 
-## Què vaig aprendre / Què milloraria
+### El que vaig aprendre
 
-Vaig aprendre que l'organització primerenca del codi i la documentació mínima ajuden molt quan el context és difús. També vaig confirmar que dividir problemes en passos petits accelera l'aprenentatge.
+- Consolidar Java i la POO
+- Dividir els problemes en passos petits
 
-En una següent iteració ampliaria regles del joc, afegiria més casos de prova i milloraria l'experiència d'entrada per consola.
+### Què faria millor
+
+- Ampliar les regles del joc
+- Afegir més proves
+- Millorar l'entrada per consola

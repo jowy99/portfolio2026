@@ -1,12 +1,11 @@
 ---
 import { getCollection } from "astro:content";
-import ProjectCard from "../../../components/ProjectCard.astro";
+import ProjectTile from "../../../components/ProjectTile.astro";
 import ProjectsToolbar from "../../../components/ProjectsToolbar.astro";
 import Section from "../../../components/Section.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import { locales, type Locale } from "../../../i18n/locales";
+import { defaultLocale, isLocale } from "../../../i18n/locales";
 import { t } from "../../../i18n/t";
-import { assertLocale } from "../../../utils/i18n";
 import { filterProjectsByLocale, getProjectSlug } from "../../../utils/projects";
 import {
   buildHrefWithParams,
@@ -19,11 +18,10 @@ import {
   type ProjectsSort,
 } from "../../../utils/url";
 
-export function getStaticPaths() {
-  return locales.map((lang) => ({ params: { lang } }));
-}
+export const prerender = false;
 
-const lang: Locale = assertLocale(Astro.params.lang);
+const lang = Astro.params.lang ?? "";
+if (!isLocale(lang)) return Astro.rewrite(`/${defaultLocale}/errors/404`);
 const basePath = `/${lang}/projects`;
 
 const sp = Astro.url.searchParams;
@@ -33,25 +31,31 @@ const qNorm = normalizeToken(q);
 const sort: ProjectsSort = parseProjectsSort(sp.get("sort"));
 
 const requestedPage = parsePositivePage(sp.get("page"), 1);
-const pageSize = 12;
+const pageSize = 100;
 
 const allProjects = filterProjectsByLocale(await getCollection("projects"), lang);
 const selectedStacksNorm = parseNormalizedStackValues(sp);
 
 const stackOrder = [
-  "Laravel",
-  "JavaScript",
   "React",
-  "Vite",
+  "Next.js",
+  "TypeScript",
+  "Laravel",
+  "Node.js",
   "TailwindCSS",
+  "JavaScript",
+  "PostgreSQL",
   "MySQL",
+  "Vite",
+  "Prisma",
+  "Drizzle",
+  "Hono",
+  "Express",
+  "discord.js",
+  "SQLite",
   "Python",
-  "SQL",
   "Java",
   "HTML",
-  "CLI",
-  "OOP",
-  "API",
 ];
 const presentStacks = new Set(allProjects.flatMap((project) => project.data.stack));
 const allStacks = stackOrder.filter((stack) => presentStacks.has(stack));
@@ -91,6 +95,21 @@ const totalPages = Math.max(1, Math.ceil(totalResults / pageSize));
 const page = Math.min(requestedPage, totalPages);
 const visibleProjects = filtered.slice(0, page * pageSize);
 const hasMore = page < totalPages;
+const visibleIds = new Set(visibleProjects.map((project) => project.id));
+// Keep the full collection available for live search after a filtered server response.
+const renderedProjects = [...visibleProjects, ...allProjects.filter((project) => !visibleIds.has(project.id))];
+
+const trainingSlugs = new Set(["monopoly", "gestor-db-python", "memory-game"]);
+const groupOf = (project: (typeof renderedProjects)[number]): string => {
+  const slug = getProjectSlug(project);
+  if (slug === "discord-bots") return "bots";
+  return trainingSlugs.has(slug) ? "training" : "web";
+};
+const projectGroups = ["web", "bots", "training"].map((id) => ({
+  id,
+  title: t(lang, `projects.group.${id}`),
+  projects: renderedProjects.filter((project) => groupOf(project) === id),
+}));
 
 const resultWordOne = t(lang, "projects.results.one");
 const resultWordMany = t(lang, "projects.results.many");
@@ -105,10 +124,42 @@ const buildPageHref = (nextPage: number): string => {
   });
   return buildHrefWithParams(basePath, params);
 };
+
+const siteOrigin = Astro.site?.toString().replace(/\/$/, "");
+const projectsListUrl = siteOrigin ? `${siteOrigin}${basePath}` : undefined;
+const projectsStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t(lang, "projectsTitle"),
+  description: t(lang, "meta.projectsDescription"),
+  ...(projectsListUrl ? { url: projectsListUrl } : {}),
+  mainEntity: {
+    "@type": "ItemList",
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: filtered.length,
+    itemListElement: filtered.map((project, index) => {
+      const slug = getProjectSlug(project);
+      const projectPath = `/${lang}/projects/${slug}`;
+      const projectUrl = siteOrigin ? `${siteOrigin}${projectPath}` : projectPath;
+      return {
+        "@type": "ListItem",
+        position: index + 1,
+        name: project.data.title,
+        url: projectUrl,
+      };
+    }),
+  },
+};
 ---
 
-<BaseLayout lang={lang} title={`${t(lang, "siteName")} | ${t(lang, "projectsTitle")}`} description={t(lang, "projectsSubtitle")}>
-  <Section title={t(lang, "projectsTitle")} intro={t(lang, "projectsSubtitle")} className="pt-10 pb-10 sm:pt-12 sm:pb-12 md:pt-14">
+<BaseLayout
+  lang={lang}
+  title={t(lang, "meta.projectsTitle")}
+  description={t(lang, "meta.projectsDescription")}
+  bottomBackLink={true}
+  structuredData={projectsStructuredData}
+>
+  <Section headingTag="h1" title={t(lang, "projectsTitle")} intro={t(lang, "projectsSubtitle")} className="pt-10 pb-10 sm:pt-12 sm:pb-12 md:pt-14">
     <ProjectsToolbar
       lang={lang}
       basePath={basePath}
@@ -129,39 +180,47 @@ const buildPageHref = (nextPage: number): string => {
       {resultsSummary}
     </p>
 
-    <div id="list" class="mt-4 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal>
+    <div id="list" class="mt-4" data-projects-page-size={pageSize}>
       {
-        visibleProjects.map((project) => (
-          <div
-            data-project-item
-            data-title={project.data.title}
-            data-description={project.data.description}
-            data-stacks={project.data.stack.join("|")}
-            data-featured={project.data.featured ? "1" : "0"}
-            data-date={project.data.date.toISOString()}
-          >
-            <ProjectCard
-              lang={lang}
-              slug={getProjectSlug(project)}
-              title={project.data.title}
-              description={project.data.description}
-              cover={project.data.cover}
-              stack={project.data.stack}
-              links={project.data.links}
-              reveal={false}
-            />
-          </div>
+        projectGroups.map((group) => (
+          <section class="project-group" data-project-group hidden={!group.projects.some((project) => visibleIds.has(project.id))}>
+            <h2 class="project-group-title">{group.title}</h2>
+            <div class="project-grid">
+              {
+                group.projects.map((project, index) => (
+                  <div
+                    data-project-item
+                    hidden={!visibleIds.has(project.id)}
+                    data-title={project.data.title}
+                    data-description={project.data.description}
+                    data-stacks={project.data.stack.join("|")}
+                    data-featured={project.data.featured ? "1" : "0"}
+                    data-date={project.data.date.toISOString()}
+                  >
+                    <ProjectTile
+                      lang={lang}
+                      slug={getProjectSlug(project)}
+                      title={project.data.title}
+                      description={project.data.description}
+                      cover={project.data.cover}
+                      stack={project.data.stack}
+                      links={project.data.links}
+                      priority={group.id === "web" && index < 3}
+                    />
+                  </div>
+                ))
+              }
+            </div>
+          </section>
         ))
       }
     </div>
 
     <p class:list={["card mt-6", totalResults > 0 && "hidden"]} data-projects-empty data-reveal>{t(lang, "noResults")}</p>
 
-    {hasMore && (
-      <div class="mt-6" data-reveal>
-        <a href={buildPageHref(page + 1)} class="btn btn-secondary w-full sm:w-auto">{t(lang, "loadMore")}</a>
-      </div>
-    )}
+    <div class="mt-6" hidden={!hasMore} data-projects-pagination data-reveal>
+      <a href={buildPageHref(page + 1)} class="btn btn-secondary w-full sm:w-auto" data-projects-load-more>{t(lang, "loadMore")}</a>
+    </div>
   </Section>
   <script>
     import "../../../scripts/projects-page";

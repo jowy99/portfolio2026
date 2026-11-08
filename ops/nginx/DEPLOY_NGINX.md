@@ -84,3 +84,22 @@ Esperado:
 sudo systemctl status certbot.timer
 sudo certbot renew --dry-run
 ```
+
+## 9) Migración SEO a dominio final (`joelarnaud.com`)
+- Mantén `test.joelarnaud.com` como entorno no indexable.
+- Usa `ops/nginx/joelarnaud.com.conf` para producción con:
+  - redirección `http -> https`
+  - redirección `www -> apex` (`joelarnaud.com`)
+  - host canónico único
+- En el cutover, cambia DNS del dominio final y habilita el nuevo vhost:
+
+```bash
+sudo cp /var/www/portfolio2026/ops/nginx/joelarnaud.com.conf /etc/nginx/sites-available/joelarnaud.com.conf
+sudo ln -sfn /etc/nginx/sites-available/joelarnaud.com.conf /etc/nginx/sites-enabled/joelarnaud.com.conf
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+- Verifica redirecciones:
+  - `http://joelarnaud.com` -> `https://joelarnaud.com`
+  - `https://www.joelarnaud.com` -> `https://joelarnaud.com`

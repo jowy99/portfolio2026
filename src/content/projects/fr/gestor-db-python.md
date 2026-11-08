@@ -11,7 +11,7 @@ stack:
   - CLI
 links:
   github: "https://github.com/jowy99/Proyecto-Python-SQL"
-role: "Solo Developer"
+role: "Projet académique"
 impact:
   - "Projet mené en parallèle de Monopoly, avec une charge prévue pour une équipe de 3 personnes"
   - "CRUD fonctionnel sur plusieurs tables dans une seule application terminal"
@@ -20,44 +20,49 @@ impact:
 
 ## Résumé
 
-Gestionnaire DB Python est une application académique orientée terminal pour effectuer des opérations de base de données sur plusieurs tables. Le projet se connecte à MySQL et permet de manipuler les données directement en console.
-
-Bien que le travail ait été conçu pour une équipe, je l'ai développé seul, en parallèle du projet Monopoly.
+- Programme en terminal connecté à MySQL
+- Gère des élèves et des modules
+- Réalisé seul, bien que prévu pour un groupe
 
 ## Objectifs
 
-1. Mettre en place une connexion stable entre Python et MySQL.
-2. Permettre création, suppression, édition et consultation depuis le terminal.
-3. Gérer plusieurs tables dans un même flux applicatif.
-4. Respecter l'ensemble des exigences fonctionnelles du rendu académique.
+- Connecter Python à MySQL
+- Gérer des données depuis le terminal
+- Travailler avec plusieurs tables
+- Répondre aux exigences du travail
 
 ## Défis
 
-Le principal défi a été le manque d'orientation claire de la part de l'enseignant, tant sur la structure du projet que sur l'implémentation technique. J'ai dû rechercher de manière autonome comment connecter, interroger et mettre à jour MySQL depuis Python.
-
-La charge a aussi été importante, car ce projet et Monopoly étaient initialement prévus en travail de groupe.
+- Définir la structure par moi-même
+- Apprendre à interroger MySQL depuis Python
+- Le développer en même temps que Monopoly
 
 ## Décisions techniques
 
-J'ai choisi un flux CLI direct, avec des opérations séparées par type d'action pour garder une bonne lisibilité. La couche d'accès aux données a été organisée pour réutiliser les requêtes communes et limiter la duplication.
-
-La priorité était de garantir la stabilité des opérations CRUD et la cohérence des données entre tables.
+- Menu en terminal par actions
+- Réutiliser les requêtes communes
+- Vérifier les données avant d'agir
 
 ## Points forts
 
-- Opérations pour ajouter, supprimer, éditer et consulter des informations.
-- Gestion simultanée de plusieurs tables dans une seule application.
-- Intégration fonctionnelle Python + MySQL en contexte académique.
-- Implémentation 100% terminal, sans interface graphique.
+- Inscription et suppression d'élèves
+- Affectation aux modules
+- Listes d'élèves et de modules
 
 ## Résultats / Impact
 
-Le projet a été livré de manière fonctionnelle dans le cadre académique attendu. Il a permis de démontrer autonomie technique et capacité de résolution sans support direct.
+- Travail terminé
+- Code disponible sur GitHub
 
-Il a également renforcé ma capacité à travailler sur plusieurs fronts en parallèle avec une livraison cohérente.
+## Apprentissages
 
-## Ce que j'ai appris / Ce que j'améliorerais
+### Ce que j'ai appris
 
-J'ai appris qu'une structure de code claire et modulaire réduit fortement le coût des changements lorsque les exigences sont floues. J'ai aussi confirmé qu'une documentation minimale des décisions techniques accélère le débogage et la maintenance.
+- Combiner Python et SQL
+- La valeur d'un code clair et modulaire
 
-Dans une prochaine itération, j'ajouterais des validations plus strictes, une meilleure gestion d'erreurs et un petit socle de tests automatisés pour les requêtes critiques.
+### Ce que je ferais mieux
+
+- Validations plus strictes
+- Meilleure gestion des erreurs
+- Tests pour les requêtes

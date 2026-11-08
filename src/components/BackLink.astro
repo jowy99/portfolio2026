@@ -1,0 +1,40 @@
+---
+import type { Locale } from "../i18n/locales";
+import { t } from "../i18n/t";
+import { resolveBackLink } from "../utils/navigation";
+
+interface Props {
+  lang: Locale;
+  pathname: string;
+  variant?: "top" | "footer";
+  showContact?: boolean;
+  links?: { live?: string; github?: string };
+}
+
+const { lang, pathname, variant = "top", showContact = false, links = {} } = Astro.props;
+const backLink = resolveBackLink(lang, pathname);
+const label = backLink ? t(lang, backLink.labelKey) : "";
+---
+
+{
+  backLink && (
+    <div class:list={["site-container back-link-shell", variant === "footer" && "back-link-shell-footer"]} data-reveal>
+      <div class:list={[variant === "footer" && "back-link-footer-panel"]}>
+        <a href={backLink.href} class:list={["back-link", variant === "footer" && "back-link-footer"]}>
+          <svg class="back-link-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M9 12h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <span class="truncate">{label}</span>
+        </a>
+        {showContact && (
+          <div class="back-link-actions">
+            {links.github && <a href={links.github} class="btn btn-secondary min-h-11" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#icon-github"></use></svg>{t(lang, "projectGithub")}</a>}
+            {links.live && <a href={links.live} class="btn btn-secondary min-h-11" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#icon-globe"></use></svg>{t(lang, "projectLive")}</a>}
+            <a href={`/${lang}/#contact`} class="btn btn-primary min-h-11">{t(lang, "ctaContact")}</a>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

@@ -3,6 +3,7 @@ import type { Locale } from "../i18n/locales";
 import type { TranslationKey } from "../i18n/strings";
 import { t } from "../i18n/t";
 import { getErrorPageConfig, type ErrorAction, type ErrorCode } from "../lib/error-pages";
+import { buildLocalizedPath } from "../utils/navigation";
 
 interface Props {
   lang: Locale;
@@ -13,14 +14,13 @@ interface Props {
 const { lang, code, requestedPath = "" } = Astro.props;
 const config = getErrorPageConfig(code);
 
-const homeHref = `/${lang}`;
-const projectsHref = `/${lang}/projects`;
-const contactHref = `/${lang}/#contact`;
+const homeHref = buildLocalizedPath(lang);
+const projectsHref = buildLocalizedPath(lang, ["projects"]);
+const contactHref = buildLocalizedPath(lang, [], { hash: "contact" });
 
 const ACTION_LABEL_KEYS: Record<ErrorAction, TranslationKey> = {
   home: "error.action.home",
   retry: "error.action.retry",
-  back: "error.action.back",
   projects: "error.action.projects",
   contact: "error.action.contact",
 };
@@ -74,21 +74,10 @@ const description = t(lang, config.descriptionKey);
             )
           }
 
-          {config.secondaryAction && (
-            config.secondaryAction === "back" ? (
-              <button
-                type="button"
-                class="ui-underline text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                data-error-back
-                data-home-href={homeHref}
-              >
-                {t(lang, ACTION_LABEL_KEYS.back)}
-              </button>
-            ) : (
-              <a href={secondaryHref ?? homeHref} class="ui-underline text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                {t(lang, ACTION_LABEL_KEYS[config.secondaryAction])}
-              </a>
-            )
+          {config.secondaryAction && secondaryHref && (
+            <a href={secondaryHref} class="ui-underline text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              {t(lang, ACTION_LABEL_KEYS[config.secondaryAction])}
+            </a>
           )}
         </div>
       </article>
@@ -103,19 +92,6 @@ const description = t(lang, config.descriptionKey);
       if (!(node instanceof HTMLButtonElement)) continue;
       node.addEventListener("click", () => {
         window.location.reload();
-      });
-    }
-
-    const backButtons = Array.from(document.querySelectorAll("[data-error-back]"));
-    for (const node of backButtons) {
-      if (!(node instanceof HTMLButtonElement)) continue;
-      node.addEventListener("click", () => {
-        if (window.history.length > 1) {
-          window.history.back();
-          return;
-        }
-        const fallbackHref = node.dataset.homeHref || "/";
-        window.location.assign(fallbackHref);
       });
     }
   })();

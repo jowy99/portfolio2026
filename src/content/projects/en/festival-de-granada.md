@@ -10,7 +10,7 @@ stack:
   - MySQL
 links:
   github: "https://github.com/jowy99/FestivalDeGranada"
-role: "Solo Developer"
+role: "Internship, Sole developer"
 impact:
   - "Replaced manual Excel workflows with a more efficient internal tool"
   - "Increased team autonomy to consult data without depending on a single person"
@@ -19,44 +19,49 @@ impact:
 
 ## Summary
 
-Festival de Granada is an internal app created to manage database records more efficiently in the organization where I completed my internship. It was designed to replace Excel for sensitive information and improve security, retrieval, and automation.
+- Internal tool built during my internship
+- Replaces the use of Excel spreadsheets
+- Proposed and built from scratch
 
-Beyond proposing the shift, I built the entire application from scratch.
+## Goals
 
-## Objectives
-
-1. Replace Excel sheets with a safer, more maintainable system.
-2. Make sensitive data management easier for employees.
-3. Reduce operational dependency on one person.
-4. Provide an intuitive interface for daily use.
+- Manage sensitive data more securely
+- Make lookups easier for staff
+- Reduce dependence on one person
+- Offer an intuitive interface
 
 ## Challenges
 
-One of the biggest challenges was working with Laravel at an early stage of my learning process. Some features required additional research, such as alphabetical sorting and clean query structuring.
+- Laravel at an early learning stage
+- Alphabetical sorting of data
+- Writing clean queries
 
-Through continuous learning and iterative testing, I solved those points and delivered a stable version.
+## Technical decisions
 
-## Technical Decisions
-
-The solution was built with Laravel for application logic, MySQL for persistence, and TailwindCSS for a clean and maintainable interface.
-
-I prioritized a simple internal panel focused on real team tasks, so adoption was immediate.
+- Application logic with Laravel
+- Data in MySQL
+- Interface with TailwindCSS
 
 ## Highlights
 
-- Effective replacement of a manual Excel-based process.
-- Intuitive interface for consulting sensitive data.
-- Private internal tool for employees.
-- Clear improvement in organization and execution speed.
+- Create, edit, delete and download records
+- Access for administrators only
 
 ## Results / Impact
 
-The app increased productivity and autonomy for the internship team. By centralizing information in a dedicated tool, friction was reduced and operations became more structured.
+- Manual process replaced
+- More autonomy for the team
+- Positive feedback from the team
 
-Feedback was very positive from both the team and classmates, highlighting practical value and delivery quality.
+## Learnings
 
-## What I Learned / What I'd Improve
+### What I learned
 
-This project strengthened my Laravel fundamentals and my ability to solve problems in changing contexts. It also reinforced the importance of building tools around real user needs, not only technically correct implementations.
+- Strengthening Laravel fundamentals
+- Building tools for real needs
 
-In a next iteration, I would add change traceability, finer role-based permissions, and a basic set of automated tests for critical flows.
+### What I'd do better
+
+- Add a change history
+- More detailed role permissions
+- Tests on key flows

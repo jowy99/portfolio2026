@@ -1,0 +1,180 @@
+---
+interface HeaderDropdownItem {
+  id: string;
+  label: string;
+  current?: boolean;
+  href?: string;
+  value?: string;
+  lang?: string;
+  ariaLabel?: string;
+}
+
+interface Props {
+  id: string;
+  label: string;
+  currentLabel: string;
+  items: HeaderDropdownItem[];
+  icon: "language" | "theme";
+  variant?: "header" | "panel";
+}
+
+const { id, label, currentLabel, items, icon, variant = "header" } = Astro.props;
+const isPanelVariant = variant === "panel";
+const panelId = `${id}-panel`;
+---
+
+<div class:list={["hdr-menu-field", isPanelVariant && "hdr-menu-field-panel"]} data-hdr-menu={!isPanelVariant ? "" : undefined}>
+  {isPanelVariant && <p class="hdr-menu-caption">{label}</p>}
+
+  {
+    isPanelVariant ? (
+      <div class="ui-panel-surface hdr-menu-static">
+        <div class="hdr-menu-list">
+          {
+            items.map((item) => (
+              <>
+                {item.href && (
+                  <a
+                    href={item.href}
+                    lang={item.lang}
+                    aria-label={item.ariaLabel ?? item.label}
+                    aria-current={item.current ? "true" : undefined}
+                    class:list={["ui-option-row hdr-menu-item", item.current && "is-active"]}
+                  >
+                    <span class="hdr-menu-item-label">{item.label}</span>
+                    <span class="hdr-menu-item-check" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <path d="m5.5 12.5 4 4 9-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </span>
+                  </a>
+                )}
+                {!item.href && (
+                  <button
+                    type="button"
+                    aria-label={item.ariaLabel ?? item.label}
+                    aria-pressed={item.current ? "true" : "false"}
+                    class:list={["ui-option-row hdr-menu-item", item.current && "is-active"]}
+                    data-theme-option={item.value}
+                  >
+                    <span class="hdr-menu-item-label">{item.label}</span>
+                    <span class="hdr-menu-item-check" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <path d="m5.5 12.5 4 4 9-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </span>
+                  </button>
+                )}
+              </>
+            ))
+          }
+        </div>
+      </div>
+    ) : (
+      <div class="hdr-menu relative">
+        <button
+          id={id}
+          type="button"
+          class="ui-dropdown-trigger hdr-menu-trigger"
+          aria-label={`${label}: ${currentLabel}`}
+          aria-haspopup="menu"
+          aria-expanded="false"
+          aria-controls={panelId}
+          data-theme-trigger-button={icon === "theme" ? "" : undefined}
+          data-theme-trigger-label={icon === "theme" ? label : undefined}
+          data-hdr-menu-toggle
+        >
+          <span class="hdr-menu-trigger-leading" aria-hidden="true">
+            {
+              icon === "language" ? (
+                <svg class="hdr-icon" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" stroke="currentColor" stroke-width="1.7"></path>
+                  <path d="M3.5 12h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+                  <path d="M12 3c2.5 2.4 3.9 5.6 3.9 9s-1.4 6.6-3.9 9c-2.5-2.4-3.9-5.6-3.9-9s1.4-6.6 3.9-9Z" stroke="currentColor" stroke-width="1.7"></path>
+                </svg>
+              ) : (
+                <span class="hdr-theme-icon hdr-icon" aria-hidden="true">
+                  <svg data-theme-icon="system" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="5" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+                    <path d="M9 19h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+                    <path d="M12 16v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+                  </svg>
+                  <svg data-theme-icon="light" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"></circle>
+                    <path d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M17.9 6.1l-1.6 1.6M7.7 16.3l-1.6 1.6M17.9 17.9l-1.6-1.6M7.7 7.7L6.1 6.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+                  </svg>
+                  <svg data-theme-icon="dark" viewBox="0 0 24 24" fill="none">
+                    <path d="M14.9 3.7a8 8 0 1 0 6 10.6A7.5 7.5 0 0 1 14.9 3.7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+              )
+            }
+          </span>
+          <span class="hdr-menu-current" data-theme-current-label={icon === "theme" ? "" : undefined}>{currentLabel}</span>
+          <span class="hdr-menu-caret" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </button>
+
+        <div
+          id={panelId}
+          role="menu"
+          aria-label={label}
+          aria-hidden="true"
+          class="ui-panel-surface hdr-menu-panel"
+          data-hdr-menu-panel
+        >
+          <div class="hdr-menu-list">
+            {
+              items.map((item) => (
+                <>
+                  {item.href && (
+                    <a
+                      href={item.href}
+                      lang={item.lang}
+                      aria-label={item.ariaLabel ?? item.label}
+                      aria-current={item.current ? "true" : undefined}
+                      role="menuitemradio"
+                      aria-checked={item.current ? "true" : "false"}
+                      tabindex="-1"
+                      class:list={["ui-option-row hdr-menu-item", item.current && "is-active"]}
+                      data-hdr-menu-item
+                    >
+                      <span class="hdr-menu-item-label">{item.label}</span>
+                      <span class="hdr-menu-item-check" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                          <path d="m5.5 12.5 4 4 9-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                      </span>
+                    </a>
+                  )}
+                  {!item.href && (
+                    <button
+                      type="button"
+                      role="menuitemradio"
+                      aria-label={item.ariaLabel ?? item.label}
+                      aria-checked={item.current ? "true" : "false"}
+                      tabindex="-1"
+                      class:list={["ui-option-row hdr-menu-item", item.current && "is-active"]}
+                      data-hdr-menu-item
+                      data-theme-option={item.value}
+                    >
+                      <span class="hdr-menu-item-label">{item.label}</span>
+                      <span class="hdr-menu-item-check" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                          <path d="m5.5 12.5 4 4 9-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                      </span>
+                    </button>
+                  )}
+                </>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    )
+  }
+</div>

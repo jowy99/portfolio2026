@@ -2,6 +2,7 @@ import {
   DEFAULT_PROJECTS_SORT,
   normalizeToken,
   parseNormalizedStackValues,
+  parsePositivePage,
   parseProjectsSort,
   readTrimmedParam,
 } from "../utils/url";
@@ -29,6 +30,9 @@ const initProjectsPage = (): void => {
   const items = Array.from(list.querySelectorAll<HTMLElement>("[data-project-item]"));
   const resultsNode = document.querySelector<HTMLElement>("[data-projects-results]");
   const emptyNode = document.querySelector<HTMLElement>("[data-projects-empty]");
+  const pagination = document.querySelector<HTMLElement>("[data-projects-pagination]");
+  const loadMore = document.querySelector<HTMLAnchorElement>("[data-projects-load-more]");
+  const pageSize = parsePositivePage(list.dataset.projectsPageSize, 12);
 
   const searchInput = form.querySelector<HTMLInputElement>("[data-projects-search-input]");
   const clearButton = form.querySelector<HTMLButtonElement>("[data-projects-search-clear]");
@@ -37,7 +41,7 @@ const initProjectsPage = (): void => {
   const filtersDialog = form.querySelector<HTMLDialogElement>("[data-projects-filters-dialog]");
   const filtersOpenButton = form.querySelector<HTMLButtonElement>("[data-projects-filters-open]");
   const filtersCloseButton = form.querySelector<HTMLButtonElement>("[data-projects-filters-close]");
-  const filtersDot = form.querySelector<HTMLElement>("[data-projects-filters-dot]");
+  const filtersCount = form.querySelector<HTMLElement>("[data-projects-filters-count]");
   const chipIndicator = initChipIndicator(form, stackCheckboxes);
 
   if (!(searchInput instanceof HTMLInputElement)) return;
@@ -56,7 +60,9 @@ const initProjectsPage = (): void => {
 
   const toggleClearButton = (): void => {
     if (!clearButton) return;
-    clearButton.classList.toggle("is-visible", searchInput.value.trim().length > 0);
+    const hasQuery = searchInput.value.trim().length > 0;
+    clearButton.classList.toggle("is-visible", hasQuery);
+    clearButton.disabled = !hasQuery;
   };
 
   const getActiveFilterCount = (): number => {
@@ -66,9 +72,11 @@ const initProjectsPage = (): void => {
     return qActive + selectedStacks + sortActive;
   };
 
-  const syncFiltersDot = (): void => {
-    if (!filtersDot) return;
-    filtersDot.classList.toggle("is-active", getActiveFilterCount() > 0);
+  const syncFiltersCount = (): void => {
+    if (!filtersCount) return;
+    const count = getActiveFilterCount();
+    filtersCount.classList.toggle("is-active", count > 0);
+    filtersCount.textContent = count > 0 ? String(count) : "";
   };
 
   const formatResults = (count: number): string => {
@@ -101,7 +109,7 @@ const initProjectsPage = (): void => {
       const matchesStack = selectedStacks.length === 0 || selectedStacks.some((stack) => projectStacks.has(stack));
       const isMatch = matchesQ && matchesStack;
 
-      item.hidden = !isMatch;
+      item.hidden = true;
       if (isMatch) matched.push(item);
     }
 
@@ -125,8 +133,20 @@ const initProjectsPage = (): void => {
       return sortByFeaturedThenDate(a, b);
     });
 
-    for (const item of matched) {
-      list.appendChild(item);
+    const totalPages = Math.max(1, Math.ceil(matched.length / pageSize));
+    const page = Math.min(parsePositivePage(params.get("page")), totalPages);
+    for (const [index, item] of matched.entries()) {
+      item.hidden = index >= page * pageSize;
+      item.parentElement?.appendChild(item);
+    }
+    for (const group of list.querySelectorAll<HTMLElement>("[data-project-group]")) {
+      group.hidden = !group.querySelector("[data-project-item]:not([hidden])");
+    }
+    if (pagination) pagination.hidden = page >= totalPages;
+    if (loadMore) {
+      const nextParams = new URLSearchParams(params);
+      nextParams.set("page", String(page + 1));
+      loadMore.href = `${form.action}?${nextParams.toString()}`;
     }
 
     if (resultsNode) {
@@ -145,7 +165,7 @@ const initProjectsPage = (): void => {
       checkbox.checked = selected.has(normalizeToken(checkbox.value));
     }
     toggleClearButton();
-    syncFiltersDot();
+    syncFiltersCount();
     chipIndicator?.syncFromSelection();
   };
 
@@ -196,6 +216,52 @@ const initProjectsPage = (): void => {
     );
   };
 
+  for (const checkbox of stackCheckboxes) {
+    checkbox.addEventListener("change", submitWithReplace);
+  }
+
+  const sortToggle = form.querySelector<HTMLButtonElement>("[data-projects-sort-toggle]");
+  const syncSortToggle = (): void => {
+    if (!sortToggle || !sortSelect) return;
+    const label = (sortSelect.value === "recent" ? sortToggle.dataset.labelRecent : sortToggle.dataset.labelRelevance) ?? "";
+    const labelNode = sortToggle.querySelector("[data-projects-sort-label]");
+    if (labelNode) labelNode.textContent = label;
+    sortToggle.setAttribute("aria-label", `${sortToggle.dataset.prefix}: ${label}`);
+  };
+  sortToggle?.addEventListener("click", () => {
+    if (!sortSelect) return;
+    sortSelect.value = sortSelect.value === "recent" ? "relevance" : "recent";
+    syncSortToggle();
+    submitWithReplace();
+  });
+  window.addEventListener("popstate", syncSortToggle);
+
+  const techMenu = form.querySelector<HTMLDetailsElement>("[data-projects-tech-menu]");
+  const techCount = form.querySelector<HTMLElement>("[data-projects-tech-count]");
+  const syncTechCount = (): void => {
+    if (!techCount) return;
+    const count = stackCheckboxes.filter((checkbox) => checkbox.checked).length;
+    techCount.textContent = count > 0 ? String(count) : "";
+    techCount.classList.toggle("is-active", count > 0);
+  };
+  for (const checkbox of stackCheckboxes) {
+    checkbox.addEventListener("change", syncTechCount);
+  }
+  form.querySelector("[data-projects-tech-clear]")?.addEventListener("click", () => {
+    for (const checkbox of stackCheckboxes) checkbox.checked = false;
+    syncTechCount();
+    submitWithReplace();
+  });
+  document.addEventListener("click", (event) => {
+    if (techMenu?.open && !techMenu.contains(event.target as Node)) techMenu.open = false;
+  });
+  techMenu?.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    techMenu.open = false;
+    techMenu.querySelector("summary")?.focus();
+  });
+  window.addEventListener("popstate", syncTechCount);
+
   type DialogSnapshot = {
     sort: string;
     selected: Set<string>;
@@ -221,11 +287,20 @@ const initProjectsPage = (): void => {
       checkbox.checked = snapshot.selected.has(normalizeToken(checkbox.value));
     }
     chipIndicator?.syncFromSelection();
-    syncFiltersDot();
+    syncFiltersCount();
+  };
+
+  let debounceId = 0;
+  const requestLiveSearch = (): void => {
+    window.clearTimeout(debounceId);
+    debounceId = 0;
+    submitWithReplace();
   };
 
   const openFiltersDialog = (): void => {
     if (!supportsDialog || !filtersDialog || filtersDialog.open) return;
+    // Finish pending search before the dialog controls become an uncommitted draft.
+    if (debounceId) requestLiveSearch();
     dialogSnapshot = snapshotDialogValues();
     committedFromDialog = false;
     filtersDialog.showModal();
@@ -235,11 +310,6 @@ const initProjectsPage = (): void => {
   const closeFiltersDialog = (): void => {
     if (!supportsDialog || !filtersDialog || !filtersDialog.open) return;
     filtersDialog.close();
-  };
-
-  let debounceId = 0;
-  const requestLiveSearch = (): void => {
-    submitWithReplace();
   };
 
   searchInput.setAttribute("aria-keyshortcuts", "Meta+K Control+K");
@@ -276,6 +346,7 @@ const initProjectsPage = (): void => {
   if (clearButton) {
     clearButton.addEventListener("click", () => {
       if (!searchInput.value.trim()) return;
+      searchInput.focus({ preventScroll: true });
       searchInput.value = "";
       toggleClearButton();
       requestLiveSearch();
@@ -285,7 +356,7 @@ const initProjectsPage = (): void => {
   for (const checkbox of stackCheckboxes) {
     checkbox.addEventListener("change", () => {
       chipIndicator?.onSelectionChange(checkbox);
-      syncFiltersDot();
+      syncFiltersCount();
     });
   }
 
@@ -335,7 +406,7 @@ const initProjectsPage = (): void => {
   });
 
   if (sortSelect) {
-    sortSelect.addEventListener("change", syncFiltersDot);
+    sortSelect.addEventListener("change", syncFiltersCount);
   }
 
   applyFiltersFromUrl();

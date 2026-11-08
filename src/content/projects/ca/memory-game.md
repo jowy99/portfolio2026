@@ -10,7 +10,7 @@ stack:
   - TailwindCSS
 links:
   github: "https://github.com/jowy99/MemoryGame"
-role: "Solo Developer"
+role: "Projecte personal"
 impact:
   - "Joc funcional construït de punta a punta per una sola persona"
   - "Lògica interactiva clara per a una experiència fluida"
@@ -19,44 +19,47 @@ impact:
 
 ## Resum
 
-Joc de memòria és una aplicació senzilla pensada per entretenir mentre exercita la memòria. Es basa en una mecànica intuïtiva i ràpida, enfocada a oferir una experiència lleugera.
-
-Vaig desenvolupar el projecte des de zero, ocupant-me tant del disseny com del desenvolupament frontend.
+- Joc de memòria al navegador
+- Pensat per a partides curtes
+- Disseny i desenvolupament propis
 
 ## Objectius
 
-1. Crear un joc simple i accessible per a qualsevol usuari.
-2. Implementar una lògica de memòria clara i estable.
-3. Mantenir una interfície minimalista, neta i funcional.
-4. Oferir una experiència fluida d'ús.
+- Crear un joc simple i accessible
+- Implementar una lògica clara i estable
+- Mantenir una interfície neta
 
 ## Reptes
 
-No van aparèixer bloquejos tècnics grans pel menor abast del projecte. El focus principal va ser mantenir la lògica ordenada i evitar complexitat innecessària.
-
-També vaig prioritzar la claredat del flux de joc perquè l'usuari entengués la dinàmica des del primer intent.
+- Mantenir la lògica ordenada
+- Evitar complexitat innecessària
+- Que la dinàmica s'entengui a la primera
 
 ## Decisions tècniques
 
-La implementació es va resoldre amb JavaScript per a la lògica interactiva, HTML per a estructura semàntica i TailwindCSS per a una capa visual coherent.
+- Lògica interactiva amb JavaScript
+- Estructura amb HTML
+- Estils amb TailwindCSS
 
-Vaig prioritzar una arquitectura simple per facilitar manteniment i evolució sense sobreenginyeria.
+## Destacat
 
-## Punts destacats
-
-- Interfície senzilla i funcional orientada a usabilitat.
-- Mecànica intuïtiva per a perfils d'usuari diversos.
-- Joc lleuger ideal per sessions curtes.
-- Codi implementat íntegrament per una sola persona.
+- Compte enrere de 30 segons
+- Comptador d'encerts i moviments
+- Mecànica intuïtiva
 
 ## Resultats / Impacte
 
-El projecte està acabat i compleix l'objectiu d'entreteniment lleuger amb una experiència estable. Va permetre practicar de forma aplicada patrons d'interacció en JavaScript.
+- Joc acabat
+- Codi disponible a GitHub
 
-També va reforçar criteris de disseny minimalista centrats en l'essencial: claredat, resposta i facilitat d'ús.
+## Aprenentatges
 
-## Què vaig aprendre / Què milloraria
+### El que vaig aprendre
 
-Aquest projecte em va ajudar a reforçar habilitats de JavaScript orientades a lògica de joc. També vaig confirmar el valor dels dissenys simples quan l'objectiu és rapidesa i bona experiència.
+- Lògica de joc en JavaScript
+- El valor d'un disseny senzill
 
-En una següent iteració afegiria nivells de dificultat, marcador de temps i estadístiques bàsiques de partides.
+### Què faria millor
+
+- Afegir nivells de dificultat
+- Incloure estadístiques de partides

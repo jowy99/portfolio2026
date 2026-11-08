@@ -1,6 +1,6 @@
 ---
 title: "Fincas es Moli"
-description: "Web inmobiliaria para Menorca con foco en velocidad, claridad y gestion interna de propiedades."
+description: "Web inmobiliaria para Menorca con foco en velocidad, claridad y gestión interna de propiedades."
 cover: "/images/projects/fincasesmoli.png"
 date: 2024-06-18
 featured: true
@@ -11,53 +11,58 @@ stack:
   - MySQL
 links:
   live: "https://fincasesmoli.com/es"
-role: "Frontend Developer (colaboracion)"
+role: "Colaboración, Frontend"
 impact:
-  - "Entrega de una web moderna y funcional con alta satisfaccion del cliente"
+  - "Entrega de una web moderna y funcional con alta satisfacción del cliente"
   - "Experiencia fluida para compradores y panel operativo para empleados"
-  - "Mejora de organizacion y colaboracion tecnica en un proyecto real"
+  - "Mejora de organización y colaboración técnica en un proyecto real"
 ---
 
 ## Resumen
 
-Fincas es Moli es una pagina web para una inmobiliaria de Menorca, creada para mejorar su presencia online con un enfoque moderno, rapido y funcional. La plataforma esta orientada tanto a compradores como a empleados, combinando navegacion clara con herramientas de administracion.
-
-Participe en el desarrollo junto a mi hermano, compaginando estudios y practicas con mi colaboracion en el proyecto.
+- Web para una inmobiliaria de Menorca
+- Pensada para compradores y empleados
+- Desarrollada junto a mi hermano
 
 ## Objetivos
 
-1. Construir una web atractiva y fiable para captar compradores.
-2. Mejorar la experiencia de consulta de propiedades.
-3. Incorporar un panel back-end util para gestion interna.
-4. Mantener rendimiento y fluidez en navegacion.
+- Captar compradores con una web atractiva
+- Mejorar la consulta de propiedades
+- Incorporar un panel de gestión interna
+- Mantener una navegación fluida
 
 ## Retos
 
-El principal reto fue gestionar el tiempo disponible al compaginar estudios, practicas y colaboracion en el proyecto. Fue clave priorizar tareas y mantener una comunicacion continua para avanzar con consistencia.
+- Compaginar estudios, prácticas y proyecto
+- Equilibrar negocio y usabilidad
+- Servir a clientes y equipo interno
 
-Tambien hubo que equilibrar necesidades de negocio y usabilidad para que la web sirviera tanto a clientes finales como al equipo interno.
+## Decisiones técnicas
 
-## Decisiones tecnicas
+- Laravel como base del proyecto
+- Interfaz con JavaScript y TailwindCSS
+- Datos en MySQL
 
-Me centre principalmente en front-end, trabajando interfaz, estructura visual y experiencia de usuario. Tambien colabore en back-end con implementaciones como el formulario de contacto.
+## Destacado
 
-La base tecnica se apoyo en Laravel, JavaScript, TailwindCSS y MySQL para mantener velocidad de desarrollo y una plataforma estable.
-
-## Highlights
-
-- Navegacion fluida y enfoque en rendimiento.
-- Interfaz clara para exploracion de propiedades.
-- Panel de administrador para altas y edicion de inmuebles.
-- Colaboracion front-end y soporte en tareas back-end.
+- Panel para dar de alta y editar inmuebles
+- Formulario de contacto
+- Interfaz clara para explorar propiedades
 
 ## Resultados / Impacto
 
-El resultado final cumplio los objetivos del proyecto y el cliente quedo satisfecho con la entrega. La web permitio reforzar presencia digital y mejorar la gestion diaria de propiedades.
+- Web publicada y accesible
+- Mejor presencia digital
+- Gestión diaria de propiedades más sencilla
 
-A nivel personal, el proyecto fortalecio mi experiencia en front-end aplicado a negocio real y en colaboracion tecnica en equipo.
+## Aprendizajes
 
-## Lo que aprendi / Que haria mejor
+### Lo que aprendí
 
-Aprendi a organizar mejor tiempos y prioridades cuando conviven varias responsabilidades. Tambien reafirme la importancia de alinear expectativas entre diseno, desarrollo y necesidades operativas del cliente.
+- Organizar tiempos y prioridades
+- Alinear diseño, desarrollo y negocio
 
-En una siguiente iteracion mejoraria la instrumentacion de metricas de uso y ampliaria automatizaciones en el panel para procesos recurrentes.
+### Qué haría mejor
+
+- Medir el uso de la web
+- Automatizar más tareas del panel

@@ -9,9 +9,8 @@ stack:
   - JavaScript
   - TailwindCSS
   - MySQL
-links:
-  github: "https://github.com/jowy99/emotions"
-role: "Solo Developer"
+links: {}
+role: "Personal project, Unfinished"
 impact:
   - "End-to-end development of a complete web app across backend, frontend, and database"
   - "Hands-on learning in architecture and problem solving on a larger-scope project"
@@ -20,44 +19,48 @@ impact:
 
 ## Summary
 
-Emotions is a Twitter-inspired platform built to make emotional expression simple and direct. It combines a modern interface with practical features such as custom user profiles and a clear usage flow.
+- Twitter-inspired platform
+- For expressing how you feel
+- With personalized user profiles
 
-I built the project end to end, covering every technical stage.
+## Goals
 
-## Objectives
-
-1. Build a web application focused on emotional communication.
-2. Design a simple, direct, and pleasant user experience.
-3. Consolidate full-stack skills in a larger real project.
-4. Create a maintainable base to evolve the product.
+- Build an app focused on emotions
+- Design a simple, direct experience
+- Consolidate full-stack knowledge
 
 ## Challenges
 
-This was one of my first projects at this scale, so the main challenge was handling higher complexity in architecture and technical decisions. Every blocker required research, testing, and iterative adjustments.
+- One of my first projects of this size
+- Greater architectural complexity
+- Solving blockers by researching and testing
 
-The app is not fully finished yet, but the progress is solid and validated the product direction.
+## Technical decisions
 
-## Technical Decisions
-
-I developed the app from scratch with Laravel for backend logic, MySQL for persistence, and TailwindCSS + JavaScript for the frontend.
-
-I prioritized a minimalist interface so interactions stay natural and fast.
+- Backend with Laravel
+- Data in MySQL
+- Frontend with JavaScript and TailwindCSS
+- Minimalist interface
 
 ## Highlights
 
-- User profile system inspired by familiar social patterns.
-- Simple UX approach for publishing and reading emotional content.
-- Independent full-stack implementation.
-- Active foundation to continue evolving features.
+- User profile system
+- Posting and browsing content
+- Independent full-stack development
 
 ## Results / Impact
 
-Emotions started as a personal solution to improve day-to-day communication and coexistence. The project gave me real experience building a complete application and handling technical challenges end to end.
+- Experience building an app end to end
+- More confidence for large projects
 
-It also reinforced my ability to keep product focus while solving complex technical problems.
+## Learnings
 
-## What I Learned / What I'd Improve
+### What I learned
 
-This project strengthened my Laravel fundamentals, technical judgment, and confidence to tackle larger products.
+- Strengthening Laravel fundamentals
+- Keeping the focus on the product
 
-In future iterations I would improve test coverage, modularize some flows further, and plan milestones more explicitly to speed up delivery without losing quality.
+### What I'd do better
+
+- Expand the tests
+- Plan by milestones

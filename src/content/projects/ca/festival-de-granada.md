@@ -10,7 +10,7 @@ stack:
   - MySQL
 links:
   github: "https://github.com/jowy99/FestivalDeGranada"
-role: "Solo Developer"
+role: "Pràctiques, Desenvolupador únic"
 impact:
   - "Substitució de processos manuals en Excel per una eina interna més eficient"
   - "Més autonomia de l'equip per consultar dades sense dependre d'una sola persona"
@@ -19,44 +19,49 @@ impact:
 
 ## Resum
 
-Festival de Granada és una aplicació creada per gestionar bases de dades de manera més eficient dins l'organització on vaig fer les pràctiques. Va néixer per substituir Excel en la gestió d'informació delicada i millorar seguretat, consulta i automatització.
-
-A més de proposar el canvi d'enfocament, vaig desenvolupar l'aplicació completa des de zero.
+- Eina interna creada durant les pràctiques
+- Substitueix l'ús de fulls d'Excel
+- Proposada i desenvolupada des de zero
 
 ## Objectius
 
-1. Substituir fulls d'Excel per un sistema més segur i mantenible.
-2. Facilitar la consulta i gestió de dades sensibles per als empleats.
-3. Reduir la dependència operativa d'una única persona.
-4. Oferir una interfície intuïtiva per a l'ús diari.
+- Gestionar dades sensibles amb més seguretat
+- Facilitar les consultes als empleats
+- Reduir la dependència d'una sola persona
+- Oferir una interfície intuïtiva
 
 ## Reptes
 
-Un dels reptes principals va ser treballar amb Laravel en una etapa inicial d'aprenentatge. Algunes funcionalitats van requerir recerca addicional, com l'ordenació alfabètica i l'estructuració neta de consultes.
-
-Mitjançant aprenentatge continu i proves iteratives, vaig resoldre aquests punts i vaig tancar una versió estable.
+- Laravel en una etapa inicial d'aprenentatge
+- Ordenació alfabètica de les dades
+- Escriure consultes netes
 
 ## Decisions tècniques
 
-La solució es va implementar amb Laravel per a la lògica, MySQL per a persistència i TailwindCSS per a una interfície clara i fàcil de mantenir.
+- Lògica de l'aplicació amb Laravel
+- Dades a MySQL
+- Interfície amb TailwindCSS
 
-Vaig prioritzar un panell intern simple, centrat en tasques reals de l'equip, perquè l'adopció fos immediata.
+## Destacat
 
-## Punts destacats
-
-- Substitució efectiva d'un procés manual basat en Excel.
-- Interfície intuïtiva per consultar informació sensible.
-- Eina privada per a ús intern dels empleats.
-- Millora clara d'organització i velocitat de treball.
+- Alta, edició, esborrat i descàrrega de registres
+- Accés només per a administradors
 
 ## Resultats / Impacte
 
-L'aplicació va aportar més productivitat i autonomia a l'equip de pràctiques. En centralitzar la informació en una eina dedicada, es van reduir friccions i es va ordenar el flux operatiu diari.
+- Procés manual substituït
+- Més autonomia per a l'equip
+- Valoració positiva de l'equip
 
-El feedback va ser molt positiu tant per part de l'equip com de companys, destacant la utilitat real i la qualitat de l'entrega.
+## Aprenentatges
 
-## Què vaig aprendre / Què milloraria
+### El que vaig aprendre
 
-Aquest projecte va reforçar els meus fonaments en Laravel i la meva capacitat per resoldre problemes en contextos canviants. També em va reafirmar la importància de construir eines adaptades a necessitats reals.
+- Consolidar els fonaments de Laravel
+- Crear eines per a necessitats reals
 
-En una iteració següent afegiria traçabilitat de canvis, permisos per rol més granulars i un conjunt bàsic de proves automatitzades per als fluxos crítics.
+### Què faria millor
+
+- Afegir un historial de canvis
+- Permisos més detallats per rol
+- Tests als fluxos importants

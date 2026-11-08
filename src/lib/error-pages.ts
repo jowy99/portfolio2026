@@ -3,7 +3,7 @@ import type { TranslationKey } from "../i18n/strings";
 export const ERROR_CODES = [400, 401, 403, 404, 405, 408, 429, 500, 502, 503, 504] as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[number];
-export type ErrorAction = "home" | "retry" | "back" | "projects" | "contact";
+export type ErrorAction = "home" | "retry" | "projects" | "contact";
 
 type ErrorPageConfigMap = {
   titleKey: TranslationKey;
@@ -17,7 +17,6 @@ const ERROR_PAGE_CONFIG: Record<ErrorCode, ErrorPageConfigMap> = {
     titleKey: "error.400.title",
     descriptionKey: "error.400.description",
     primaryAction: "home",
-    secondaryAction: "back",
   },
   401: {
     titleKey: "error.401.title",
@@ -41,7 +40,6 @@ const ERROR_PAGE_CONFIG: Record<ErrorCode, ErrorPageConfigMap> = {
     titleKey: "error.405.title",
     descriptionKey: "error.405.description",
     primaryAction: "home",
-    secondaryAction: "back",
   },
   408: {
     titleKey: "error.408.title",
