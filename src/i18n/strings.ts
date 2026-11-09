@@ -980,7 +980,7 @@ export const strings = {
     themeLight: "Clair",
     themeDark: "Sombre",
     langLabel: "Langue",
-    footerCopy: "Tous droits reserves.",
+    footerCopy: "Tous droits réservés.",
     footerBuilt: "Site construit avec Astro + Tailwind.",
     "error.kicker": "Erreur",
     "error.pathLabel": "Chemin demandé",
