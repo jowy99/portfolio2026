@@ -1,6 +1,6 @@
 ---
 title: "MeetSync"
-description: "Encuesta para acordar fechas y destinos de una quedada o un viaje. Prototipo en pausa, hecho con ayuda de IA."
+description: "Encuesta para acordar fechas y destinos de una quedada o un viaje."
 cover: "/images/projects/meetsync.png"
 date: 2026-08-23
 label: "Prototipo sin terminar · con IA"

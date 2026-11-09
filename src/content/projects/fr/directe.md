@@ -1,6 +1,6 @@
 ---
 title: "Directe : proposition de site"
-description: "Proposition d'amélioration du site de Directe C.B., une entreprise réelle de Minorque. Elle ne m'a pas été commandée et n'a pas été adoptée."
+description: "Proposition de refonte du site de Directe C.B., une entreprise de Minorque."
 cover: "/images/projects/directe.png"
 date: 2026-04-01
 label: "Proposition non adoptée · avec IA"

@@ -1,6 +1,6 @@
 ---
 title: "Recipies AI"
-description: "Livre de recettes communautaire avec un assistant IA. Prototype inachevé et non publié, réalisé avec l'aide de l'IA."
+description: "Livre de recettes communautaire avec un assistant IA."
 cover: "/images/projects/recipies.png"
 date: 2026-02-04
 label: "Prototype inachevé · avec IA"

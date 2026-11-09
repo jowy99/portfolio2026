@@ -1,6 +1,6 @@
 ---
 title: "FitPlanner"
-description: "Base d'une application de routines et de progression, avec une API Express et une authentification. Prototype inachevé."
+description: "Base d'une application de routines et de progression, avec une API Express et une authentification."
 cover: "/images/projects/fitplanner.png"
 date: 2025-04-09
 label: "Prototype inachevé"

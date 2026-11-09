@@ -1,6 +1,6 @@
 ---
 title: "Defiance"
-description: "Website and API for a fictional Valorant club my friends and I run. A personal project built with AI assistance."
+description: "Website and API for a fictional Valorant club my friends and I run."
 cover: "/images/projects/defiance.png"
 date: 2026-11-04
 label: "Personal project · AI-assisted"

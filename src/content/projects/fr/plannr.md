@@ -1,6 +1,6 @@
 ---
 title: "PlannR"
-description: "Application de tâches, de listes et de calendrier avec une collaboration de base. Prototype inachevé et non publié, réalisé avec l'aide de l'IA."
+description: "Application de tâches, de listes et de calendrier avec une collaboration de base."
 cover: "/images/projects/plannr.png"
 date: 2026-02-24
 label: "Prototype inachevé · avec IA"

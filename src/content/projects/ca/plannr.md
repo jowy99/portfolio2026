@@ -1,6 +1,6 @@
 ---
 title: "PlannR"
-description: "Aplicació de tasques, llistes i calendari amb col·laboració bàsica. Prototip sense acabar ni publicar, fet amb ajuda d'IA."
+description: "Aplicació de tasques, llistes i calendari amb col·laboració bàsica."
 cover: "/images/projects/plannr.png"
 date: 2026-02-24
 label: "Prototip sense acabar · amb IA"

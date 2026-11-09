@@ -1,6 +1,6 @@
 ---
 title: "Recipies AI"
-description: "Recetario comunitario con un asistente de IA. Prototipo en pausa, hecho con ayuda de IA."
+description: "Recetario comunitario con un asistente de IA."
 cover: "/images/projects/recipies.png"
 date: 2026-02-04
 label: "Prototipo sin terminar · con IA"

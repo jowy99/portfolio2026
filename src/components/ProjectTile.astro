@@ -6,6 +6,8 @@ import { t } from "../i18n/t";
 import { resolveProjectCover } from "../utils/project-covers";
 import { resolveTech } from "../utils/tech";
 import SkillIcon from "./SkillIcon.astro";
+import TechBadge from "./TechBadge.astro";
+import { projectHighlights } from "../utils/project-highlights";
 
 interface Props {
   lang: Locale;
@@ -21,6 +23,7 @@ interface Props {
 const { lang, slug, title, description, cover, stack, links = {}, priority = false } = Astro.props;
 const resolvedCover = resolveProjectCover(cover);
 const imageLoading = priority ? "eager" : "lazy";
+const highlight = projectHighlights[slug];
 ---
 
 <article class="featured-card project-tile">
@@ -29,16 +32,21 @@ const imageLoading = priority ? "eager" : "lazy";
       typeof resolvedCover === "string" ? (
         <img src={resolvedCover} alt="" loading={imageLoading} decoding="async" />
       ) : (
-        <Image src={resolvedCover} alt="" widths={[240, 360, 480, 640, 800]} sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 112px" loading={imageLoading} decoding="async" fetchpriority={priority ? "high" : "auto"} />
+        <Image src={resolvedCover} alt="" widths={[240, 360, 480, 640, 800]} sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, calc(100vw - 32px)" loading={imageLoading} decoding="async" fetchpriority={priority ? "high" : "auto"} />
       )
     }
   </div>
   <div class="featured-body">
+    {highlight && <p class="card-highlight">{t(lang, highlight)}</p>}
     <h3 class="featured-title">
       <a href={`/${lang}/projects/${slug}`} class="featured-link">{title}</a>
     </h3>
     <p class="featured-description project-tile-description muted">{description}</p>
-    <ul class="project-tile-stack" aria-label={t(lang, "projectStackAria")}>
+    <ul class="project-tile-stack project-tile-badges" aria-label={t(lang, "projectStackAria")}>
+      {stack.slice(0, 4).map((item) => <li><TechBadge stack={item} size="sm" /></li>)}
+      {stack.length > 4 && <li><span class="tech-badge tech-badge-count tech-badge-sm">+{stack.length - 4}</span></li>}
+    </ul>
+    <ul class="project-tile-stack project-tile-icons" aria-label={t(lang, "projectStackAria")}>
       {
         stack.map((item) => {
           const label = resolveTech(item).label;

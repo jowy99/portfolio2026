@@ -1,6 +1,6 @@
 ---
 title: "MeetSync"
-description: "Enquesta per acordar dates i destinacions d'una trobada o un viatge. Prototip sense acabar ni publicar, fet amb ajuda d'IA."
+description: "Enquesta per acordar dates i destinacions d'una trobada o un viatge."
 cover: "/images/projects/meetsync.png"
 date: 2026-08-23
 label: "Prototip sense acabar · amb IA"

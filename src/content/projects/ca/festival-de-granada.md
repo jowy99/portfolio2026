@@ -3,7 +3,7 @@ title: "Festival de Granada"
 description: "Aplicació interna per gestionar dades sensibles amb més seguretat i menys dependència d'Excel."
 cover: "/images/projects/festivaldegranada.png"
 date: 2024-02-08
-featured: false
+featured: true
 stack:
   - Laravel
   - TailwindCSS

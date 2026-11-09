@@ -1,6 +1,6 @@
 ---
 title: "MeetSync"
-description: "A poll to agree on dates and destinations for a meetup or trip. Unfinished, unpublished prototype built with AI assistance."
+description: "A poll to agree on dates and destinations for a meetup or trip."
 cover: "/images/projects/meetsync.png"
 date: 2026-08-23
 label: "Unfinished prototype · AI-assisted"

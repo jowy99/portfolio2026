@@ -11,9 +11,6 @@ interface Props {
 
 const { lang } = Astro.props;
 
-const profileWhyBullets = tList(lang, "profile.why.bullets");
-const profileWhyOptimizeItems = tList(lang, "profile.why.optimizeItems");
-const profileWhyWorkItems = tList(lang, "profile.why.workItems");
 const profileWhySignals = [
   t(lang, "profile.why.b1"),
   t(lang, "profile.why.b2"),
@@ -21,12 +18,13 @@ const profileWhySignals = [
   t(lang, "profile.why.b4"),
 ];
 const profileSkillsItems = tList(lang, "profile.skills.items");
+const profileSkillsLearningItems = tList(lang, "profile.skills.learningItems");
 const profileLanguageItems = tList(lang, "profile.lang.items");
 const profileTabs = [
-  { id: "why", labelKey: "profile.tab.why", shortLabelKey: "profile.tab.short.why" },
-  { id: "skills", labelKey: "profile.tab.skills", shortLabelKey: "profile.tab.short.skills" },
-  { id: "edu", labelKey: "profile.tab.edu", shortLabelKey: "profile.tab.short.edu" },
-  { id: "lang", labelKey: "profile.tab.lang", shortLabelKey: "profile.tab.short.lang" },
+  { id: "why", labelKey: "profile.tab.why" },
+  { id: "skills", labelKey: "profile.tab.skills" },
+  { id: "edu", labelKey: "profile.tab.edu" },
+  { id: "lang", labelKey: "profile.tab.lang" },
 ] as const;
 const splitLabelValue = (value: string) => {
   const [label, ...rest] = value.split(":");
@@ -111,7 +109,7 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
             data-profile-tab={tab.id}
           >
             <span class="profile-tab-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-            <span class="profile-tab-label">{t(lang, tab.shortLabelKey)}</span>
+            <span class="profile-tab-label">{t(lang, tab.labelKey)}</span>
           </button>
         ))
       }
@@ -166,43 +164,6 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
               ))
             }
           </ul>
-
-          <div class="profile-editorial-grid">
-            <div class="profile-copy-block">
-              <p class="profile-side-label">{t(lang, "profile.why.valueTitle")}</p>
-              <ul class="profile-bullet-list">
-                {
-                  profileWhyBullets.map((item) => (
-                    <li>{item}</li>
-                  ))
-                }
-              </ul>
-            </div>
-
-            <div class="profile-side-stack">
-              <section class="profile-side-block">
-                <p class="profile-side-label">{t(lang, "profile.why.optimizeTitle")}</p>
-                <ul class="profile-detail-list">
-                  {
-                    profileWhyOptimizeItems.map((item) => (
-                      <li>{item}</li>
-                    ))
-                  }
-                </ul>
-              </section>
-
-              <section class="profile-side-block">
-                <p class="profile-side-label">{t(lang, "profile.why.workTitle")}</p>
-                <ul class="profile-detail-list">
-                  {
-                    profileWhyWorkItems.map((item) => (
-                      <li>{item}</li>
-                    ))
-                  }
-                </ul>
-              </section>
-            </div>
-          </div>
         </section>
 
         <section
@@ -223,6 +184,10 @@ const profileEducationCourses = readEducationItems(tValue(lang, "profile.edu.cou
                 <li><TechBadge stack={item} /></li>
               ))
             }
+          </ul>
+          <p class="muted mt-6 text-sm font-semibold">{t(lang, "profile.skills.learningTitle")}</p>
+          <ul class="profile-skills-grid mt-3">
+            {profileSkillsLearningItems.map((item) => <li><TechBadge stack={item} /></li>)}
           </ul>
         </section>
 

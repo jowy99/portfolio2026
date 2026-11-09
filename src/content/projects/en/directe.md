@@ -1,6 +1,6 @@
 ---
 title: "Directe: website proposal"
-description: "A proposal to improve the website of Directe C.B., a real company in Menorca. It wasn't commissioned and they haven't adopted it."
+description: "A redesign proposal for the website of Directe C.B., a company in Menorca."
 cover: "/images/projects/directe.png"
 date: 2026-04-01
 label: "Proposal, not adopted · AI-assisted"

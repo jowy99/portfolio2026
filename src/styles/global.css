@@ -1156,7 +1156,7 @@
   }
 
   .contact-unified {
-    @apply mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-2 lg:items-start;
+    @apply grid w-full gap-8 lg:grid-cols-2 lg:items-start;
   }
 
   .contact-copy-panel {
@@ -1691,7 +1691,8 @@
   }
 
   .hero-section {
-    @apply flex items-center py-6 sm:py-8 xl:min-h-[calc(100svh-11rem)] xl:py-10;
+    @apply flex items-center py-8 sm:py-12 lg:py-16;
+    min-height: calc(100svh - var(--header-h));
   }
 
   .hero-copy {
@@ -2436,3 +2437,98 @@ html:not(.dark) .projects-search-shell {
 .back-link-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 .story-status { padding: 0.4375rem 0.875rem; border-radius: 0.625rem; background: rgb(31 95 85 / 0.1); font-size: 0.9375rem; font-weight: 600; color: #1f5f55; }
 .dark .story-status { background: rgb(166 217 207 / 0.12); color: #a6d9cf; }
+
+/* Contact: a centered, minimal column. */
+.contact-unified { display: flex; flex-direction: column; max-width: 44rem; margin-inline: auto; align-items: stretch; gap: 2.5rem; text-align: center; }
+.contact-copy-panel p { max-width: 40rem; margin-inline: auto; text-wrap: balance; }
+.contact-form-panel { text-align: left; }
+.contact-form-panel [data-contact-submit] { justify-self: center; width: auto; min-width: 14rem; }
+.contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+.contact-unified { max-width: 64rem; gap: 2.5rem; }
+.contact-copy-panel h2 { font-size: clamp(3rem, 7vw, 5.5rem); }
+.contact-copy-panel p { margin-top: 1rem; font-size: clamp(1.0625rem, 1.8vw, 1.375rem); line-height: 1.45; }
+.contact-form-panel .contact-field-group { font-size: 1.0625rem; }
+.contact-form-panel .field { min-height: 3.5rem; padding-inline: 1.25rem; font-size: 1.0625rem; }
+.contact-form-panel .field-textarea { min-height: 13rem; padding-block: 1rem; }
+.contact-form-panel [data-contact-submit] { min-width: min(18rem, 100%); min-height: 3.5rem; font-size: 1.0625rem; }
+
+/* Responsive and contrast review. */
+.project-tile .featured-media { aspect-ratio: 4 / 3; min-height: 0; align-self: start; }
+.featured-link { display: inline-block; min-height: 1.5rem; }
+html:not(.dark) .profile-tab { opacity: 1; color: var(--color-zinc-800); }
+html:not(.dark) .profile-tab-index { opacity: 1; color: var(--color-zinc-700); }
+html:not(.dark) .profile-tab-label { opacity: 1; color: var(--color-zinc-800); }
+html:not(.dark) .profile-tab.is-active .profile-tab-index,
+html:not(.dark) .profile-tab[aria-selected="true"] .profile-tab-index { color: var(--color-zinc-50); }
+@media (min-width: 640px) {
+  .project-tile .featured-media { aspect-ratio: 16 / 10; align-self: auto; }
+}
+@media (min-width: 768px) {
+  .featured-card.is-lead { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+  .is-lead .featured-media { aspect-ratio: 4 / 3; min-height: 0; align-self: center; }
+}
+html:not(.dark) .profile-tab-mobile.is-active .profile-tab-label,
+html:not(.dark) .profile-tab-mobile[aria-selected="true"] .profile-tab-label { color: var(--color-zinc-50); }
+
+/* Project cards: full text everywhere; stacked layout with named tools on phones, compact icons from 640px. */
+.project-tile-description { display: block; overflow: visible; -webkit-line-clamp: unset; }
+
+@media (max-width: 639.98px) {
+  .project-grid > [data-project-item] { display: flex; }
+  .project-tile { display: flex; width: 100%; height: auto; flex-direction: column; grid-template-columns: none; }
+  .project-tile .featured-media { aspect-ratio: 4 / 3; min-height: 0; align-self: auto; }
+  .project-tile .featured-media img { object-fit: cover; object-position: top; }
+  .project-tile .featured-body { flex: 1; padding: 1.25rem; }
+  .project-tile .featured-title { font-size: 1.25rem; }
+  .project-tile-stack { gap: 0.375rem; margin-top: 0.875rem; }
+  .project-tile-actions { margin-top: auto; padding-top: 1rem; }
+  .project-tile-icons { display: none; }
+}
+
+@media (min-width: 640px) {
+  .project-tile-badges { display: none; }
+}
+
+/* Home rhythm: one vertical space between every section. The sticky header is 68px tall. */
+:root { --header-h: 68px; --section-space: 3rem; }
+@media (min-width: 640px) { :root { --section-space: 4rem; } }
+@media (min-width: 1024px) { :root { --section-space: 5rem; } }
+#projects, #about, #contact { padding-block: var(--section-space); }
+
+/* Hero: one spacing scale for the text column (space above each block). */
+.hero-copy .hero-title { margin-top: 0.75rem; }
+.hero-copy .hero-subtitle { margin-top: 1rem; }
+.hero-copy .hero-actions { margin-top: 1.5rem; }
+.hero-copy .hero-mobile-glimpse { margin-top: 1.5rem; }
+.hero-copy .tech-badge-list-hero { margin-top: 1.5rem; }
+.hero-copy .hero-list { margin-top: 1.5rem; }
+@media (min-width: 640px) {
+  .hero-copy .hero-title { margin-top: 1rem; }
+  .hero-copy .hero-subtitle { margin-top: 1.5rem; }
+  .hero-copy .tech-badge-list-hero { margin-top: 2rem; }
+  .hero-copy .hero-list { margin-top: 1.5rem; }
+  .hero-copy .hero-actions { margin-top: 2rem; }
+}
+
+/* Hablemos: centred card with status, form and link buttons. */
+.contact-form-panel { width: 100%; max-width: 48rem; margin-inline: auto; }
+.contact-form-panel .contact-form-shell { padding: 1.5rem; border-radius: 1.5rem; }
+.contact-form-panel form { row-gap: 1.25rem; column-gap: 1rem; }
+.contact-form-panel [data-contact-submit] { margin-top: 0.5rem; }
+.contact-form-panel .field { background-color: var(--color-zinc-50); }
+.dark .contact-form-panel .field { background-color: var(--color-zinc-950); }
+@media (min-width: 640px) {
+  .contact-form-panel .contact-form-shell { padding: 2rem; }
+}
+@media (min-width: 1024px) {
+  .contact-unified { gap: 3rem; }
+  .contact-form-panel .contact-form-shell { padding: 2.5rem; }
+}
+
+/* Hero proof line and positive project card labels. */
+.hero-copy .hero-proof { order: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin-top: 1rem; font-size: 0.875rem; }
+.hero-proof a { display: inline-flex; min-height: 1.5rem; align-items: center; font-weight: 600; color: #1f5f55; text-decoration: underline; text-underline-offset: 3px; }
+.dark .hero-proof a { color: #a6d9cf; }
+@media (min-width: 640px) { .hero-copy .hero-proof { order: 6; } }
+.card-highlight { align-self: flex-start; width: fit-content; margin-bottom: 0.5rem; padding: 0.125rem 0.625rem; border: 1px solid currentColor; border-radius: 999px; font-size: 0.75rem; font-weight: 600; line-height: 1.5; color: #1f5f55; }
+.dark .card-highlight { color: #a6d9cf; }

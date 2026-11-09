@@ -10,58 +10,13 @@ interface Props {
 
 const { lang } = Astro.props;
 
-const contactWhyPoints = [
-  t(lang, "contact.whyPoint1"),
-  t(lang, "contact.whyPoint2"),
-  t(lang, "contact.whyPoint3"),
-];
 ---
 
-<Section id="contact" className="defer-content pb-16 sm:pb-20 lg:pb-28">
+<Section id="contact" className="defer-content">
   <div class="contact-unified" data-reveal>
     <div class="contact-copy-panel">
       <h2 class="text-4xl font-semibold leading-[1.05] sm:text-5xl">{t(lang, "contactTitle")}</h2>
       <p class="muted mt-6 max-w-md text-sm leading-relaxed">{t(lang, "contactSubtitle")}</p>
-      <p class="muted mt-4 max-w-md text-sm leading-relaxed">{t(lang, "contact.whyIntro")}</p>
-
-      <ul class="mt-6 space-y-2.5 text-sm leading-relaxed">
-        {
-          contactWhyPoints.map((point) => (
-            <li class="flex gap-2.5">
-              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500 dark:bg-zinc-400" aria-hidden="true"></span>
-              <span class="muted">{point}</span>
-            </li>
-          ))
-        }
-      </ul>
-
-      <div class="mt-8 border-t border-zinc-200 pt-5 dark:border-zinc-800">
-        <p class="text-xs font-semibold uppercase tracking-[0.08em] text-zinc-600 dark:text-zinc-300">{t(lang, "contact.socialTitle")}</p>
-        <div class="mt-3 flex flex-wrap gap-4">
-          <a
-            href="https://www.linkedin.com/in/joelarnaudcarreras/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="ui-underline inline-flex min-h-11 items-center gap-2 text-sm font-medium"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M6.94 8.56H3.56V20h3.38V8.56Zm.22-3.53A1.96 1.96 0 1 0 3.24 5a1.96 1.96 0 0 0 3.92.03Zm13.28 7.87c0-3.43-1.83-5.03-4.27-5.03-1.97 0-2.85 1.08-3.34 1.84V8.56H9.44V20h3.39v-5.66c0-1.49.28-2.93 2.13-2.93 1.82 0 1.84 1.7 1.84 3.03V20h3.4v-7.1Z"></path>
-            </svg>
-            {t(lang, "contactLinkedIn")}
-          </a>
-          <a
-            href="https://github.com/jowy99"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="ui-underline inline-flex min-h-11 items-center gap-2 text-sm font-medium"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <use href="#icon-github"></use>
-            </svg>
-            {t(lang, "projectGithub")}
-          </a>
-        </div>
-      </div>
     </div>
 
     <div class="contact-form-panel">
@@ -143,7 +98,7 @@ const contactWhyPoints = [
 
           <button
             type="submit"
-            class="btn btn-secondary min-h-11 w-full sm:col-span-2 motion-safe:hover:-translate-y-0.5 transition-transform disabled:cursor-wait disabled:opacity-60"
+            class="btn btn-primary min-h-11 w-full sm:col-span-2 motion-safe:hover:-translate-y-0.5 transition-transform disabled:cursor-wait disabled:opacity-60"
             data-contact-submit
             data-label-default={t(lang, "contactSend")}
             data-label-sending={t(lang, "contact.status.sending")}
@@ -151,10 +106,29 @@ const contactWhyPoints = [
             {t(lang, "contactSend")}
           </button>
           <p class="contact-form-status notice hidden sm:col-span-2" data-contact-status role="status" aria-live="polite" aria-atomic="true" aria-hidden="true"></p>
-          <p class="help sm:col-span-2">{t(lang, "contactNote")}</p>
         </form>
       </div>
     </div>
+  <ul class="contact-links">
+        <li>
+          <a href="https://www.linkedin.com/in/joelarnaudcarreras/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary min-h-11">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.94 8.56H3.56V20h3.38V8.56ZM5.25 3.08a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92ZM20.44 13.4c0-3.45-1.84-5.06-4.3-5.06-1.98 0-2.87 1.09-3.37 1.86V8.56H9.4c.04 1.09 0 11.44 0 11.44h3.37v-6.39c0-.34.03-.68.13-.92.27-.68.89-1.38 1.93-1.38 1.36 0 1.9 1.04 1.9 2.56V20h3.37l.34-6.6Z"></path></svg>
+            <span>{t(lang, "contactLinkedIn")}</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/jowy99" target="_blank" rel="noopener noreferrer" class="btn btn-secondary min-h-11">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#icon-github"></use></svg>
+            <span>{t(lang, "projectGithub")}</span>
+          </a>
+        </li>
+        <li>
+          <a href="/cv-joel-arnaud.pdf" download class="btn btn-secondary min-h-11">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14"></path></svg>
+            <span>{t(lang, "heroDownloadCv")}</span>
+          </a>
+        </li>
+      </ul>
   </div>
 </Section>
 
