@@ -11,10 +11,14 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="border-t border-zinc-200 dark:border-zinc-800">
-  <div class="site-container py-8 text-center text-xs sm:text-sm">
-    <p class="mx-auto">
+  <div class="site-container footer-inner py-8 text-xs sm:text-sm">
+    <p>
       <span class="font-medium">© {year} {t(lang, "siteName")}.</span>
       <span class="muted"> {t(lang, "footerCopy")}</span>
     </p>
+    <ul class="footer-links">
+      <li><a href="https://www.linkedin.com/in/joelarnaudcarreras/" target="_blank" rel="noopener noreferrer">{t(lang, "contactLinkedIn")}</a></li>
+      <li><a href="https://github.com/jowy99" target="_blank" rel="noopener noreferrer">{t(lang, "projectGithub")}</a></li>
+    </ul>
   </div>
 </footer>

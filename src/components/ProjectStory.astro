@@ -54,12 +54,12 @@ const badges = (role ?? "")
 
 <article class="site-container story">
   <header class="story-head">
-    {badges.length > 0 && <p class="story-status">{badges.join(" · ")}</p>}
     <h1 class="story-title">{title}</h1>
     <p class="muted story-lead">{lead}</p>
     <ul class="story-tools" aria-label={t(lang, "projectStackAria")}>
       {stack.map((item) => <li><TechBadge stack={item} /></li>)}
     </ul>
+    {badges.length > 0 && <p class="story-status">{badges.join(" · ")}</p>}
     <div class="story-links">
       {links.github && <a href={links.github} class="btn btn-secondary min-h-11" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#icon-github"></use></svg>{t(lang, "projectGithub")}</a>}
       {links.live && <a href={links.live} class="btn btn-secondary min-h-11" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#icon-globe"></use></svg>{t(lang, "projectLive")}</a>}
@@ -76,7 +76,7 @@ const badges = (role ?? "")
   <div class="story-accordion">
     {
       chapters.map((chapter, index) => (
-        <details class="story-section" name="project-story" open={index === 0}>
+        <details class="story-section" open={index === 0 || /^(Resultados|Results|Resultats|Résultats)/.test(chapter.title)}>
           <summary class="story-summary">
             <span class="story-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
             <h2 class="story-heading">{chapter.title}</h2>

@@ -2525,10 +2525,28 @@ html:not(.dark) .profile-tab-mobile[aria-selected="true"] .profile-tab-label { c
   .contact-form-panel .contact-form-shell { padding: 2.5rem; }
 }
 
-/* Hero proof line and positive project card labels. */
-.hero-copy .hero-proof { order: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin-top: 1rem; font-size: 0.875rem; }
-.hero-proof a { display: inline-flex; min-height: 1.5rem; align-items: center; font-weight: 600; color: #1f5f55; text-decoration: underline; text-underline-offset: 3px; }
-.dark .hero-proof a { color: #a6d9cf; }
-@media (min-width: 640px) { .hero-copy .hero-proof { order: 6; } }
+/* Positive project card labels. */
 .card-highlight { align-self: flex-start; width: fit-content; margin-bottom: 0.5rem; padding: 0.125rem 0.625rem; border: 1px solid currentColor; border-radius: 999px; font-size: 0.75rem; font-weight: 600; line-height: 1.5; color: #1f5f55; }
 .dark .card-highlight { color: #a6d9cf; }
+
+/* Footer links. */
+.footer-inner { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; }
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem 1.25rem; }
+.footer-links a { display: inline-flex; min-height: 1.5rem; align-items: center; color: var(--color-zinc-700); }
+.dark .footer-links a { color: var(--color-zinc-300); }
+.footer-links a:hover { color: #1f5f55; text-decoration: underline; text-underline-offset: 3px; }
+.dark .footer-links a:hover { color: #a6d9cf; }
+@media (min-width: 640px) { .footer-inner { flex-direction: row; justify-content: space-between; text-align: left; } }
+
+/* Project page: status line under the technologies, smaller. */
+.story-head .story-status { margin-top: 1rem; padding: 0.25rem 0.75rem; font-size: 0.8125rem; }
+
+/* Project page bottom bar: equal buttons in a grid on phones, one row from 640px. */
+.back-link-footer-panel .btn { min-height: 3rem; }
+@media (max-width: 639.98px) {
+  .back-link-footer-panel:has(.back-link-actions) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; padding: 0.75rem; }
+  .back-link-footer-panel:has(.back-link-actions) .back-link-footer { grid-column: 1 / -1; width: 100%; justify-content: center; }
+  .back-link-actions { display: contents; }
+  .back-link-actions .btn { width: 100%; justify-content: center; }
+  .back-link-actions > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
