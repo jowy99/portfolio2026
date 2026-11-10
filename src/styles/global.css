@@ -1732,18 +1732,6 @@
     @apply mt-2 inline-flex items-center gap-2 rounded-full border border-zinc-200/90 bg-white/92 px-3 py-1 text-[0.68rem] font-medium uppercase tracking-[0.08em] text-zinc-600 dark:border-zinc-700/90 dark:bg-zinc-900/92 dark:text-zinc-300;
   }
 
-  .hero-list {
-    @apply mt-5 space-y-2 sm:mt-6 sm:space-y-2.5;
-  }
-
-  .hero-list-item {
-    @apply flex items-start gap-2.5 text-sm text-zinc-700 dark:text-zinc-300;
-  }
-
-  .hero-list-dot {
-    @apply mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500 dark:bg-zinc-400;
-  }
-
   .tech-badge.hero-stack-chip,
   .dark .tech-badge.hero-stack-chip {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.68);
@@ -2491,12 +2479,10 @@ html:not(.dark) .profile-tab-mobile[aria-selected="true"] .profile-tab-label { c
 .hero-copy .hero-actions { margin-top: 1.5rem; }
 .hero-copy .hero-mobile-glimpse { margin-top: 1.5rem; }
 .hero-copy .tech-badge-list-hero { margin-top: 1.5rem; }
-.hero-copy .hero-list { margin-top: 1.5rem; }
 @media (min-width: 640px) {
   .hero-copy .hero-title { margin-top: 1rem; }
   .hero-copy .hero-subtitle { margin-top: 1.5rem; }
   .hero-copy .tech-badge-list-hero { margin-top: 2rem; }
-  .hero-copy .hero-list { margin-top: 1.5rem; }
   .hero-copy .hero-actions { margin-top: 2rem; }
 }
 
