@@ -3,7 +3,7 @@ title: "Emotions App"
 description: "Plateforme inspirée de Twitter pour exprimer les émotions avec profils personnalisés et expérience minimaliste."
 cover: "/images/projects/emotionsapp.png"
 date: 2024-08-15
-featured: true
+featured: false
 stack:
   - Laravel
   - JavaScript

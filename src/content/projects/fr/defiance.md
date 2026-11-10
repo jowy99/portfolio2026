@@ -1,6 +1,6 @@
 ---
 title: "Defiance"
-description: "Site et API pour un club fictif de Valorant que nous avons entre amis. Projet personnel réalisé avec l'aide de l'IA."
+description: "Site et API pour un club fictif de Valorant que nous avons entre amis."
 cover: "/images/projects/defiance.png"
 date: 2026-11-04
 label: "Projet personnel · avec IA"

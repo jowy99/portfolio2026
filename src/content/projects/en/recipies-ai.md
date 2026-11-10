@@ -1,6 +1,6 @@
 ---
 title: "Recipies AI"
-description: "Community recipe book with an AI assistant. Unfinished, unpublished prototype built with AI assistance."
+description: "Community recipe book with an AI assistant."
 cover: "/images/projects/recipies.png"
 date: 2026-02-04
 label: "Unfinished prototype · AI-assisted"

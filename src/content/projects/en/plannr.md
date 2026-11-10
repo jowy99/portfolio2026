@@ -1,6 +1,6 @@
 ---
 title: "PlannR"
-description: "Task, list and calendar app with basic collaboration. Unfinished, unpublished prototype built with AI assistance."
+description: "Task, list and calendar app with basic collaboration."
 cover: "/images/projects/plannr.png"
 date: 2026-02-24
 label: "Unfinished prototype · AI-assisted"

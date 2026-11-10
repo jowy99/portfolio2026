@@ -1,6 +1,6 @@
 ---
 title: "Directe: proposta de web"
-description: "Proposta de millora per a la web de Directe C.B., una empresa real de Menorca. No me la van encarregar i no l'han adoptada."
+description: "Proposta de redisseny per a la web de Directe C.B., una empresa de Menorca."
 cover: "/images/projects/directe.png"
 date: 2026-04-01
 label: "Proposta no adoptada · amb IA"

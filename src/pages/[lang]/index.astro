@@ -22,7 +22,7 @@ const lang: Locale = assertLocale(Astro.params.lang);
 const orderedProjects = filterProjectsByLocale(await getCollection("projects"), lang).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-const featuredOrder = ["fincas-es-moli", "weather-app", "emotions-app"];
+const featuredOrder = ["fincas-es-moli", "festival-de-granada", "weather-app"];
 const featuredOrderSet = new Set(featuredOrder);
 const featuredByOrder = featuredOrder
   .map((slug) => orderedProjects.find((project) => getProjectSlug(project) === slug))
@@ -54,8 +54,6 @@ const homeStructuredData = [
     inLanguage: lang,
   },
 ];
-
-const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "hero.bullet3")];
 ---
 
 <BaseLayout
@@ -70,7 +68,7 @@ const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "
           <div class="hero-copy">
             <p class="hero-kicker">{t(lang, "hero.eyebrow")}</p>
             <h1 class="hero-title">{t(lang, "hero.title")}</h1>
-            <p class="muted mt-3 max-w-2xl text-base leading-relaxed sm:mt-4 sm:text-lg">{t(lang, "hero.subtitle")}</p>
+            <p class="hero-subtitle muted max-w-2xl text-base leading-relaxed sm:text-lg">{t(lang, "hero.subtitle")}</p>
 
             <div class="hero-actions">
               <a href={projectsHref} class="btn btn-primary hero-cta-pulse min-h-11 w-full sm:w-auto">{t(lang, "hero.ctaProjects")}</a>
@@ -102,7 +100,7 @@ const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "
               </div>
             </div>
 
-            <ul class="tech-badge-list tech-badge-list-hero order-3 mt-4">
+            <ul class="tech-badge-list tech-badge-list-hero order-3">
               {
                 heroStack.map((item, index) => (
                   <li style={`--chip-index: ${index};`}>
@@ -112,16 +110,6 @@ const heroBullets = [t(lang, "hero.bullet1"), t(lang, "hero.bullet2"), t(lang, "
               }
             </ul>
 
-            <ul class="hero-list order-4">
-              {
-                heroBullets.map((point) => (
-                  <li class="hero-list-item">
-                    <span class="hero-list-dot" aria-hidden="true"></span>
-                    <span>{point}</span>
-                  </li>
-                ))
-              }
-            </ul>
 
           </div>
 

@@ -1,6 +1,6 @@
 ---
 title: "Directe: propuesta de web"
-description: "Propuesta de rediseño para la web de Directe C.B., una empresa de Menorca. Demo independiente, no oficial."
+description: "Propuesta de rediseño para la web de Directe C.B., una empresa de Menorca."
 cover: "/images/projects/directe.png"
 date: 2026-04-01
 label: "Propuesta no adoptada · con IA"

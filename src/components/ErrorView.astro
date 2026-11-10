@@ -75,7 +75,7 @@ const description = t(lang, config.descriptionKey);
           }
 
           {config.secondaryAction && secondaryHref && (
-            <a href={secondaryHref} class="ui-underline text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <a href={secondaryHref} class="ui-underline inline-flex min-h-6 items-center text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t(lang, ACTION_LABEL_KEYS[config.secondaryAction])}
             </a>
           )}

@@ -1,7 +1,6 @@
 ---
 import type { Locale } from "../i18n/locales";
 import { t } from "../i18n/t";
-import HeaderDropdown from "./HeaderDropdown.astro";
 
 interface Props {
   lang: Locale;
@@ -9,19 +8,31 @@ interface Props {
   variant?: "header" | "panel";
 }
 
-const { lang, id = "theme-select", variant = "header" } = Astro.props;
-const items = [
-  { id: `${id}-system`, label: t(lang, "themeSystem"), value: "system", current: true },
-  { id: `${id}-light`, label: t(lang, "themeLight"), value: "light", current: false },
-  { id: `${id}-dark`, label: t(lang, "themeDark"), value: "dark", current: false },
-];
+const { lang, id = "theme-toggle", variant = "header" } = Astro.props;
+const isPanelVariant = variant === "panel";
 ---
 
-<HeaderDropdown
-  id={id}
-  label={t(lang, "themeLabel")}
-  currentLabel={t(lang, "themeSystem")}
-  items={items}
-  icon="theme"
-  variant={variant}
-/>
+<div class:list={["hdr-menu-field", isPanelVariant && "hdr-menu-field-panel"]}>
+  {isPanelVariant && <p class="hdr-menu-caption">{t(lang, "themeLabel")}</p>}
+  <button
+    id={id}
+    type="button"
+    class:list={["theme-switch", isPanelVariant ? "theme-switch-panel" : "ui-dropdown-trigger hdr-menu-trigger"]}
+    data-theme-switch
+  >
+    <span class="sr-only">{t(lang, "themeLabel")}: </span>
+    <span class="theme-switch-state theme-switch-light">
+      <svg class="hdr-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"></circle>
+        <path d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M17.9 6.1l-1.6 1.6M7.7 16.3l-1.6 1.6M17.9 17.9l-1.6-1.6M7.7 7.7L6.1 6.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+      </svg>
+      <span class="theme-switch-text">{t(lang, "themeLight")}</span>
+    </span>
+    <span class="theme-switch-state theme-switch-dark">
+      <svg class="hdr-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M14.9 3.7a8 8 0 1 0 6 10.6A7.5 7.5 0 0 1 14.9 3.7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+      </svg>
+      <span class="theme-switch-text">{t(lang, "themeDark")}</span>
+    </span>
+  </button>
+</div>

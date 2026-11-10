@@ -1,6 +1,6 @@
 ---
 title: "MeetSync"
-description: "Sondage pour convenir des dates et des destinations d'une sortie ou d'un voyage. Prototype inachevé et non publié, réalisé avec l'aide de l'IA."
+description: "Sondage pour convenir des dates et des destinations d'une sortie ou d'un voyage."
 cover: "/images/projects/meetsync.png"
 date: 2026-08-23
 label: "Prototype inachevé · avec IA"

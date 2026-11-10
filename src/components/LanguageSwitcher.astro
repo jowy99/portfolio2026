@@ -17,10 +17,10 @@ const { lang, currentPath = "/", search = "", hash = "", id = "lang-select", var
 const rest = getPathSegmentsWithoutLocale(currentPath);
 
 const localeLabels: Record<Locale, string> = {
-  es: "Espanol",
+  es: "Español",
   en: "English",
-  ca: "Catala",
-  fr: "Francais",
+  ca: "Català",
+  fr: "Français",
 };
 
 const buildLocalePath = (targetLocale: Locale): string => {
@@ -30,7 +30,8 @@ const buildLocalePath = (targetLocale: Locale): string => {
 
 const items = locales.map((locale) => ({
   id: `${id}-${locale}`,
-  label: localeLabels[locale],
+  label: variant === "panel" ? locale.toUpperCase() : localeLabels[locale],
+  ariaLabel: variant === "panel" ? `${locale.toUpperCase()}, ${localeLabels[locale]}` : localeLabels[locale],
   current: locale === lang,
   href: buildLocalePath(locale),
   lang: locale,
@@ -42,6 +43,5 @@ const items = locales.map((locale) => ({
   label={t(lang, "langLabel")}
   currentLabel={lang.toUpperCase()}
   items={items}
-  icon="language"
   variant={variant}
 />

@@ -1,6 +1,6 @@
 ---
 title: "FitPlanner"
-description: "Foundation for a workout and progress app, with an Express API and authentication. Unfinished prototype."
+description: "Foundation for a workout and progress app, with an Express API and authentication."
 cover: "/images/projects/fitplanner.png"
 date: 2025-04-09
 label: "Unfinished prototype"

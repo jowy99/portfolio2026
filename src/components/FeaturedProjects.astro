@@ -5,6 +5,7 @@ import type { Locale } from "../i18n/locales";
 import { t } from "../i18n/t";
 import { resolveProjectCover } from "../utils/project-covers";
 import TechBadge from "./TechBadge.astro";
+import { projectHighlights } from "../utils/project-highlights";
 
 interface FeaturedProject {
   slug: string;
@@ -45,6 +46,7 @@ const items = projects.map((project) => ({ ...project, cover: resolveProjectCove
           }
         </div>
         <div class="featured-body">
+          {projectHighlights[project.slug] && <p class="card-highlight">{t(lang, projectHighlights[project.slug]!)}</p>}
           <h3 class="featured-title">
             <a href={`/${lang}/projects/${project.slug}`} class="featured-link">{project.title}</a>
           </h3>

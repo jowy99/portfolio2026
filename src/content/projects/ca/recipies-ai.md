@@ -1,6 +1,6 @@
 ---
 title: "Recipies AI"
-description: "Receptari comunitari amb un assistent d'IA. Prototip sense acabar ni publicar, fet amb ajuda d'IA."
+description: "Receptari comunitari amb un assistent d'IA."
 cover: "/images/projects/recipies.png"
 date: 2026-02-04
 label: "Prototip sense acabar · amb IA"
