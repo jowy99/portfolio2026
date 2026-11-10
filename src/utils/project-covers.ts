@@ -3,7 +3,6 @@ import type { ImageMetadata } from "astro";
 import defiance from "../assets/projects/defiance.png";
 import directe from "../assets/projects/directe.png";
 import diet from "../assets/projects/diet.png";
-import fitplanner from "../assets/projects/fitplanner.png";
 import discordBots from "../assets/projects/discord-bots.png";
 import emotionsApp from "../assets/projects/emotionsapp.png";
 import festivalDeGranada from "../assets/projects/festivaldegranada.png";
@@ -22,7 +21,6 @@ const projectCoverAssets: Record<string, ImageMetadata> = {
   "/images/projects/defiance.png": defiance,
   "/images/projects/directe.png": directe,
   "/images/projects/diet.png": diet,
-  "/images/projects/fitplanner.png": fitplanner,
   "/images/projects/discord-bots.png": discordBots,
   "/images/projects/emotionsapp.png": emotionsApp,
   "/images/projects/meetsync.png": meetsync,

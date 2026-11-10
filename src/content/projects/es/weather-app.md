@@ -1,5 +1,5 @@
 ---
-title: "Weather App"
+title: "Matiz"
 description: "Aplicación del tiempo en tiempo real con interfaz minimalista, accesible y optimizada para móvil y escritorio."
 cover: "/images/projects/weatherapp.png"
 date: 2024-10-05
