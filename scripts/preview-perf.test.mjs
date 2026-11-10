@@ -39,7 +39,7 @@ test("compressed production preview preserves static and SSR responses", async (
   const textAssets = assets.filter((name) => /\.(css|js)$/.test(name));
   const paths = [...textAssets.map((name) => `/_astro/${name}`), "/sitemap.xml", "/es/errors/404"];
   for (const locale of ["es", "en", "ca", "fr"]) {
-    paths.push(`/${locale}/`, `/${locale}/projects/?q=weather`, `/${locale}/projects/weather-app/`);
+    paths.push(`/${locale}/`, `/${locale}/projects/?q=weather`, `/${locale}/projects/matiz/`);
   }
 
   for (const pathname of paths) {

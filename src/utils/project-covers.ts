@@ -13,7 +13,7 @@ import monopoly from "../assets/projects/monopoly.png";
 import plannr from "../assets/projects/plannr.png";
 import pythonDatabase from "../assets/projects/pythondatabase.png";
 import recipies from "../assets/projects/recipies.png";
-import weatherApp from "../assets/projects/weatherapp.png";
+import matiz from "../assets/projects/matiz.png";
 
 export type ProjectCover = ImageMetadata | string;
 
@@ -31,7 +31,7 @@ const projectCoverAssets: Record<string, ImageMetadata> = {
   "/images/projects/memorygame.png": memoryGame,
   "/images/projects/monopoly.png": monopoly,
   "/images/projects/pythondatabase.png": pythonDatabase,
-  "/images/projects/weatherapp.png": weatherApp,
+  "/images/projects/matiz.png": matiz,
 };
 
 export const resolveProjectCover = (cover: ProjectCover): ProjectCover => {

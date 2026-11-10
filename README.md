@@ -118,7 +118,7 @@ http://localhost:4321
 - `http://localhost:4322/ca`
 - `http://localhost:4322/fr`
 - `http://localhost:4322/es/projects`
-- `http://localhost:4322/es/projects/weather-app`
+- `http://localhost:4322/es/projects/matiz`
 - `http://localhost:4322/robots.txt`
 
 ## Formulario de contacto (Gmail SMTP)

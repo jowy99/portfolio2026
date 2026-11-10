@@ -1,7 +1,7 @@
 ---
 title: "Matiz"
 description: "Aplicació del temps en temps real amb interfície minimalista, accessible i optimitzada per a mòbil i escriptori."
-cover: "/images/projects/weatherapp.png"
+cover: "/images/projects/matiz.png"
 date: 2024-10-05
 featured: true
 stack:

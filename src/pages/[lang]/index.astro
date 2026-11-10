@@ -22,7 +22,7 @@ const lang: Locale = assertLocale(Astro.params.lang);
 const orderedProjects = filterProjectsByLocale(await getCollection("projects"), lang).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-const featuredOrder = ["fincas-es-moli", "festival-de-granada", "weather-app"];
+const featuredOrder = ["fincas-es-moli", "festival-de-granada", "matiz"];
 const featuredOrderSet = new Set(featuredOrder);
 const featuredByOrder = featuredOrder
   .map((slug) => orderedProjects.find((project) => getProjectSlug(project) === slug))
